@@ -1,0 +1,718 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administración | Graphic Blue</title>
+<style>
+:root{
+font-family:system-ui,-apple-system,Arial,sans-serif;
+color:#18325c;
+background:#f3f7fd
+}
+*{box-sizing:border-box}
+body{margin:0}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;font-weight:700}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{
+width:100%;padding:12px;border:1px solid #cbd6e6;
+border-radius:9px;margin:6px 0 14px;background:white;color:#18325c
+}
+label{font-weight:600;display:block}
+h1,h2,h3{margin-top:0}
+p{line-height:1.5}
+a{color:inherit}
+.hidden{display:none!important}
+.primary{background:#176bd1;color:white}
+.secondary{background:#e7effb;color:#123b80}
+.danger{background:#fff0f0;color:#b42318}
+.muted{color:#64748b}
+.error{color:#b42318}
+.success{color:#13704a}
+.card{
+background:white;border-radius:16px;padding:22px;
+box-shadow:0 5px 22px #173b7112;margin-bottom:20px
+}
+.login-wrap{
+max-width:430px;margin:10vh auto;padding:18px
+}
+.login-logo{
+text-align:center;color:#1257b6;font-size:30px;
+font-weight:900;margin-bottom:20px
+}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+width:235px;flex-shrink:0;background:#102d5d;
+color:white;padding:24px 15px
+}
+.logo{font-size:21px;font-weight:900;margin:0 10px 28px}
+.sidebar button,.sidebar a{
+display:block;width:100%;text-align:left;
+background:transparent;color:white;text-decoration:none;
+padding:13px;margin-bottom:6px;border-radius:9px
+}
+.sidebar button.active{background:#176bd1}
+.sidebar a:hover,.sidebar button:hover{background:#24508e}
+.content{flex:1;min-width:0;padding:25px}
+.header{
+display:flex;justify-content:space-between;align-items:center;
+gap:12px;flex-wrap:wrap;margin-bottom:25px
+}
+.header h1{margin:0}
+.stats{
+display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+gap:15px;margin-bottom:22px
+}
+.stat{
+background:white;padding:20px;border-radius:14px;
+box-shadow:0 5px 18px #173b7110
+}
+.stat strong{display:block;font-size:28px;color:#176bd1;margin-top:9px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:15px}
+.toolbar input,.toolbar select{margin:0;flex:1;min-width:150px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{padding:13px;text-align:left;border-bottom:1px solid #e5ebf3}
+th{font-size:13px;color:#64748b}
+td button{padding:8px 11px;margin:2px}
+.thumb{
+width:55px;height:55px;object-fit:contain;
+border-radius:8px;background:#e7effb
+}
+.placeholder{
+width:55px;height:55px;display:grid;place-items:center;
+background:#e7effb;border-radius:8px;font-size:25px
+}
+.stock-low{color:#b42318;font-weight:800}
+.form-grid{
+display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+gap:0 14px
+}
+.wide{grid-column:1/-1}
+.check{display:flex;align-items:center;gap:8px;margin:8px 0 20px}
+.check input{width:auto;margin:0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+dialog{
+border:0;border-radius:16px;padding:25px;
+width:min(94vw,650px);max-height:88vh;overflow:auto
+}
+dialog::backdrop{background:#001b4388}
+.notice{
+background:#f1f6ff;border-radius:12px;
+padding:15px;margin-top:14px
+}
+@media(max-width:720px){
+.layout{display:block}
+.sidebar{width:100%;padding:14px}
+.logo{margin:0 0 12px}
+.nav{display:flex;gap:5px;overflow-x:auto}
+.sidebar button,.sidebar a{
+white-space:nowrap;width:auto;margin:0;font-size:13px
+}
+.content{padding:15px}
+.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{padding:12px}
+.stat strong{font-size:21px}
+.stat span{font-size:12px}
+.form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<section id="loginScreen" class="login-wrap">
+<div class="login-logo">🔵 Graphic Blue</div>
+<div class="card">
+<h2>Acceso del personal</h2>
+<p class="muted">Ingresa con tu cuenta de administrador o empleado.</p>
+<form id="loginForm">
+<label>Correo electrónico
+<input id="email" type="email" autocomplete="username" required>
+</label>
+<label>Contraseña
+<input id="password" type="password" autocomplete="current-password" required>
+</label>
+<p id="loginStatus" role="status"></p>
+<button id="loginBtn" class="primary" type="submit" style="width:100%">
+Iniciar sesión
+</button>
+</form>
+<p style="text-align:center">
+<a href="index.html">← Volver a la tienda</a>
+</p>
+</div>
+</section>
+
+<div id="dashboard" class="layout hidden">
+
+<aside class="sidebar">
+<div class="logo">🔵 Graphic Blue</div>
+<div class="nav">
+<button id="navHome" class="active">🏠 Panel principal</button>
+<button id="navProducts">📦 Productos</button>
+<button id="navInventory">📋 Inventario</button>
+<a href="index.html">🛍️ Ver tienda</a>
+<button id="logoutBtn">🚪 Cerrar sesión</button>
+</div>
+</aside>
+
+<main class="content">
+<div class="header">
+<div>
+<h1 id="pageTitle">Panel principal</h1>
+<p id="welcome" class="muted"></p>
+</div>
+<button id="newBtn" class="primary">+ Agregar producto</button>
+</div>
+
+<section id="homeSection">
+<div class="stats">
+<div class="stat">
+<span>Productos</span>
+<strong id="totalProducts">0</strong>
+</div>
+<div class="stat">
+<span>Publicados</span>
+<strong id="publishedProducts">0</strong>
+</div>
+<div class="stat">
+<span>Stock bajo</span>
+<strong id="lowCount">0</strong>
+</div>
+</div>
+
+<div class="card">
+<h2>⚠️ Alertas de inventario</h2>
+<div id="lowList" class="muted">Cargando...</div>
+</div>
+
+<div class="card">
+<h2>Graphic Blue</h2>
+<p>Desde aquí puedes registrar productos, cambiar precios, actualizar existencias y controlar qué artículos aparecen en la tienda.</p>
+<div class="notice">
+Las ventas, los pedidos y la facturación se incorporarán en una siguiente etapa.
+</div>
+</div>
+</section>
+
+<section id="productsSection" class="hidden">
+<div class="card">
+<h2>Administración de productos</h2>
+<div class="toolbar">
+<input id="search" type="search" placeholder="Buscar por nombre o código...">
+<select id="filterCategory">
+<option value="">Todas las categorías</option>
+</select>
+</div>
+<p id="staffStatus" role="status"></p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Imagen</th>
+<th>Producto</th>
+<th>Categoría</th>
+<th>Precio</th>
+<th>Stock</th>
+<th>Estado</th>
+<th>Acciones</th>
+</tr>
+</thead>
+<tbody id="productRows"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="inventorySection" class="hidden">
+<div class="card">
+<h2>Inventario</h2>
+<p class="muted">Control de existencias y cantidades mínimas.</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Producto</th>
+<th>Stock actual</th>
+<th>Stock mínimo</th>
+<th>Estado</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody id="inventoryRows"></tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+</div>
+
+<dialog id="productDialog">
+<h2 id="formTitle">Agregar producto</h2>
+<form id="productForm">
+<div class="form-grid">
+<label>Código
+<input id="pCode" maxlength="80" required>
+</label>
+<label>Nombre
+<input id="pName" maxlength="200" required>
+</label>
+<label class="wide">Descripción
+<textarea id="pDescription" rows="2"></textarea>
+</label>
+<label>Categoría
+<select id="pCategory" required></select>
+</label>
+<label>Precio de compra ($)
+<input id="pCost" type="number" min="0" step="0.01" required>
+</label>
+<label>Precio de venta ($)
+<input id="pPrice" type="number" min="0" step="0.01" required>
+</label>
+<label>Stock
+<input id="pStock" type="number" min="0" step="1" required>
+</label>
+<label>Stock mínimo
+<input id="pMinStock" type="number" min="0" step="1" required>
+</label>
+<label class="wide">URL de imagen
+<input id="pImage" type="url" placeholder="https://...">
+</label>
+</div>
+<label class="check">
+<input id="pPublished" type="checkbox">
+Publicar en la tienda
+</label>
+<p id="formStatus" role="status"></p>
+<div class="actions">
+<button id="saveBtn" type="submit" class="primary">Guardar producto</button>
+<button id="cancelBtn" type="button" class="secondary">Cancelar</button>
+</div>
+</form>
+</dialog>
+
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL='https://bszdopscbugyfnakqmbw.supabase.co';
+const SUPABASE_KEY='sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('es-EC',{
+style:'currency',currency:'USD'
+}).format(Number(n)||0);
+
+function el(tag,text='',className=''){
+const node=document.createElement(tag);
+node.textContent=text;
+node.className=className;
+return node;
+}
+
+let products=[];
+let categories=[];
+let role=null;
+let editingId=null;
+
+function message(id,text,error=false){
+$(id).textContent=text;
+$(id).className=error?'error':'success';
+}
+
+function showSection(name){
+for(const section of ['home','products','inventory']){
+$(section+'Section').classList.toggle('hidden',section!==name);
+const nav={
+home:'navHome',
+products:'navProducts',
+inventory:'navInventory'
+};
+$(nav[section]).classList.toggle('active',section===name);
+}
+$('pageTitle').textContent={
+home:'Panel principal',
+products:'Productos',
+inventory:'Inventario'
+}[name];
+}
+
+async function checkSession(){
+const {data:{user},error}=await db.auth.getUser();
+
+if(error||!user){
+showLogin();
+return;
+}
+
+const result=await db.from('perfiles')
+.select('nombre,rol')
+.eq('id',user.id)
+.maybeSingle();
+
+if(result.error||!result.data||
+!['administrador','empleado'].includes(result.data.rol)){
+await db.auth.signOut();
+showLogin();
+message('loginStatus','Esta cuenta no tiene acceso al panel.',true);
+return;
+}
+
+role=result.data.rol;
+$('welcome').textContent=
+`${result.data.nombre} · ${role}`;
+
+$('loginScreen').classList.add('hidden');
+$('dashboard').classList.remove('hidden');
+
+await loadData();
+}
+
+function showLogin(){
+role=null;
+$('dashboard').classList.add('hidden');
+$('loginScreen').classList.remove('hidden');
+}
+
+async function loadData(){
+const [p,c]=await Promise.all([
+db.from('productos')
+.select('id,codigo,nombre,descripcion,categoria,precio_compra,precio_venta,stock,stock_minimo,imagen_url,publicado')
+.order('nombre'),
+db.from('categorias').select('nombre').order('nombre')
+]);
+
+if(p.error){
+message('staffStatus','Error: '+p.error.message,true);
+showSection('products');
+return;
+}
+
+products=p.data||[];
+categories=c.error?[]:(c.data||[])
+.map(x=>x.nombre).filter(Boolean);
+
+renderStats();
+renderProducts();
+renderInventory();
+renderCategoryFilter();
+}
+
+function lowProducts(){
+return products.filter(p=>
+Number(p.stock)<=Number(p.stock_minimo)
+);
+}
+
+function renderStats(){
+$('totalProducts').textContent=products.length;
+$('publishedProducts').textContent=
+products.filter(p=>p.publicado).length;
+
+const low=lowProducts();
+$('lowCount').textContent=low.length;
+
+const box=$('lowList');
+box.replaceChildren();
+
+if(!low.length){
+box.append(el('p','No hay productos con stock bajo.'));
+return;
+}
+
+for(const p of low){
+box.append(el('p',
+`⚠️ ${p.nombre}: ${p.stock} unidades (mínimo ${p.stock_minimo})`,
+'stock-low'));
+}
+}
+
+function renderCategoryFilter(){
+const select=$('filterCategory');
+const previous=select.value;
+select.replaceChildren();
+
+const all=document.createElement('option');
+all.value='';
+all.textContent='Todas las categorías';
+select.append(all);
+
+for(const name of [...new Set([
+...categories,...products.map(p=>p.categoria)
+])].filter(Boolean).sort()){
+const option=document.createElement('option');
+option.value=name;
+option.textContent=name;
+select.append(option);
+}
+
+select.value=previous;
+}
+
+function renderProducts(){
+const box=$('productRows');
+box.replaceChildren();
+
+const query=$('search').value.toLowerCase().trim();
+const category=$('filterCategory').value;
+
+const filtered=products.filter(p=>
+(!category||p.categoria===category)&&
+`${p.nombre} ${p.codigo}`.toLowerCase().includes(query)
+);
+
+if(!filtered.length){
+const row=document.createElement('tr');
+const cell=document.createElement('td');
+cell.colSpan=7;
+cell.textContent='No hay productos para mostrar.';
+row.append(cell);
+box.append(row);
+return;
+}
+
+for(const p of filtered){
+const row=document.createElement('tr');
+
+const imageCell=document.createElement('td');
+if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){
+const img=document.createElement('img');
+img.src=p.imagen_url;
+img.alt=p.nombre;
+img.className='thumb';
+img.onerror=()=>img.replaceWith(el('div','📦','placeholder'));
+imageCell.append(img);
+}else{
+imageCell.append(el('div','📦','placeholder'));
+}
+
+const nameCell=document.createElement('td');
+nameCell.append(
+el('strong',p.nombre),
+el('div',p.codigo||'Sin código','muted')
+);
+
+row.append(
+imageCell,
+nameCell,
+el('td',p.categoria||''),
+el('td',money(p.precio_venta)),
+el('td',String(p.stock),
+Number(p.stock)<=Number(p.stock_minimo)?'stock-low':''),
+el('td',p.publicado?'Publicado':'Oculto')
+);
+
+const actions=document.createElement('td');
+
+const edit=el('button','✏️ Editar','secondary');
+edit.onclick=()=>openForm(p);
+
+const toggle=el('button',
+p.publicado?'Ocultar':'Publicar','secondary');
+toggle.onclick=()=>toggleProduct(p);
+
+actions.append(edit,toggle);
+row.append(actions);
+box.append(row);
+}
+}
+
+function renderInventory(){
+const box=$('inventoryRows');
+box.replaceChildren();
+
+for(const p of products){
+const row=document.createElement('tr');
+const low=Number(p.stock)<=Number(p.stock_minimo);
+
+row.append(
+el('td',p.codigo||''),
+el('td',p.nombre),
+el('td',String(p.stock),low?'stock-low':''),
+el('td',String(p.stock_minimo)),
+el('td',low?'⚠️ Stock bajo':'Correcto')
+);
+
+const action=document.createElement('td');
+const edit=el('button','Actualizar','secondary');
+edit.onclick=()=>openForm(p);
+action.append(edit);
+row.append(action);
+box.append(row);
+}
+}
+
+function fillFormCategories(selected=''){
+const select=$('pCategory');
+select.replaceChildren();
+
+const names=[...new Set([
+...categories,
+...products.map(p=>p.categoria),
+selected
+])].filter(Boolean).sort();
+
+for(const name of names){
+const option=document.createElement('option');
+option.value=name;
+option.textContent=name;
+select.append(option);
+}
+
+if(selected)select.value=selected;
+}
+
+function openForm(p=null){
+if(!role)return;
+
+editingId=p?.id??null;
+$('productForm').reset();
+$('formTitle').textContent=p?'Editar producto':'Agregar producto';
+$('formStatus').textContent='';
+
+fillFormCategories(p?.categoria||'');
+
+$('pCode').value=p?.codigo||'';
+$('pName').value=p?.nombre||'';
+$('pDescription').value=p?.descripcion||'';
+$('pCost').value=p?.precio_compra??0;
+$('pPrice').value=p?.precio_venta??0;
+$('pStock').value=p?.stock??0;
+$('pMinStock').value=p?.stock_minimo??0;
+$('pImage').value=p?.imagen_url||'';
+$('pPublished').checked=p?.publicado??false;
+
+$('productDialog').showModal();
+}
+
+function numberValue(id,integer=false){
+const value=Number($(id).value);
+if(!Number.isFinite(value)||value<0||
+(integer&&!Number.isInteger(value))){
+throw Error('Revisa los precios y las cantidades.');
+}
+return value;
+}
+
+async function saveProduct(event){
+event.preventDefault();
+if(!role)return;
+
+let record;
+
+try{
+const url=$('pImage').value.trim();
+
+if(url&&!/^https:\/\//i.test(url)){
+throw Error('La URL de imagen debe comenzar con https://');
+}
+
+record={
+codigo:$('pCode').value.trim(),
+nombre:$('pName').value.trim(),
+descripcion:$('pDescription').value.trim(),
+categoria:$('pCategory').value,
+precio_compra:numberValue('pCost'),
+precio_venta:numberValue('pPrice'),
+stock:numberValue('pStock',true),
+stock_minimo:numberValue('pMinStock',true),
+imagen_url:url||null,
+publicado:$('pPublished').checked
+};
+
+if(!record.codigo||!record.nombre||!record.categoria){
+throw Error('Completa código, nombre y categoría.');
+}
+}catch(error){
+message('formStatus',error.message,true);
+return;
+}
+
+$('saveBtn').disabled=true;
+message('formStatus','Guardando...');
+
+const result=editingId===null
+?await db.from('productos').insert(record).select('id')
+:await db.from('productos')
+.update(record).eq('id',editingId).select('id');
+
+$('saveBtn').disabled=false;
+
+if(result.error||!result.data?.length){
+message('formStatus',
+'No se pudo guardar: '+(result.error?.message||'Revisa los permisos'),
+true);
+return;
+}
+
+$('productDialog').close();
+await loadData();
+message('staffStatus','Producto guardado correctamente.');
+}
+
+async function toggleProduct(p){
+if(!role)return;
+
+const result=await db.from('productos')
+.update({publicado:!p.publicado})
+.eq('id',p.id)
+.select('id');
+
+if(result.error||!result.data?.length){
+message('staffStatus',
+'No se pudo cambiar el estado del producto.',true);
+return;
+}
+
+await loadData();
+message('staffStatus','Estado actualizado correctamente.');
+}
+
+$('loginForm').onsubmit=async event=>{
+event.preventDefault();
+
+$('loginBtn').disabled=true;
+message('loginStatus','Ingresando...');
+
+const result=await db.auth.signInWithPassword({
+email:$('email').value.trim(),
+password:$('password').value
+});
+
+$('loginBtn').disabled=false;
+
+if(result.error){
+message('loginStatus',
+'Correo o contraseña incorrectos.',true);
+return;
+}
+
+$('password').value='';
+await checkSession();
+};
+
+$('logoutBtn').onclick=async()=>{
+const result=await db.auth.signOut();
+if(result.error){
+alert('No se pudo cerrar sesión.');
+return;
+}
+showLogin();
+};
+
+$('navHome').onclick=()=>showSection('home');
+$('navProducts').onclick=()=>showSection('products');
+$('navInventory').onclick=()=>showSection('inventory');
+$('newBtn').onclick=()=>openForm();
+$('cancelBtn').onclick=()=>$('productDialog').close();
+$('productForm').onsubmit=saveProduct;
+$('search').oninput=renderProducts;
+$('filterCategory').onchange=renderProducts;
+
+await checkSession();
+</script>
+</body>
+</html>
