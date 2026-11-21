@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Administración | Graphic Blue</title>
 
 <style>
@@ -50,11 +50,7 @@ a{color:inherit}
   box-shadow:0 5px 22px #173b7112;
   margin-bottom:20px;
 }
-.login-wrap{
-  max-width:430px;
-  margin:10vh auto;
-  padding:18px;
-}
+.login-wrap{max-width:430px;margin:10vh auto;padding:18px}
 .login-logo{
   text-align:center;
   color:#1257b6;
@@ -70,11 +66,7 @@ a{color:inherit}
   color:white;
   padding:24px 15px;
 }
-.logo{
-  font-size:21px;
-  font-weight:900;
-  margin:0 10px 28px;
-}
+.logo{font-size:21px;font-weight:900;margin:0 10px 28px}
 .sidebar button,.sidebar a{
   display:block;
   width:100%;
@@ -129,11 +121,7 @@ a{color:inherit}
   min-width:150px;
 }
 .table-wrap{overflow-x:auto}
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:640px;
-}
+table{width:100%;border-collapse:collapse;min-width:640px}
 th,td{
   padding:13px;
   text-align:left;
@@ -171,12 +159,7 @@ td button{padding:8px 11px;margin:2px}
   margin:8px 0 20px;
 }
 .check input{width:auto;margin:0}
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 dialog{
   border:0;
   border-radius:16px;
@@ -217,19 +200,14 @@ dialog::backdrop{background:#001b4388}
   font-weight:400;
 }
 
-/* CAJA REGISTRADORA */
+/* CAJA */
 .pos-grid{
   display:grid;
   grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);
   gap:18px;
   align-items:start;
 }
-.pos-list{
-  display:grid;
-  gap:9px;
-  max-height:490px;
-  overflow:auto;
-}
+.pos-list{display:grid;gap:9px;max-height:490px;overflow:auto}
 .pos-product{
   display:flex;
   align-items:center;
@@ -251,12 +229,7 @@ dialog::backdrop{background:#001b4388}
   padding:11px 0;
 }
 .pos-line small{display:block;color:#64748b}
-.qty{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  justify-content:flex-end;
-}
+.qty{display:flex;align-items:center;gap:8px;justify-content:flex-end}
 .qty button{padding:6px 10px}
 .qty strong{min-width:22px;text-align:center}
 .pos-total{
@@ -290,36 +263,18 @@ dialog::backdrop{background:#001b4388}
 
 /* COMPROBANTES */
 .ticket-dialog{width:min(94vw,550px)}
-.ticket{
-  max-width:410px;
-  margin:auto;
-  color:#182c46;
-}
+.ticket{max-width:410px;margin:auto;color:#182c46}
 .ticket-head{
   text-align:center;
   border-bottom:2px dashed #9ca9ba;
   padding-bottom:14px;
 }
-.ticket-head h2{
-  margin:0 0 5px;
-  color:#176bd1;
-}
-.ticket-head strong{
-  display:block;
-  margin-top:10px;
-}
-.ticket-meta{
-  font-size:14px;
-  margin:16px 0;
-}
+.ticket-head h2{margin:0 0 5px;color:#176bd1}
+.ticket-head strong{display:block;margin-top:10px}
+.ticket-meta{font-size:14px;margin:16px 0}
 .ticket-meta p{margin:5px 0}
-.ticket-table{
-  width:100%;
-  min-width:0;
-  font-size:13px;
-}
-.ticket-table th,
-.ticket-table td{
+.ticket-table{width:100%;min-width:0;font-size:13px}
+.ticket-table th,.ticket-table td{
   padding:9px 3px;
   overflow-wrap:anywhere;
 }
@@ -372,35 +327,86 @@ dialog::backdrop{background:#001b4388}
   .pos-product button{padding:9px}
   .ticket-dialog{padding:15px}
   .ticket-table{font-size:12px}
-  .ticket-table th,.ticket-table td{padding:8px 2px}
 }
+
+/* TICKET TÉRMICO DE 80 MM */
 @media print{
-  body{background:white!important}
-  .login-wrap,.layout,.receipt-actions{
+  @page{
+    size:80mm 180mm;
+    margin:0;
+  }
+  html,body{
+    width:80mm!important;
+    margin:0!important;
+    padding:0!important;
+    background:white!important;
+    color:black!important;
+  }
+  .login-wrap,
+  .layout,
+  .receipt-actions,
+  #receiptStatus{
     display:none!important;
   }
   dialog#receiptDialog{
     position:static!important;
     display:block!important;
-    border:0!important;
-    padding:0!important;
-    width:100%!important;
+    width:80mm!important;
+    max-width:80mm!important;
     max-height:none!important;
-    overflow:visible!important;
-    margin:0 auto!important;
+    height:auto!important;
+    margin:0!important;
+    padding:4mm!important;
+    border:0!important;
+    border-radius:0!important;
     box-shadow:none!important;
+    overflow:visible!important;
+    background:white!important;
   }
   dialog#receiptDialog::backdrop{
     display:none!important;
   }
   .ticket{
-    max-width:80mm!important;
+    width:72mm!important;
+    max-width:72mm!important;
+    margin:0!important;
+    padding:0!important;
     color:black!important;
+    font-size:11px!important;
   }
-  .ticket-head h2{color:black!important}
-  .ticket-table{font-size:11px}
-  .ticket-total{font-size:17px}
-  @page{margin:8mm}
+  .ticket-head h2{
+    color:black!important;
+    font-size:17px!important;
+  }
+  .ticket-head{padding-bottom:9px!important}
+  .ticket-meta{
+    font-size:11px!important;
+    margin:10px 0!important;
+  }
+  .ticket-table{
+    width:100%!important;
+    min-width:0!important;
+    font-size:10px!important;
+    table-layout:fixed!important;
+  }
+  .ticket-table th,.ticket-table td{
+    padding:5px 2px!important;
+    overflow-wrap:anywhere!important;
+  }
+  .ticket-table th:first-child{width:39%}
+  .ticket-table th:nth-child(2){width:12%}
+  .ticket-table th:nth-child(3){width:23%}
+  .ticket-table th:nth-child(4){width:26%}
+  .ticket-total{
+    font-size:16px!important;
+    margin-top:10px!important;
+    padding-top:8px!important;
+  }
+  .ticket-foot{
+    font-size:10px!important;
+    margin-top:14px!important;
+    padding-top:10px!important;
+  }
 }
 </style>
 </head>
@@ -415,13 +421,11 @@ dialog::backdrop{background:#001b4388}
       Ingresa con tu cuenta de administrador o empleado.
     </p>
     <form id="loginForm">
-      <label>
-        Correo electrónico
+      <label>Correo electrónico
         <input id="email" type="email"
           autocomplete="username" required>
       </label>
-      <label>
-        Contraseña
+      <label>Contraseña
         <input id="password" type="password"
           autocomplete="current-password" required>
       </label>
@@ -438,7 +442,6 @@ dialog::backdrop{background:#001b4388}
 </section>
 
 <div id="dashboard" class="layout hidden">
-
   <aside class="sidebar">
     <div class="logo">🔵 Graphic Blue</div>
     <div class="nav">
@@ -489,14 +492,12 @@ dialog::backdrop{background:#001b4388}
         <p>
           Desde aquí puedes registrar productos,
           cambiar precios, actualizar existencias
-          y controlar qué artículos aparecen
-          en la tienda.
+          y controlar qué artículos aparecen en la tienda.
         </p>
         <div class="notice">
-          La sección 💵 Caja permite registrar
-          ventas de mostrador y generar comprobantes.
-          Las ventas confirmadas descuentan
-          automáticamente el inventario.
+          La sección 💵 Caja permite registrar ventas
+          de mostrador y generar comprobantes.
+          Las ventas confirmadas descuentan el inventario.
         </div>
       </div>
     </section>
@@ -557,7 +558,6 @@ dialog::backdrop{background:#001b4388}
 
     <section id="cashSection" class="hidden">
       <div class="pos-grid">
-
         <div class="card">
           <h2>🛒 Seleccionar productos</h2>
           <label for="posSearch">
@@ -599,8 +599,7 @@ dialog::backdrop{background:#001b4388}
             </div>
           </div>
 
-          <div id="posTransferFields"
-            class="notice hidden">
+          <div id="posTransferFields" class="notice hidden">
             Confirma que recibiste la transferencia
             antes de registrar la venta.
             Esta caja no verifica transferencias
@@ -623,7 +622,6 @@ dialog::backdrop{background:#001b4388}
             class="sale-result hidden"
             role="status"></div>
         </div>
-
       </div>
     </section>
 
@@ -633,8 +631,7 @@ dialog::backdrop{background:#001b4388}
           <div>
             <h2>🧾 Historial de ventas</h2>
             <p class="muted">
-              Pedidos recientes registrados
-              en Graphic Blue.
+              Pedidos recientes registrados en Graphic Blue.
             </p>
           </div>
           <button id="refreshSales" class="secondary">
@@ -660,7 +657,6 @@ dialog::backdrop{background:#001b4388}
         </div>
       </div>
     </section>
-
   </main>
 </div>
 
@@ -668,79 +664,56 @@ dialog::backdrop{background:#001b4388}
   <h2 id="formTitle">Agregar producto</h2>
   <form id="productForm">
     <div class="form-grid">
-
-      <label>
-        Código
+      <label>Código
         <input id="pCode" maxlength="80" required>
       </label>
-
-      <label>
-        Nombre
+      <label>Nombre
         <input id="pName" maxlength="200" required>
       </label>
-
-      <label class="wide">
-        Descripción
+      <label class="wide">Descripción
         <textarea id="pDescription" rows="2"></textarea>
       </label>
-
-      <label>
-        Categoría
+      <label>Categoría
         <select id="pCategory" required></select>
       </label>
-
-      <label>
-        Precio de compra ($)
+      <label>Precio de compra ($)
         <input id="pCost" type="number"
           min="0" step="0.01" required>
       </label>
-
-      <label>
-        Precio de venta ($)
+      <label>Precio de venta ($)
         <input id="pPrice" type="number"
           min="0" step="0.01" required>
       </label>
-
-      <label>
-        Stock
+      <label>Stock
         <input id="pStock" type="number"
           min="0" step="1" required>
       </label>
-
-      <label>
-        Stock mínimo
+      <label>Stock mínimo
         <input id="pMinStock" type="number"
           min="0" step="1" required>
       </label>
 
       <div class="wide upload-box">
-        <label for="pFile">
-          📷 Imagen del producto
-        </label>
+        <label for="pFile">📷 Imagen del producto</label>
         <p class="upload-help">
           Selecciona una foto desde tu celular
           o computadora. Formatos: JPG, PNG o WebP.
           Máximo 5 MB.
         </p>
-
         <input id="pFile" type="file"
           accept="image/jpeg,image/png,image/webp">
-
         <img id="imagePreview"
           class="preview hidden"
           alt="Vista previa del producto">
-
         <p id="imageHint" class="upload-help">
           Todavía no has seleccionado una imagen.
         </p>
       </div>
 
-      <label class="wide">
-        URL de imagen (opcional)
+      <label class="wide">URL de imagen (opcional)
         <input id="pImage" type="url"
           placeholder="https://...">
       </label>
-
     </div>
 
     <label class="check">
@@ -749,14 +722,11 @@ dialog::backdrop{background:#001b4388}
     </label>
 
     <p id="formStatus" role="status"></p>
-
     <div class="actions">
-      <button id="saveBtn" type="submit"
-        class="primary">
+      <button id="saveBtn" type="submit" class="primary">
         Guardar producto
       </button>
-      <button id="cancelBtn" type="button"
-        class="secondary">
+      <button id="cancelBtn" type="button" class="secondary">
         Cancelar
       </button>
     </div>
@@ -767,19 +737,14 @@ dialog::backdrop{background:#001b4388}
   class="ticket-dialog"
   aria-label="Comprobante de venta">
 
-  <div id="receiptContent"
-    class="ticket"></div>
-
+  <div id="receiptContent" class="ticket"></div>
   <p id="receiptStatus" role="status"></p>
 
   <div class="actions receipt-actions">
-    <button id="printReceipt"
-      class="primary" type="button">
+    <button id="printReceipt" class="primary" type="button">
       🖨️ Imprimir / Guardar PDF
     </button>
-
-    <button id="closeReceipt"
-      class="secondary" type="button">
+    <button id="closeReceipt" class="secondary" type="button">
       Cerrar
     </button>
   </div>
@@ -795,18 +760,16 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   'sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
 
-const BUCKET = 'productos-imagenes';
+const BUCKET='productos-imagenes';
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
 
-const db = createClient(SUPABASE_URL,SUPABASE_KEY);
-
-const $ = id => document.getElementById(id);
-
-const money = n => new Intl.NumberFormat('es-EC',{
+const money=n=>new Intl.NumberFormat('es-EC',{
   style:'currency',
   currency:'USD'
 }).format(Number(n)||0);
 
-const cents = n => Math.round(Number(n)*100);
+const cents=n=>Math.round(Number(n)*100);
 
 function el(tag,text='',className=''){
   const node=document.createElement(tag);
@@ -821,7 +784,6 @@ let role=null;
 let editingId=null;
 let previewObjectUrl=null;
 let saving=false;
-
 let posCart=new Map();
 let posSaving=false;
 
@@ -891,7 +853,6 @@ async function checkSession(){
   }
 
   role=result.data.rol;
-
   $('welcome').textContent=
     `${result.data.nombre||'Personal'} · ${role}`;
 
@@ -922,17 +883,12 @@ async function loadData(){
   ]);
 
   if(p.error){
-    message(
-      'staffStatus',
-      'Error: '+p.error.message,
-      true
-    );
+    message('staffStatus','Error: '+p.error.message,true);
     showSection('products');
     return false;
   }
 
   products=p.data||[];
-
   categories=c.error
     ?[]
     :(c.data||[]).map(x=>x.nombre).filter(Boolean);
@@ -955,7 +911,6 @@ function lowProducts(){
 
 function renderStats(){
   $('totalProducts').textContent=products.length;
-
   $('publishedProducts').textContent=
     products.filter(p=>p.publicado).length;
 
@@ -982,7 +937,6 @@ function renderStats(){
 function renderCategoryFilter(){
   const select=$('filterCategory');
   const previous=select.value;
-
   select.replaceChildren();
 
   const all=document.createElement('option');
@@ -1018,18 +972,17 @@ function renderProducts(){
   );
 
   if(!filtered.length){
-    const row=document.createElement('tr');
-    const cell=document.createElement('td');
+    const row=el('tr');
+    const cell=el('td','No hay productos para mostrar.');
     cell.colSpan=7;
-    cell.textContent='No hay productos para mostrar.';
     row.append(cell);
     box.append(row);
     return;
   }
 
   for(const p of filtered){
-    const row=document.createElement('tr');
-    const imageCell=document.createElement('td');
+    const row=el('tr');
+    const imageCell=el('td');
 
     if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){
       const img=document.createElement('img');
@@ -1044,7 +997,7 @@ function renderProducts(){
       imageCell.append(el('div','📦','placeholder'));
     }
 
-    const nameCell=document.createElement('td');
+    const nameCell=el('td');
     nameCell.append(
       el('strong',p.nombre),
       el('div',p.codigo||'Sin código','muted')
@@ -1064,8 +1017,7 @@ function renderProducts(){
       el('td',p.publicado?'Publicado':'Oculto')
     );
 
-    const actions=document.createElement('td');
-
+    const actions=el('td');
     const edit=el('button','✏️ Editar','secondary');
     edit.onclick=()=>openForm(p);
 
@@ -1087,7 +1039,7 @@ function renderInventory(){
   box.replaceChildren();
 
   for(const p of products){
-    const row=document.createElement('tr');
+    const row=el('tr');
     const low=Number(p.stock)<=Number(p.stock_minimo);
 
     row.append(
@@ -1098,11 +1050,10 @@ function renderInventory(){
       el('td',low?'⚠️ Stock bajo':'Correcto')
     );
 
-    const action=document.createElement('td');
+    const action=el('td');
     const edit=el('button','Actualizar','secondary');
     edit.onclick=()=>openForm(p);
     action.append(edit);
-
     row.append(action);
     box.append(row);
   }
@@ -1133,7 +1084,6 @@ function clearPreview(){
     URL.revokeObjectURL(previewObjectUrl);
     previewObjectUrl=null;
   }
-
   $('imagePreview').removeAttribute('src');
   $('imagePreview').classList.add('hidden');
 }
@@ -1145,14 +1095,11 @@ function showImagePreview(src){
 
 function updatePreview(){
   clearPreview();
-
   const file=$('pFile').files?.[0];
 
   if(file){
     if(![
-      'image/jpeg',
-      'image/png',
-      'image/webp'
+      'image/jpeg','image/png','image/webp'
     ].includes(file.type)){
       $('imageHint').textContent=
         'Selecciona una imagen JPG, PNG o WebP.';
@@ -1161,9 +1108,7 @@ function updatePreview(){
 
     previewObjectUrl=URL.createObjectURL(file);
     showImagePreview(previewObjectUrl);
-
-    $('imageHint').textContent=
-      'Vista previa: '+file.name;
+    $('imageHint').textContent='Vista previa: '+file.name;
     return;
   }
 
@@ -1171,8 +1116,7 @@ function updatePreview(){
 
   if(/^https:\/\//i.test(url)){
     showImagePreview(url);
-    $('imageHint').textContent=
-      'Imagen actual del producto.';
+    $('imageHint').textContent='Imagen actual del producto.';
   }else{
     $('imageHint').textContent=
       'Todavía no has seleccionado una imagen.';
@@ -1183,7 +1127,6 @@ function openForm(p=null){
   if(!role)return;
 
   editingId=p?.id??null;
-
   $('productForm').reset();
   $('formTitle').textContent=
     p?'Editar producto':'Agregar producto';
@@ -1212,7 +1155,6 @@ function numberValue(id,integer=false){
     (integer&&!Number.isInteger(value))){
     throw Error('Revisa los precios y las cantidades.');
   }
-
   return value;
 }
 
@@ -1220,17 +1162,13 @@ function validateFile(file){
   if(!file)return;
 
   if(![
-    'image/jpeg',
-    'image/png',
-    'image/webp'
+    'image/jpeg','image/png','image/webp'
   ].includes(file.type)){
     throw Error('La imagen debe ser JPG, PNG o WebP.');
   }
 
   if(file.size>5*1024*1024){
-    throw Error(
-      'La imagen supera los 5 MB. Selecciona una más pequeña.'
-    );
+    throw Error('La imagen supera los 5 MB.');
   }
 
   if(file.size===0){
@@ -1245,9 +1183,7 @@ async function uploadImage(file){
     await db.auth.getUser();
 
   if(userError||!user){
-    throw Error(
-      'Tu sesión expiró. Inicia sesión nuevamente.'
-    );
+    throw Error('Tu sesión expiró. Inicia sesión nuevamente.');
   }
 
   const extension={
@@ -1256,8 +1192,8 @@ async function uploadImage(file){
     'image/webp':'webp'
   }[file.type];
 
-  const uniqueId=crypto.randomUUID();
-  const path=`productos/${user.id}/${uniqueId}.${extension}`;
+  const path=
+    `productos/${user.id}/${crypto.randomUUID()}.${extension}`;
 
   const result=await db.storage
     .from(BUCKET)
@@ -1269,9 +1205,7 @@ async function uploadImage(file){
 
   if(result.error){
     throw Error(
-      'No se pudo subir la imagen: '+
-      result.error.message+
-      '. Revisa los permisos de Storage en Supabase.'
+      'No se pudo subir la imagen: '+result.error.message
     );
   }
 
@@ -1280,9 +1214,7 @@ async function uploadImage(file){
     .getPublicUrl(path);
 
   if(!data?.publicUrl){
-    throw Error(
-      'No se pudo obtener la URL de la imagen.'
-    );
+    throw Error('No se pudo obtener la URL de la imagen.');
   }
 
   return data.publicUrl;
@@ -1298,13 +1230,10 @@ async function saveProduct(event){
   try{
     const url=$('pImage').value.trim();
     file=$('pFile').files?.[0]||null;
-
     validateFile(file);
 
     if(url&&!/^https:\/\//i.test(url)){
-      throw Error(
-        'La URL de imagen debe comenzar con https://'
-      );
+      throw Error('La URL debe comenzar con https://');
     }
 
     record={
@@ -1320,13 +1249,9 @@ async function saveProduct(event){
       publicado:$('pPublished').checked
     };
 
-    if(!record.codigo||!record.nombre||
-      !record.categoria){
-      throw Error(
-        'Completa código, nombre y categoría.'
-      );
+    if(!record.codigo||!record.nombre||!record.categoria){
+      throw Error('Completa código, nombre y categoría.');
     }
-
   }catch(error){
     message('formStatus',error.message,true);
     return;
@@ -1361,14 +1286,8 @@ async function saveProduct(event){
 
     $('productDialog').close();
     clearPreview();
-
     await loadData();
-
-    message(
-      'staffStatus',
-      'Producto guardado correctamente.'
-    );
-
+    message('staffStatus','Producto guardado correctamente.');
   }catch(error){
     console.error(error);
     message('formStatus',error.message,true);
@@ -1397,28 +1316,18 @@ async function toggleProduct(p){
   }
 
   await loadData();
-
-  message(
-    'staffStatus',
-    'Estado actualizado correctamente.'
-  );
+  message('staffStatus','Estado actualizado correctamente.');
 }
 
-/* CAJA REGISTRADORA */
+/* CAJA */
 
 function cartTotalCents(){
   let sum=0;
 
   for(const [id,qty] of posCart){
-    const p=products.find(
-      x=>String(x.id)===String(id)
-    );
-
-    if(p){
-      sum+=cents(p.precio_venta)*qty;
-    }
+    const p=products.find(x=>String(x.id)===String(id));
+    if(p)sum+=cents(p.precio_venta)*qty;
   }
-
   return sum;
 }
 
@@ -1437,11 +1346,7 @@ function renderPosProducts(){
     `${matches.length} producto(s) encontrado(s)`;
 
   if(!matches.length){
-    box.append(el(
-      'p',
-      'No se encontraron productos.',
-      'muted'
-    ));
+    box.append(el('p','No se encontraron productos.','muted'));
     return;
   }
 
@@ -1458,7 +1363,6 @@ function renderPosProducts(){
     }
 
     const info=el('div','','info');
-
     info.append(
       el('strong',p.nombre),
       el(
@@ -1482,10 +1386,7 @@ function renderPosProducts(){
 }
 
 function addPosProduct(id){
-  const p=products.find(
-    x=>String(x.id)===String(id)
-  );
-
+  const p=products.find(x=>String(x.id)===String(id));
   if(!p)return;
 
   const qty=posCart.get(String(id))||0;
@@ -1500,7 +1401,6 @@ function addPosProduct(id){
   }
 
   posCart.set(String(id),qty+1);
-
   $('posReceipt').classList.add('hidden');
   message('posStatus','');
   renderPosCart();
@@ -1508,21 +1408,13 @@ function addPosProduct(id){
 
 function changePosQty(id,delta){
   const key=String(id);
-
-  const p=products.find(
-    x=>String(x.id)===key
-  );
-
+  const p=products.find(x=>String(x.id)===key);
   if(!p)return;
 
   const next=(posCart.get(key)||0)+delta;
 
   if(next>Number(p.stock)){
-    message(
-      'posStatus',
-      'Stock insuficiente para '+p.nombre,
-      true
-    );
+    message('posStatus','Stock insuficiente para '+p.nombre,true);
     return;
   }
 
@@ -1550,9 +1442,7 @@ function renderPosCart(){
   }
 
   for(const [id,qty] of posCart){
-    const p=products.find(
-      x=>String(x.id)===id
-    );
+    const p=products.find(x=>String(x.id)===id);
 
     if(!p){
       box.append(el(
@@ -1594,9 +1484,7 @@ function renderPosCart(){
     box.append(line);
   }
 
-  $('posTotal').textContent=
-    money(cartTotalCents()/100);
-
+  $('posTotal').textContent=money(cartTotalCents()/100);
   updatePosPayment();
 }
 
@@ -1655,11 +1543,7 @@ async function confirmSale(){
     !Number.isFinite(received)||
     cents(received)<cents(total)
   )){
-    message(
-      'posStatus',
-      'El dinero recibido es insuficiente.',
-      true
-    );
+    message('posStatus','El dinero recibido es insuficiente.',true);
     return;
   }
 
@@ -1685,9 +1569,10 @@ async function confirmSale(){
   posSaving=true;
   updatePosPayment();
   $('posClear').disabled=true;
-
   message('posStatus','Registrando venta...');
   $('posReceipt').classList.add('hidden');
+
+  let saleRegistered=false;
 
   try{
     const result=await db.rpc(
@@ -1700,17 +1585,14 @@ async function confirmSale(){
       }
     );
 
-    if(result.error){
-      throw Error(result.error.message);
-    }
+    if(result.error)throw Error(result.error.message);
 
     if(!result.data?.exito){
-      throw Error(
-        'La venta no devolvió una confirmación válida.'
-      );
+      throw Error('La venta no devolvió una confirmación válida.');
     }
 
     const receipt=result.data;
+    saleRegistered=true;
 
     posCart.clear();
     $('posReceived').value='';
@@ -1739,27 +1621,32 @@ async function confirmSale(){
         '🧾 Ver / Imprimir comprobante',
         'primary'
       );
-
       btn.type='button';
       btn.onclick=()=>openReceipt(receipt.pedido_id);
-
       receiptBox.append(btn);
     }
 
     receiptBox.classList.remove('hidden');
+    message('posStatus','Venta guardada correctamente.');
 
-    message(
-      'posStatus',
-      'Venta guardada correctamente.'
-    );
-
-    await loadData();
+    try{
+      await loadData();
+    }catch(refreshError){
+      console.error(refreshError);
+      message(
+        'posStatus',
+        'Venta registrada. Actualiza la página para consultar el inventario.',
+        true
+      );
+    }
 
   }catch(error){
     console.error(error);
     message(
       'posStatus',
-      'No se confirmó la venta: '+error.message,
+      saleRegistered
+        ?'La venta se registró, pero hubo un problema al actualizar la pantalla.'
+        :'No se confirmó la venta: '+error.message,
       true
     );
   }finally{
@@ -1770,7 +1657,7 @@ async function confirmSale(){
   }
 }
 
-/* HISTORIAL DE VENTAS */
+/* HISTORIAL */
 
 async function loadSales(){
   if(!role)return;
@@ -1790,8 +1677,7 @@ async function loadSales(){
   if(result.error){
     message(
       'salesStatus',
-      'No se pudo consultar el historial: '+
-      result.error.message,
+      'No se pudo consultar el historial: '+result.error.message,
       true
     );
     return;
@@ -1804,10 +1690,7 @@ async function loadSales(){
 
   if(!result.data.length){
     const row=el('tr');
-    const cell=el(
-      'td',
-      'Todavía no hay ventas registradas.'
-    );
+    const cell=el('td','Todavía no hay ventas registradas.');
     cell.colSpan=7;
     row.append(cell);
     box.append(row);
@@ -1835,13 +1718,7 @@ async function loadSales(){
     );
 
     const action=el('td');
-
-    const btn=el(
-      'button',
-      '🧾 Ver comprobante',
-      'secondary'
-    );
-
+    const btn=el('button','🧾 Ver comprobante','secondary');
     btn.type='button';
     btn.onclick=()=>openReceipt(sale.id);
 
@@ -1851,7 +1728,7 @@ async function loadSales(){
   }
 }
 
-/* COMPROBANTES DE VENTA */
+/* COMPROBANTES */
 
 function ticketLine(parent,label,value){
   const p=el('p');
@@ -1868,16 +1745,11 @@ async function openReceipt(pedidoId){
   const dialog=$('receiptDialog');
   const box=$('receiptContent');
 
-  box.replaceChildren(
-    el('p','Cargando comprobante...')
-  );
-
+  box.replaceChildren(el('p','Cargando comprobante...'));
   message('receiptStatus','');
   $('printReceipt').disabled=true;
 
-  if(!dialog.open){
-    dialog.showModal();
-  }
+  if(!dialog.open)dialog.showModal();
 
   try{
     const [orderResult,itemsResult,paymentsResult]=
@@ -1905,17 +1777,9 @@ async function openReceipt(pedidoId){
           .limit(1)
       ]);
 
-    if(orderResult.error){
-      throw Error(orderResult.error.message);
-    }
-
-    if(itemsResult.error){
-      throw Error(itemsResult.error.message);
-    }
-
-    if(paymentsResult.error){
-      throw Error(paymentsResult.error.message);
-    }
+    if(orderResult.error)throw Error(orderResult.error.message);
+    if(itemsResult.error)throw Error(itemsResult.error.message);
+    if(paymentsResult.error)throw Error(paymentsResult.error.message);
 
     const order=orderResult.data;
     const items=itemsResult.data||[];
@@ -1924,30 +1788,23 @@ async function openReceipt(pedidoId){
     box.replaceChildren();
 
     const head=el('div','','ticket-head');
-
     head.append(
       el('h2','🔵 GRAPHIC BLUE'),
       el('div','Papelería y suministros'),
       el('strong','COMPROBANTE DE VENTA')
     );
-
     box.append(head);
 
     const meta=el('div','','ticket-meta');
 
-    ticketLine(
-      meta,'Venta N.º',order.numero_pedido
-    );
-
+    ticketLine(meta,'Venta N.º',order.numero_pedido);
     ticketLine(
       meta,
       'Fecha',
       order.creado_en
-        ?new Date(order.creado_en)
-          .toLocaleString('es-EC')
+        ?new Date(order.creado_en).toLocaleString('es-EC')
         :'No registrada'
     );
-
     ticketLine(
       meta,
       'Cliente',
@@ -1973,14 +1830,12 @@ async function openReceipt(pedidoId){
 
     for(const item of items){
       const row=el('tr');
-
       row.append(
         el('td',item.nombre_producto||'Producto'),
         el('td',String(item.cantidad)),
         el('td',money(item.precio_unitario)),
         el('td',money(item.subtotal))
       );
-
       tbody.append(row);
     }
 
@@ -1996,12 +1851,10 @@ async function openReceipt(pedidoId){
     box.append(table);
 
     const total=el('div','','ticket-total');
-
     total.append(
       el('span','TOTAL'),
       el('span',money(order.total))
     );
-
     box.append(total);
 
     const details=el('div','','ticket-meta');
@@ -2042,7 +1895,6 @@ async function openReceipt(pedidoId){
     box.append(details);
 
     const foot=el('div','','ticket-foot');
-
     foot.append(
       el('strong','¡Gracias por tu compra! 💙'),
       el(
@@ -2050,7 +1902,6 @@ async function openReceipt(pedidoId){
         'Comprobante de venta de mostrador. No constituye una factura electrónica autorizada por el SRI.'
       )
     );
-
     box.append(foot);
 
     $('printReceipt').disabled=false;
@@ -2059,18 +1910,10 @@ async function openReceipt(pedidoId){
     console.error(error);
 
     box.replaceChildren(
-      el(
-        'p',
-        'No se pudo cargar el comprobante.',
-        'error'
-      )
+      el('p','No se pudo cargar el comprobante.','error')
     );
 
-    message(
-      'receiptStatus',
-      error.message,
-      true
-    );
+    message('receiptStatus',error.message,true);
   }
 }
 
@@ -2131,13 +1974,10 @@ $('productForm').onsubmit=saveProduct;
 
 $('search').oninput=renderProducts;
 $('filterCategory').onchange=renderProducts;
-
 $('pFile').onchange=updatePreview;
 
 $('pImage').oninput=()=>{
-  if(!$('pFile').files?.length){
-    updatePreview();
-  }
+  if(!$('pFile').files?.length)updatePreview();
 };
 
 $('posSearch').oninput=renderPosProducts;
