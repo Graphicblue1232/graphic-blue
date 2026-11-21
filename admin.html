@@ -287,6 +287,63 @@ dialog::backdrop{background:#001b4388}
   padding:15px;
   margin-top:14px;
 }
+
+/* COMPROBANTES */
+.ticket-dialog{width:min(94vw,550px)}
+.ticket{
+  max-width:410px;
+  margin:auto;
+  color:#182c46;
+}
+.ticket-head{
+  text-align:center;
+  border-bottom:2px dashed #9ca9ba;
+  padding-bottom:14px;
+}
+.ticket-head h2{
+  margin:0 0 5px;
+  color:#176bd1;
+}
+.ticket-head strong{
+  display:block;
+  margin-top:10px;
+}
+.ticket-meta{
+  font-size:14px;
+  margin:16px 0;
+}
+.ticket-meta p{margin:5px 0}
+.ticket-table{
+  width:100%;
+  min-width:0;
+  font-size:13px;
+}
+.ticket-table th,
+.ticket-table td{
+  padding:9px 3px;
+  overflow-wrap:anywhere;
+}
+.ticket-table th:last-child,
+.ticket-table td:last-child{text-align:right}
+.ticket-total{
+  display:flex;
+  justify-content:space-between;
+  border-top:2px solid #18325c;
+  margin-top:14px;
+  padding-top:12px;
+  font-size:20px;
+  font-weight:800;
+}
+.ticket-foot{
+  text-align:center;
+  margin-top:24px;
+  border-top:1px dashed #9ca9ba;
+  padding-top:12px;
+  font-size:13px;
+}
+.receipt-actions{justify-content:center}
+.receipt-actions button{flex:1}
+
 @media(max-width:900px){
   .pos-grid{grid-template-columns:1fr}
 }
@@ -313,6 +370,37 @@ dialog::backdrop{background:#001b4388}
   .card{padding:16px}
   .pos-product{gap:8px}
   .pos-product button{padding:9px}
+  .ticket-dialog{padding:15px}
+  .ticket-table{font-size:12px}
+  .ticket-table th,.ticket-table td{padding:8px 2px}
+}
+@media print{
+  body{background:white!important}
+  .login-wrap,.layout,.receipt-actions{
+    display:none!important;
+  }
+  dialog#receiptDialog{
+    position:static!important;
+    display:block!important;
+    border:0!important;
+    padding:0!important;
+    width:100%!important;
+    max-height:none!important;
+    overflow:visible!important;
+    margin:0 auto!important;
+    box-shadow:none!important;
+  }
+  dialog#receiptDialog::backdrop{
+    display:none!important;
+  }
+  .ticket{
+    max-width:80mm!important;
+    color:black!important;
+  }
+  .ticket-head h2{color:black!important}
+  .ticket-table{font-size:11px}
+  .ticket-total{font-size:17px}
+  @page{margin:8mm}
 }
 </style>
 </head>
@@ -406,9 +494,9 @@ dialog::backdrop{background:#001b4388}
         </p>
         <div class="notice">
           La sección 💵 Caja permite registrar
-          ventas de mostrador. Antes de usarla
-          con clientes, realiza una venta de prueba
-          y comprueba que el inventario se actualice.
+          ventas de mostrador y generar comprobantes.
+          Las ventas confirmadas descuentan
+          automáticamente el inventario.
         </div>
       </div>
     </section>
@@ -564,6 +652,7 @@ dialog::backdrop{background:#001b4388}
                 <th>Total</th>
                 <th>Método</th>
                 <th>Estado</th>
+                <th>Comprobante</th>
               </tr>
             </thead>
             <tbody id="salesRows"></tbody>
@@ -672,6 +761,28 @@ dialog::backdrop{background:#001b4388}
       </button>
     </div>
   </form>
+</dialog>
+
+<dialog id="receiptDialog"
+  class="ticket-dialog"
+  aria-label="Comprobante de venta">
+
+  <div id="receiptContent"
+    class="ticket"></div>
+
+  <p id="receiptStatus" role="status"></p>
+
+  <div class="actions receipt-actions">
+    <button id="printReceipt"
+      class="primary" type="button">
+      🖨️ Imprimir / Guardar PDF
+    </button>
+
+    <button id="closeReceipt"
+      class="secondary" type="button">
+      Cerrar
+    </button>
+  </div>
 </dialog>
 
 <script type="module">
@@ -1622,6 +1733,19 @@ async function confirmSale(){
       );
     }
 
+    if(receipt.pedido_id){
+      const btn=el(
+        'button',
+        '🧾 Ver / Imprimir comprobante',
+        'primary'
+      );
+
+      btn.type='button';
+      btn.onclick=()=>openReceipt(receipt.pedido_id);
+
+      receiptBox.append(btn);
+    }
+
     receiptBox.classList.remove('hidden');
 
     message(
@@ -1655,7 +1779,7 @@ async function loadSales(){
 
   const result=await db.from('pedidos')
     .select(
-      'numero_pedido,creado_en,cliente_nombre,total,metodo_pago,estado,estado_pago'
+      'id,numero_pedido,creado_en,cliente_nombre,total,metodo_pago,estado,estado_pago'
     )
     .order('creado_en',{ascending:false})
     .limit(100);
@@ -1684,7 +1808,7 @@ async function loadSales(){
       'td',
       'Todavía no hay ventas registradas.'
     );
-    cell.colSpan=6;
+    cell.colSpan=7;
     row.append(cell);
     box.append(row);
     return;
@@ -1710,7 +1834,243 @@ async function loadSales(){
       )
     );
 
+    const action=el('td');
+
+    const btn=el(
+      'button',
+      '🧾 Ver comprobante',
+      'secondary'
+    );
+
+    btn.type='button';
+    btn.onclick=()=>openReceipt(sale.id);
+
+    action.append(btn);
+    row.append(action);
     box.append(row);
+  }
+}
+
+/* COMPROBANTES DE VENTA */
+
+function ticketLine(parent,label,value){
+  const p=el('p');
+  p.append(
+    el('strong',label+': '),
+    document.createTextNode(String(value))
+  );
+  parent.append(p);
+}
+
+async function openReceipt(pedidoId){
+  if(!role||!pedidoId)return;
+
+  const dialog=$('receiptDialog');
+  const box=$('receiptContent');
+
+  box.replaceChildren(
+    el('p','Cargando comprobante...')
+  );
+
+  message('receiptStatus','');
+  $('printReceipt').disabled=true;
+
+  if(!dialog.open){
+    dialog.showModal();
+  }
+
+  try{
+    const [orderResult,itemsResult,paymentsResult]=
+      await Promise.all([
+        db.from('pedidos')
+          .select(
+            'id,numero_pedido,creado_en,cliente_nombre,total,metodo_pago,estado_pago'
+          )
+          .eq('id',pedidoId)
+          .single(),
+
+        db.from('detalle_pedidos')
+          .select(
+            'nombre_producto,cantidad,precio_unitario,subtotal'
+          )
+          .eq('pedido_id',pedidoId)
+          .order('creado_en',{ascending:true}),
+
+        db.from('pagos')
+          .select(
+            'metodo_pago,estado,dinero_recibido,cambio_entregado,creado_en'
+          )
+          .eq('pedido_id',pedidoId)
+          .order('creado_en',{ascending:false})
+          .limit(1)
+      ]);
+
+    if(orderResult.error){
+      throw Error(orderResult.error.message);
+    }
+
+    if(itemsResult.error){
+      throw Error(itemsResult.error.message);
+    }
+
+    if(paymentsResult.error){
+      throw Error(paymentsResult.error.message);
+    }
+
+    const order=orderResult.data;
+    const items=itemsResult.data||[];
+    const payment=paymentsResult.data?.[0]||null;
+
+    box.replaceChildren();
+
+    const head=el('div','','ticket-head');
+
+    head.append(
+      el('h2','🔵 GRAPHIC BLUE'),
+      el('div','Papelería y suministros'),
+      el('strong','COMPROBANTE DE VENTA')
+    );
+
+    box.append(head);
+
+    const meta=el('div','','ticket-meta');
+
+    ticketLine(
+      meta,'Venta N.º',order.numero_pedido
+    );
+
+    ticketLine(
+      meta,
+      'Fecha',
+      order.creado_en
+        ?new Date(order.creado_en)
+          .toLocaleString('es-EC')
+        :'No registrada'
+    );
+
+    ticketLine(
+      meta,
+      'Cliente',
+      order.cliente_nombre||'Cliente de mostrador'
+    );
+
+    box.append(meta);
+
+    const table=el('table','','ticket-table');
+    const thead=el('thead');
+    const header=el('tr');
+
+    for(const h of [
+      'Producto','Cant.','P. unit.','Subtotal'
+    ]){
+      header.append(el('th',h));
+    }
+
+    thead.append(header);
+    table.append(thead);
+
+    const tbody=el('tbody');
+
+    for(const item of items){
+      const row=el('tr');
+
+      row.append(
+        el('td',item.nombre_producto||'Producto'),
+        el('td',String(item.cantidad)),
+        el('td',money(item.precio_unitario)),
+        el('td',money(item.subtotal))
+      );
+
+      tbody.append(row);
+    }
+
+    if(!items.length){
+      const row=el('tr');
+      const cell=el('td','Sin detalle disponible');
+      cell.colSpan=4;
+      row.append(cell);
+      tbody.append(row);
+    }
+
+    table.append(tbody);
+    box.append(table);
+
+    const total=el('div','','ticket-total');
+
+    total.append(
+      el('span','TOTAL'),
+      el('span',money(order.total))
+    );
+
+    box.append(total);
+
+    const details=el('div','','ticket-meta');
+
+    const method=
+      payment?.metodo_pago||
+      order.metodo_pago||
+      'No registrada';
+
+    ticketLine(details,'Forma de pago',method);
+
+    if(method==='efectivo'){
+      ticketLine(
+        details,
+        'Dinero recibido',
+        payment?.dinero_recibido==null
+          ?'No registrado'
+          :money(payment.dinero_recibido)
+      );
+
+      ticketLine(
+        details,
+        'Cambio entregado',
+        payment?.cambio_entregado==null
+          ?'No registrado'
+          :money(payment.cambio_entregado)
+      );
+    }
+
+    ticketLine(
+      details,
+      'Estado del pago',
+      payment?.estado||
+      order.estado_pago||
+      'No registrado'
+    );
+
+    box.append(details);
+
+    const foot=el('div','','ticket-foot');
+
+    foot.append(
+      el('strong','¡Gracias por tu compra! 💙'),
+      el(
+        'p',
+        'Comprobante de venta de mostrador. No constituye una factura electrónica autorizada por el SRI.'
+      )
+    );
+
+    box.append(foot);
+
+    $('printReceipt').disabled=false;
+
+  }catch(error){
+    console.error(error);
+
+    box.replaceChildren(
+      el(
+        'p',
+        'No se pudo cargar el comprobante.',
+        'error'
+      )
+    );
+
+    message(
+      'receiptStatus',
+      error.message,
+      true
+    );
   }
 }
 
@@ -1795,6 +2155,14 @@ $('posClear').onclick=()=>{
 };
 
 $('refreshSales').onclick=loadSales;
+
+$('closeReceipt').onclick=()=>{
+  $('receiptDialog').close();
+};
+
+$('printReceipt').onclick=()=>{
+  window.print();
+};
 
 await checkSession();
 </script>
