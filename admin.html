@@ -8,18 +8,22 @@
 <style>
 :root{
 font-family:system-ui,-apple-system,Arial,sans-serif;
-color:#18325c;
-background:#f3f7fd
+color:#18325c;background:#f3f7fd
 }
 *{box-sizing:border-box}
 body{margin:0}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;font-weight:700}
+button{
+cursor:pointer;border:0;border-radius:10px;
+padding:11px 15px;font-weight:700
+}
 button:disabled{opacity:.5;cursor:not-allowed}
 input,select,textarea{
 width:100%;padding:12px;border:1px solid #cbd6e6;
-border-radius:9px;margin:6px 0 14px;background:white;color:#18325c
+border-radius:9px;margin:6px 0 14px;
+background:white;color:#18325c
 }
+input[type=file]{padding:10px}
 label{font-weight:600;display:block}
 h1,h2,h3{margin-top:0}
 p{line-height:1.5}
@@ -27,7 +31,6 @@ a{color:inherit}
 .hidden{display:none!important}
 .primary{background:#176bd1;color:white}
 .secondary{background:#e7effb;color:#123b80}
-.danger{background:#fff0f0;color:#b42318}
 .muted{color:#64748b}
 .error{color:#b42318}
 .success{color:#13704a}
@@ -35,17 +38,15 @@ a{color:inherit}
 background:white;border-radius:16px;padding:22px;
 box-shadow:0 5px 22px #173b7112;margin-bottom:20px
 }
-.login-wrap{
-max-width:430px;margin:10vh auto;padding:18px
-}
+.login-wrap{max-width:430px;margin:10vh auto;padding:18px}
 .login-logo{
-text-align:center;color:#1257b6;font-size:30px;
-font-weight:900;margin-bottom:20px
+text-align:center;color:#1257b6;
+font-size:30px;font-weight:900;margin-bottom:20px
 }
 .layout{display:flex;min-height:100vh}
 .sidebar{
-width:235px;flex-shrink:0;background:#102d5d;
-color:white;padding:24px 15px
+width:235px;flex-shrink:0;
+background:#102d5d;color:white;padding:24px 15px
 }
 .logo{font-size:21px;font-weight:900;margin:0 10px 28px}
 .sidebar button,.sidebar a{
@@ -57,8 +58,9 @@ padding:13px;margin-bottom:6px;border-radius:9px
 .sidebar a:hover,.sidebar button:hover{background:#24508e}
 .content{flex:1;min-width:0;padding:25px}
 .header{
-display:flex;justify-content:space-between;align-items:center;
-gap:12px;flex-wrap:wrap;margin-bottom:25px
+display:flex;justify-content:space-between;
+align-items:center;gap:12px;
+flex-wrap:wrap;margin-bottom:25px
 }
 .header h1{margin:0}
 .stats{
@@ -69,12 +71,23 @@ gap:15px;margin-bottom:22px
 background:white;padding:20px;border-radius:14px;
 box-shadow:0 5px 18px #173b7110
 }
-.stat strong{display:block;font-size:28px;color:#176bd1;margin-top:9px}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:15px}
-.toolbar input,.toolbar select{margin:0;flex:1;min-width:150px}
+.stat strong{
+display:block;font-size:28px;
+color:#176bd1;margin-top:9px
+}
+.toolbar{
+display:flex;gap:10px;flex-wrap:wrap;
+align-items:center;margin-bottom:15px
+}
+.toolbar input,.toolbar select{
+margin:0;flex:1;min-width:150px
+}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:640px}
-th,td{padding:13px;text-align:left;border-bottom:1px solid #e5ebf3}
+th,td{
+padding:13px;text-align:left;
+border-bottom:1px solid #e5ebf3
+}
 th{font-size:13px;color:#64748b}
 td button{padding:8px 11px;margin:2px}
 .thumb{
@@ -82,18 +95,26 @@ width:55px;height:55px;object-fit:contain;
 border-radius:8px;background:#e7effb
 }
 .placeholder{
-width:55px;height:55px;display:grid;place-items:center;
-background:#e7effb;border-radius:8px;font-size:25px
+width:55px;height:55px;display:grid;
+place-items:center;background:#e7effb;
+border-radius:8px;font-size:25px
 }
 .stock-low{color:#b42318;font-weight:800}
 .form-grid{
-display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
 gap:0 14px
 }
 .wide{grid-column:1/-1}
-.check{display:flex;align-items:center;gap:8px;margin:8px 0 20px}
+.check{
+display:flex;align-items:center;
+gap:8px;margin:8px 0 20px
+}
 .check input{width:auto;margin:0}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.actions{
+display:flex;gap:10px;
+flex-wrap:wrap;margin-top:12px
+}
 dialog{
 border:0;border-radius:16px;padding:25px;
 width:min(94vw,650px);max-height:88vh;overflow:auto
@@ -103,16 +124,44 @@ dialog::backdrop{background:#001b4388}
 background:#f1f6ff;border-radius:12px;
 padding:15px;margin-top:14px
 }
+.upload-box{
+border:2px dashed #9bbbea;
+border-radius:14px;
+background:#f4f8ff;
+padding:17px;
+margin:8px 0 15px
+}
+.upload-box input{margin-bottom:5px}
+.preview{
+width:100%;
+max-width:260px;
+height:190px;
+object-fit:contain;
+background:white;
+border:1px solid #dbe5f2;
+border-radius:12px;
+display:block;
+margin:12px auto
+}
+.upload-help{
+font-size:13px;
+color:#64748b;
+font-weight:400
+}
 @media(max-width:720px){
 .layout{display:block}
 .sidebar{width:100%;padding:14px}
 .logo{margin:0 0 12px}
 .nav{display:flex;gap:5px;overflow-x:auto}
 .sidebar button,.sidebar a{
-white-space:nowrap;width:auto;margin:0;font-size:13px
+white-space:nowrap;width:auto;
+margin:0;font-size:13px
 }
 .content{padding:15px}
-.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stats{
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:8px
+}
 .stat{padding:12px}
 .stat strong{font-size:21px}
 .stat span{font-size:12px}
@@ -126,16 +175,21 @@ white-space:nowrap;width:auto;margin:0;font-size:13px
 <div class="login-logo">🔵 Graphic Blue</div>
 <div class="card">
 <h2>Acceso del personal</h2>
-<p class="muted">Ingresa con tu cuenta de administrador o empleado.</p>
+<p class="muted">
+Ingresa con tu cuenta de administrador o empleado.
+</p>
 <form id="loginForm">
 <label>Correo electrónico
-<input id="email" type="email" autocomplete="username" required>
+<input id="email" type="email"
+autocomplete="username" required>
 </label>
 <label>Contraseña
-<input id="password" type="password" autocomplete="current-password" required>
+<input id="password" type="password"
+autocomplete="current-password" required>
 </label>
 <p id="loginStatus" role="status"></p>
-<button id="loginBtn" class="primary" type="submit" style="width:100%">
+<button id="loginBtn" class="primary"
+type="submit" style="width:100%">
 Iniciar sesión
 </button>
 </form>
@@ -146,11 +200,10 @@ Iniciar sesión
 </section>
 
 <div id="dashboard" class="layout hidden">
-
 <aside class="sidebar">
 <div class="logo">🔵 Graphic Blue</div>
 <div class="nav">
-<button id="navHome" class="active">🏠 Panel principal</button>
+<button id="navHome">🏠 Panel principal</button>
 <button id="navProducts">📦 Productos</button>
 <button id="navInventory">📋 Inventario</button>
 <a href="index.html">🛍️ Ver tienda</a>
@@ -164,7 +217,9 @@ Iniciar sesión
 <h1 id="pageTitle">Panel principal</h1>
 <p id="welcome" class="muted"></p>
 </div>
-<button id="newBtn" class="primary">+ Agregar producto</button>
+<button id="newBtn" class="primary">
++ Agregar producto
+</button>
 </div>
 
 <section id="homeSection">
@@ -190,9 +245,14 @@ Iniciar sesión
 
 <div class="card">
 <h2>Graphic Blue</h2>
-<p>Desde aquí puedes registrar productos, cambiar precios, actualizar existencias y controlar qué artículos aparecen en la tienda.</p>
+<p>
+Desde aquí puedes registrar productos, cambiar
+precios, actualizar existencias y controlar
+qué artículos aparecen en la tienda.
+</p>
 <div class="notice">
-Las ventas, los pedidos y la facturación se incorporarán en una siguiente etapa.
+Las ventas, los pedidos y la facturación
+se incorporarán en una siguiente etapa.
 </div>
 </div>
 </section>
@@ -201,7 +261,8 @@ Las ventas, los pedidos y la facturación se incorporarán en una siguiente etap
 <div class="card">
 <h2>Administración de productos</h2>
 <div class="toolbar">
-<input id="search" type="search" placeholder="Buscar por nombre o código...">
+<input id="search" type="search"
+placeholder="Buscar por nombre o código...">
 <select id="filterCategory">
 <option value="">Todas las categorías</option>
 </select>
@@ -229,7 +290,9 @@ Las ventas, los pedidos y la facturación se incorporarán en una siguiente etap
 <section id="inventorySection" class="hidden">
 <div class="card">
 <h2>Inventario</h2>
-<p class="muted">Control de existencias y cantidades mínimas.</p>
+<p class="muted">
+Control de existencias y cantidades mínimas.
+</p>
 <div class="table-wrap">
 <table>
 <thead>
@@ -252,6 +315,7 @@ Las ventas, los pedidos y la facturación se incorporarán en una siguiente etap
 
 <dialog id="productDialog">
 <h2 id="formTitle">Agregar producto</h2>
+
 <form id="productForm">
 <div class="form-grid">
 <label>Código
@@ -267,29 +331,62 @@ Las ventas, los pedidos y la facturación se incorporarán en una siguiente etap
 <select id="pCategory" required></select>
 </label>
 <label>Precio de compra ($)
-<input id="pCost" type="number" min="0" step="0.01" required>
+<input id="pCost" type="number"
+min="0" step="0.01" required>
 </label>
 <label>Precio de venta ($)
-<input id="pPrice" type="number" min="0" step="0.01" required>
+<input id="pPrice" type="number"
+min="0" step="0.01" required>
 </label>
 <label>Stock
-<input id="pStock" type="number" min="0" step="1" required>
+<input id="pStock" type="number"
+min="0" step="1" required>
 </label>
 <label>Stock mínimo
-<input id="pMinStock" type="number" min="0" step="1" required>
+<input id="pMinStock" type="number"
+min="0" step="1" required>
 </label>
-<label class="wide">URL de imagen
-<input id="pImage" type="url" placeholder="https://...">
+
+<div class="wide upload-box">
+<label for="pFile">
+📷 Imagen del producto
+</label>
+<p class="upload-help">
+Selecciona una foto desde tu celular o computadora.
+Formatos: JPG, PNG o WebP. Máximo 5 MB.
+</p>
+<input id="pFile" type="file"
+accept="image/jpeg,image/png,image/webp">
+
+<img id="imagePreview"
+class="preview hidden"
+alt="Vista previa del producto">
+
+<p id="imageHint" class="upload-help">
+Todavía no has seleccionado una imagen.
+</p>
+</div>
+
+<label class="wide">
+URL de imagen (opcional)
+<input id="pImage" type="url"
+placeholder="https://...">
 </label>
 </div>
+
 <label class="check">
 <input id="pPublished" type="checkbox">
 Publicar en la tienda
 </label>
+
 <p id="formStatus" role="status"></p>
 <div class="actions">
-<button id="saveBtn" type="submit" class="primary">Guardar producto</button>
-<button id="cancelBtn" type="button" class="secondary">Cancelar</button>
+<button id="saveBtn" type="submit" class="primary">
+Guardar producto
+</button>
+<button id="cancelBtn" type="button" class="secondary">
+Cancelar
+</button>
 </div>
 </form>
 </dialog>
@@ -297,11 +394,18 @@ Publicar en la tienda
 <script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const SUPABASE_URL='https://bszdopscbugyfnakqmbw.supabase.co';
-const SUPABASE_KEY='sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
+const SUPABASE_URL =
+'https://bszdopscbugyfnakqmbw.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
+
+const BUCKET='productos-imagenes';
+
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const $=id=>document.getElementById(id);
+
 const money=n=>new Intl.NumberFormat('es-EC',{
 style:'currency',currency:'USD'
 }).format(Number(n)||0);
@@ -317,6 +421,8 @@ let products=[];
 let categories=[];
 let role=null;
 let editingId=null;
+let previewObjectUrl=null;
+let saving=false;
 
 function message(id,text,error=false){
 $(id).textContent=text;
@@ -324,15 +430,21 @@ $(id).className=error?'error':'success';
 }
 
 function showSection(name){
-for(const section of ['home','products','inventory']){
-$(section+'Section').classList.toggle('hidden',section!==name);
 const nav={
 home:'navHome',
 products:'navProducts',
 inventory:'navInventory'
 };
-$(nav[section]).classList.toggle('active',section===name);
+
+for(const section of ['home','products','inventory']){
+$(section+'Section').classList.toggle(
+'hidden',section!==name
+);
+$(nav[section]).classList.toggle(
+'active',section===name
+);
 }
+
 $('pageTitle').textContent={
 home:'Panel principal',
 products:'Productos',
@@ -357,7 +469,11 @@ if(result.error||!result.data||
 !['administrador','empleado'].includes(result.data.rol)){
 await db.auth.signOut();
 showLogin();
-message('loginStatus','Esta cuenta no tiene acceso al panel.',true);
+message(
+'loginStatus',
+'Esta cuenta no tiene acceso al panel.',
+true
+);
 return;
 }
 
@@ -380,9 +496,13 @@ $('loginScreen').classList.remove('hidden');
 async function loadData(){
 const [p,c]=await Promise.all([
 db.from('productos')
-.select('id,codigo,nombre,descripcion,categoria,precio_compra,precio_venta,stock,stock_minimo,imagen_url,publicado')
+.select(
+'id,codigo,nombre,descripcion,categoria,precio_compra,precio_venta,stock,stock_minimo,imagen_url,publicado'
+)
 .order('nombre'),
-db.from('categorias').select('nombre').order('nombre')
+db.from('categorias')
+.select('nombre')
+.order('nombre')
 ]);
 
 if(p.error){
@@ -396,9 +516,9 @@ categories=c.error?[]:(c.data||[])
 .map(x=>x.nombre).filter(Boolean);
 
 renderStats();
+renderCategoryFilter();
 renderProducts();
 renderInventory();
-renderCategoryFilter();
 }
 
 function lowProducts(){
@@ -409,6 +529,7 @@ Number(p.stock)<=Number(p.stock_minimo)
 
 function renderStats(){
 $('totalProducts').textContent=products.length;
+
 $('publishedProducts').textContent=
 products.filter(p=>p.publicado).length;
 
@@ -424,9 +545,11 @@ return;
 }
 
 for(const p of low){
-box.append(el('p',
+box.append(el(
+'p',
 `⚠️ ${p.nombre}: ${p.stock} unidades (mínimo ${p.stock_minimo})`,
-'stock-low'));
+'stock-low'
+));
 }
 }
 
@@ -440,16 +563,19 @@ all.value='';
 all.textContent='Todas las categorías';
 select.append(all);
 
-for(const name of [...new Set([
-...categories,...products.map(p=>p.categoria)
-])].filter(Boolean).sort()){
+const names=[...new Set([
+...categories,
+...products.map(p=>p.categoria)
+].filter(Boolean))].sort();
+
+for(const name of names){
 const option=document.createElement('option');
 option.value=name;
 option.textContent=name;
 select.append(option);
 }
 
-select.value=previous;
+select.value=names.includes(previous)?previous:'';
 }
 
 function renderProducts(){
@@ -476,14 +602,16 @@ return;
 
 for(const p of filtered){
 const row=document.createElement('tr');
-
 const imageCell=document.createElement('td');
+
 if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){
 const img=document.createElement('img');
 img.src=p.imagen_url;
 img.alt=p.nombre;
 img.className='thumb';
-img.onerror=()=>img.replaceWith(el('div','📦','placeholder'));
+img.onerror=()=>{
+img.replaceWith(el('div','📦','placeholder'));
+};
 imageCell.append(img);
 }else{
 imageCell.append(el('div','📦','placeholder'));
@@ -501,7 +629,8 @@ nameCell,
 el('td',p.categoria||''),
 el('td',money(p.precio_venta)),
 el('td',String(p.stock),
-Number(p.stock)<=Number(p.stock_minimo)?'stock-low':''),
+Number(p.stock)<=Number(p.stock_minimo)
+?'stock-low':''),
 el('td',p.publicado?'Publicado':'Oculto')
 );
 
@@ -510,8 +639,11 @@ const actions=document.createElement('td');
 const edit=el('button','✏️ Editar','secondary');
 edit.onclick=()=>openForm(p);
 
-const toggle=el('button',
-p.publicado?'Ocultar':'Publicar','secondary');
+const toggle=el(
+'button',
+p.publicado?'Ocultar':'Publicar',
+'secondary'
+);
 toggle.onclick=()=>toggleProduct(p);
 
 actions.append(edit,toggle);
@@ -553,7 +685,7 @@ const names=[...new Set([
 ...categories,
 ...products.map(p=>p.categoria),
 selected
-])].filter(Boolean).sort();
+].filter(Boolean))].sort();
 
 for(const name of names){
 const option=document.createElement('option');
@@ -565,12 +697,58 @@ select.append(option);
 if(selected)select.value=selected;
 }
 
+function clearPreview(){
+if(previewObjectUrl){
+URL.revokeObjectURL(previewObjectUrl);
+previewObjectUrl=null;
+}
+$('imagePreview').removeAttribute('src');
+$('imagePreview').classList.add('hidden');
+}
+
+function showImagePreview(src){
+$('imagePreview').src=src;
+$('imagePreview').classList.remove('hidden');
+}
+
+function updatePreview(){
+clearPreview();
+
+const file=$('pFile').files?.[0];
+
+if(file){
+if(!['image/jpeg','image/png','image/webp'].includes(file.type)){
+$('imageHint').textContent=
+'Selecciona una imagen JPG, PNG o WebP.';
+return;
+}
+
+previewObjectUrl=URL.createObjectURL(file);
+showImagePreview(previewObjectUrl);
+$('imageHint').textContent=
+'Vista previa: '+file.name;
+return;
+}
+
+const url=$('pImage').value.trim();
+
+if(/^https:\/\//i.test(url)){
+showImagePreview(url);
+$('imageHint').textContent='Imagen actual del producto.';
+}else{
+$('imageHint').textContent=
+'Todavía no has seleccionado una imagen.';
+}
+}
+
 function openForm(p=null){
 if(!role)return;
 
 editingId=p?.id??null;
 $('productForm').reset();
-$('formTitle').textContent=p?'Editar producto':'Agregar producto';
+$('formTitle').textContent=
+p?'Editar producto':'Agregar producto';
+
 $('formStatus').textContent='';
 
 fillFormCategories(p?.categoria||'');
@@ -585,29 +763,111 @@ $('pMinStock').value=p?.stock_minimo??0;
 $('pImage').value=p?.imagen_url||'';
 $('pPublished').checked=p?.publicado??false;
 
+updatePreview();
 $('productDialog').showModal();
 }
 
 function numberValue(id,integer=false){
 const value=Number($(id).value);
+
 if(!Number.isFinite(value)||value<0||
 (integer&&!Number.isInteger(value))){
 throw Error('Revisa los precios y las cantidades.');
 }
+
 return value;
+}
+
+function validateFile(file){
+if(!file)return;
+
+const allowed=[
+'image/jpeg',
+'image/png',
+'image/webp'
+];
+
+if(!allowed.includes(file.type)){
+throw Error(
+'La imagen debe ser JPG, PNG o WebP.'
+);
+}
+
+if(file.size>5*1024*1024){
+throw Error(
+'La imagen supera los 5 MB. Selecciona una más pequeña.'
+);
+}
+
+if(file.size===0){
+throw Error('La imagen está vacía.');
+}
+}
+
+async function uploadImage(file){
+validateFile(file);
+
+const {data:{user},error:userError}=
+await db.auth.getUser();
+
+if(userError||!user){
+throw Error('Tu sesión expiró. Inicia sesión nuevamente.');
+}
+
+const extension={
+'image/jpeg':'jpg',
+'image/png':'png',
+'image/webp':'webp'
+}[file.type];
+
+const uniqueId=crypto.randomUUID();
+
+const path=`productos/${user.id}/${uniqueId}.${extension}`;
+
+const result=await db.storage
+.from(BUCKET)
+.upload(path,file,{
+contentType:file.type,
+cacheControl:'3600',
+upsert:false
+});
+
+if(result.error){
+throw Error(
+'No se pudo subir la imagen: '+
+result.error.message+
+'. Revisa los permisos de Storage en Supabase.'
+);
+}
+
+const {data}=db.storage
+.from(BUCKET)
+.getPublicUrl(path);
+
+if(!data?.publicUrl){
+throw Error('No se pudo obtener la URL de la imagen.');
+}
+
+return data.publicUrl;
 }
 
 async function saveProduct(event){
 event.preventDefault();
-if(!role)return;
+if(!role||saving)return;
 
 let record;
+let file;
 
 try{
 const url=$('pImage').value.trim();
+file=$('pFile').files?.[0]||null;
+
+validateFile(file);
 
 if(url&&!/^https:\/\//i.test(url)){
-throw Error('La URL de imagen debe comenzar con https://');
+throw Error(
+'La URL de imagen debe comenzar con https://'
+);
 }
 
 record={
@@ -624,33 +884,62 @@ publicado:$('pPublished').checked
 };
 
 if(!record.codigo||!record.nombre||!record.categoria){
-throw Error('Completa código, nombre y categoría.');
+throw Error(
+'Completa código, nombre y categoría.'
+);
 }
+
 }catch(error){
 message('formStatus',error.message,true);
 return;
 }
 
+saving=true;
 $('saveBtn').disabled=true;
-message('formStatus','Guardando...');
+$('cancelBtn').disabled=true;
+
+try{
+if(file){
+message('formStatus','Subiendo imagen...');
+
+record.imagen_url=await uploadImage(file);
+}
+
+message('formStatus','Guardando producto...');
 
 const result=editingId===null
-?await db.from('productos').insert(record).select('id')
+?await db.from('productos')
+.insert(record).select('id')
 :await db.from('productos')
-.update(record).eq('id',editingId).select('id');
-
-$('saveBtn').disabled=false;
+.update(record)
+.eq('id',editingId)
+.select('id');
 
 if(result.error||!result.data?.length){
-message('formStatus',
-'No se pudo guardar: '+(result.error?.message||'Revisa los permisos'),
-true);
-return;
+throw Error(
+'No se pudo guardar el producto: '+
+(result.error?.message||'Revisa los permisos.')
+);
 }
 
 $('productDialog').close();
+clearPreview();
+
 await loadData();
-message('staffStatus','Producto guardado correctamente.');
+
+message(
+'staffStatus',
+'Producto guardado correctamente.'
+);
+
+}catch(error){
+console.error(error);
+message('formStatus',error.message,true);
+}finally{
+saving=false;
+$('saveBtn').disabled=false;
+$('cancelBtn').disabled=false;
+}
 }
 
 async function toggleProduct(p){
@@ -662,13 +951,20 @@ const result=await db.from('productos')
 .select('id');
 
 if(result.error||!result.data?.length){
-message('staffStatus',
-'No se pudo cambiar el estado del producto.',true);
+message(
+'staffStatus',
+'No se pudo cambiar el estado del producto.',
+true
+);
 return;
 }
 
 await loadData();
-message('staffStatus','Estado actualizado correctamente.');
+
+message(
+'staffStatus',
+'Estado actualizado correctamente.'
+);
 }
 
 $('loginForm').onsubmit=async event=>{
@@ -685,8 +981,11 @@ password:$('password').value
 $('loginBtn').disabled=false;
 
 if(result.error){
-message('loginStatus',
-'Correo o contraseña incorrectos.',true);
+message(
+'loginStatus',
+'Correo o contraseña incorrectos.',
+true
+);
 return;
 }
 
@@ -696,21 +995,38 @@ await checkSession();
 
 $('logoutBtn').onclick=async()=>{
 const result=await db.auth.signOut();
+
 if(result.error){
 alert('No se pudo cerrar sesión.');
 return;
 }
+
 showLogin();
 };
 
 $('navHome').onclick=()=>showSection('home');
 $('navProducts').onclick=()=>showSection('products');
 $('navInventory').onclick=()=>showSection('inventory');
+
 $('newBtn').onclick=()=>openForm();
-$('cancelBtn').onclick=()=>$('productDialog').close();
+
+$('cancelBtn').onclick=()=>{
+if(saving)return;
+$('productDialog').close();
+clearPreview();
+};
+
 $('productForm').onsubmit=saveProduct;
+
 $('search').oninput=renderProducts;
 $('filterCategory').onchange=renderProducts;
+
+$('pFile').onchange=updatePreview;
+$('pImage').oninput=()=>{
+if(!$('pFile').files?.length){
+updatePreview();
+}
+};
 
 await checkSession();
 </script>
