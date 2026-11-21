@@ -5,163 +5,597 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Administración | Graphic Blue</title>
+
 <style>
-:root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#18325c;background:#f3f7fd}
-*{box-sizing:border-box}
-body{margin:0}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;font-weight:700}
-button:disabled{opacity:.5;cursor:not-allowed}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd6e6;border-radius:9px;margin:6px 0 14px;background:white;color:#18325c}
-input[type=file]{padding:10px}
-label{font-weight:600;display:block}
-h1,h2,h3{margin-top:0}
-p{line-height:1.5}
-a{color:inherit}
-.hidden{display:none!important}
-.primary{background:#176bd1;color:white}
-.secondary{background:#e7effb;color:#123b80}
-.muted{color:#64748b}
-.error{color:#b42318}
-.success{color:#13704a}
-.card{background:white;border-radius:16px;padding:22px;box-shadow:0 5px 22px #173b7112;margin-bottom:20px}
-.login-wrap{max-width:430px;margin:10vh auto;padding:18px}
-.login-logo{text-align:center;color:#1257b6;font-size:30px;font-weight:900;margin-bottom:20px}
-.layout{display:flex;min-height:100vh}
-.sidebar{width:235px;flex-shrink:0;background:#102d5d;color:white;padding:24px 15px}
-.logo{font-size:21px;font-weight:900;margin:0 10px 28px}
-.sidebar button,.sidebar a{display:block;width:100%;text-align:left;background:transparent;color:white;text-decoration:none;padding:13px;margin-bottom:6px;border-radius:9px}
-.sidebar button.active{background:#176bd1}
-.sidebar a:hover,.sidebar button:hover{background:#24508e}
-.content{flex:1;min-width:0;padding:25px}
-.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:25px}
-.header h1{margin:0}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:22px}
-.stat{background:white;padding:20px;border-radius:14px;box-shadow:0 5px 18px #173b7110}
-.stat strong{display:block;font-size:28px;color:#176bd1;margin-top:9px}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:15px}
-.toolbar input,.toolbar select{margin:0;flex:1;min-width:150px}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:640px}
-th,td{padding:13px;text-align:left;border-bottom:1px solid #e5ebf3}
-th{font-size:13px;color:#64748b}
-td button{padding:8px 11px;margin:2px}
-.thumb{width:55px;height:55px;object-fit:contain;border-radius:8px;background:#e7effb}
-.placeholder{width:55px;height:55px;display:grid;place-items:center;background:#e7effb;border-radius:8px;font-size:25px}
-.stock-low{color:#b42318;font-weight:800}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
-.wide{grid-column:1/-1}
-.check{display:flex;align-items:center;gap:8px;margin:8px 0 20px}
-.check input{width:auto;margin:0}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-dialog{border:0;border-radius:16px;padding:25px;width:min(94vw,650px);max-height:88vh;overflow:auto}
-dialog::backdrop{background:#001b4388}
-.notice{background:#f1f6ff;border-radius:12px;padding:15px;margin-top:14px}
-.upload-box{border:2px dashed #9bbbea;border-radius:14px;background:#f4f8ff;padding:17px;margin:8px 0 15px}
-.upload-box input{margin-bottom:5px}
-.preview{width:100%;max-width:260px;height:190px;object-fit:contain;background:white;border:1px solid #dbe5f2;border-radius:12px;display:block;margin:12px auto}
-.upload-help{font-size:13px;color:#64748b;font-weight:400}
-.pos-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);gap:18px;align-items:start}
-.pos-list{display:grid;gap:9px;max-height:490px;overflow:auto}
-.pos-product{display:flex;align-items:center;gap:12px;border:1px solid #e1eaf5;border-radius:12px;padding:10px}
-.pos-product .info{flex:1;min-width:0}
-.pos-product .info strong{display:block}
-.pos-product .info small{color:#64748b}
-.pos-product button{flex-shrink:0}
-.pos-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border-bottom:1px solid #e5ebf3;padding:11px 0}
-.pos-line small{display:block;color:#64748b}
-.qty{display:flex;align-items:center;gap:8px;justify-content:flex-end}
-.qty button{padding:6px 10px}
-.qty strong{min-width:22px;text-align:center}
-.pos-total{display:flex;justify-content:space-between;align-items:center;padding:15px 0;font-size:20px;font-weight:800;border-top:2px solid #e1eaf5}
-.pos-change{background:#edf8f2;border-radius:12px;padding:14px;margin:10px 0}
-.pos-change strong{display:block;font-size:26px;color:#13704a}
-.pos-confirm{width:100%;margin-top:10px}
-.sale-result{border:1px solid #c1e8d2;background:#f0fbf5;border-radius:12px;padding:15px;margin-top:14px}
-.ticket-dialog{width:min(94vw,550px)}
-.ticket{max-width:410px;margin:auto;color:#182c46}
-.ticket-head{text-align:center;border-bottom:2px dashed #9ca9ba;padding-bottom:14px}
-.ticket-head h2{margin:0 0 5px;color:#176bd1}
-.ticket-head strong{display:block;margin-top:10px}
-.ticket-meta{font-size:14px;margin:16px 0}
-.ticket-meta p{margin:5px 0}
-.ticket-table{width:100%;min-width:0;font-size:13px}
-.ticket-table th,.ticket-table td{padding:9px 3px;overflow-wrap:anywhere}
-.ticket-table th:last-child,.ticket-table td:last-child{text-align:right}
-.ticket-total{display:flex;justify-content:space-between;border-top:2px solid #18325c;margin-top:14px;padding-top:12px;font-size:20px;font-weight:800}
-.ticket-foot{text-align:center;margin-top:24px;border-top:1px dashed #9ca9ba;padding-top:12px;font-size:13px}
-.receipt-actions{justify-content:center}
-.receipt-actions button{flex:1}
-.cash-status{padding:16px;border-radius:13px;background:#fff2ee;border:1px solid #f4c8bd;margin-bottom:18px}
-.cash-status.open{background:#eaf9f0;border-color:#b7e6c9}
-.cash-status strong{display:block;font-size:18px}
-.cash-status p{margin:6px 0 0}
-.cash-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.cash-figures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.cash-figure{background:#f1f6ff;border-radius:12px;padding:13px}
-.cash-figure span{display:block;color:#64748b;font-size:12px}
-.cash-figure strong{display:block;color:#176bd1;font-size:21px;margin-top:5px}
-.cash-form-note{font-size:13px;color:#64748b}
-@media(max-width:900px){.pos-grid,.cash-columns{grid-template-columns:1fr}}
-@media(max-width:720px){
-.layout{display:block}
-.sidebar{width:100%;padding:14px}
-.logo{margin:0 0 12px}
-.nav{display:flex;gap:5px;overflow-x:auto}
-.sidebar button,.sidebar a{white-space:nowrap;width:auto;margin:0;font-size:13px}
-.content{padding:15px}
-.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.stat{padding:12px}
-.stat strong{font-size:21px}
-.stat span{font-size:12px}
-.form-grid{grid-template-columns:1fr}
-.card{padding:16px}
-.pos-product{gap:8px}
-.pos-product button{padding:9px}
-.ticket-dialog{padding:15px}
-.ticket-table{font-size:12px}
-.cash-figures{grid-template-columns:repeat(2,minmax(0,1fr))}
+:root {
+  font-family:system-ui,-apple-system,Arial,sans-serif;
+  color:#18325c;
+  background:#f3f7fd;
 }
-@media print{
-@page{size:80mm 180mm;margin:0}
-html,body{width:80mm!important;margin:0!important;padding:0!important;background:white!important;color:black!important}
-.login-wrap,.layout,.receipt-actions,#receiptStatus{display:none!important}
-dialog#receiptDialog{position:static!important;display:block!important;width:80mm!important;max-width:80mm!important;max-height:none!important;height:auto!important;margin:0!important;padding:4mm!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important;background:white!important}
-dialog#receiptDialog::backdrop{display:none!important}
-.ticket{width:72mm!important;max-width:72mm!important;margin:0!important;padding:0!important;color:black!important;font-size:11px!important}
-.ticket-head h2{color:black!important;font-size:17px!important}
-.ticket-head{padding-bottom:9px!important}
-.ticket-meta{font-size:11px!important;margin:10px 0!important}
-.ticket-table{width:100%!important;min-width:0!important;font-size:10px!important;table-layout:fixed!important}
-.ticket-table th,.ticket-table td{padding:5px 2px!important;overflow-wrap:anywhere!important}
-.ticket-table th:first-child{width:39%}
-.ticket-table th:nth-child(2){width:12%}
-.ticket-table th:nth-child(3){width:23%}
-.ticket-table th:nth-child(4){width:26%}
-.ticket-total{font-size:16px!important;margin-top:10px!important;padding-top:8px!important}
-.ticket-foot{font-size:10px!important;margin-top:14px!important;padding-top:10px!important}
+
+* {box-sizing:border-box}
+body {margin:0}
+
+button,input,select,textarea {font:inherit}
+
+button {
+  cursor:pointer;
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  font-weight:700;
+}
+
+button:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd6e6;
+  border-radius:9px;
+  margin:6px 0 14px;
+  background:white;
+  color:#18325c;
+}
+
+input[type=file] {padding:10px}
+label {font-weight:600;display:block}
+h1,h2,h3 {margin-top:0}
+p {line-height:1.5}
+a {color:inherit}
+
+.hidden {display:none!important}
+.primary {background:#176bd1;color:white}
+.secondary {background:#e7effb;color:#123b80}
+.danger {background:#b42318;color:white}
+.muted {color:#64748b}
+.error {color:#b42318}
+.success {color:#13704a}
+
+.card {
+  background:white;
+  border-radius:16px;
+  padding:22px;
+  box-shadow:0 5px 22px #173b7112;
+  margin-bottom:20px;
+}
+
+.login-wrap {
+  max-width:430px;
+  margin:10vh auto;
+  padding:18px;
+}
+
+.login-logo {
+  text-align:center;
+  color:#1257b6;
+  font-size:30px;
+  font-weight:900;
+  margin-bottom:20px;
+}
+
+.layout {display:flex;min-height:100vh}
+
+.sidebar {
+  width:235px;
+  flex-shrink:0;
+  background:#102d5d;
+  color:white;
+  padding:24px 15px;
+}
+
+.logo {
+  font-size:21px;
+  font-weight:900;
+  margin:0 10px 28px;
+}
+
+.sidebar button,
+.sidebar a {
+  display:block;
+  width:100%;
+  text-align:left;
+  background:transparent;
+  color:white;
+  text-decoration:none;
+  padding:13px;
+  margin-bottom:6px;
+  border-radius:9px;
+}
+
+.sidebar button.active {background:#176bd1}
+
+.sidebar a:hover,
+.sidebar button:hover {background:#24508e}
+
+.content {
+  flex:1;
+  min-width:0;
+  padding:25px;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+}
+
+.header h1 {margin:0}
+
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:15px;
+  margin-bottom:22px;
+}
+
+.stat {
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 5px 18px #173b7110;
+}
+
+.stat strong {
+  display:block;
+  font-size:28px;
+  color:#176bd1;
+  margin-top:9px;
+}
+
+.toolbar {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.toolbar input,
+.toolbar select {
+  margin:0;
+  flex:1;
+  min-width:150px;
+}
+
+.table-wrap {overflow-x:auto}
+table {width:100%;border-collapse:collapse;min-width:640px}
+
+th,td {
+  padding:13px;
+  text-align:left;
+  border-bottom:1px solid #e5ebf3;
+}
+
+th {font-size:13px;color:#64748b}
+td button {padding:8px 11px;margin:2px}
+
+.thumb {
+  width:55px;
+  height:55px;
+  object-fit:contain;
+  border-radius:8px;
+  background:#e7effb;
+}
+
+.placeholder {
+  width:55px;
+  height:55px;
+  display:grid;
+  place-items:center;
+  background:#e7effb;
+  border-radius:8px;
+  font-size:25px;
+}
+
+.stock-low {color:#b42318;font-weight:800}
+
+.form-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 14px;
+}
+
+.wide {grid-column:1/-1}
+
+.check {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:8px 0 20px;
+}
+
+.check input {width:auto;margin:0}
+
+.actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+dialog {
+  border:0;
+  border-radius:16px;
+  padding:25px;
+  width:min(94vw,650px);
+  max-height:88vh;
+  overflow:auto;
+}
+
+dialog::backdrop {background:#001b4388}
+
+.notice {
+  background:#f1f6ff;
+  border-radius:12px;
+  padding:15px;
+  margin-top:14px;
+}
+
+.upload-box {
+  border:2px dashed #9bbbea;
+  border-radius:14px;
+  background:#f4f8ff;
+  padding:17px;
+  margin:8px 0 15px;
+}
+
+.upload-box input {margin-bottom:5px}
+
+.preview {
+  width:100%;
+  max-width:260px;
+  height:190px;
+  object-fit:contain;
+  background:white;
+  border:1px solid #dbe5f2;
+  border-radius:12px;
+  display:block;
+  margin:12px auto;
+}
+
+.upload-help {
+  font-size:13px;
+  color:#64748b;
+  font-weight:400;
+}
+
+.pos-grid {
+  display:grid;
+  grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);
+  gap:18px;
+  align-items:start;
+}
+
+.pos-list {
+  display:grid;
+  gap:9px;
+  max-height:490px;
+  overflow:auto;
+}
+
+.pos-product {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:1px solid #e1eaf5;
+  border-radius:12px;
+  padding:10px;
+}
+
+.pos-product .info {flex:1;min-width:0}
+.pos-product .info strong {display:block}
+.pos-product .info small {color:#64748b}
+.pos-product button {flex-shrink:0}
+
+.pos-line {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:8px;
+  align-items:center;
+  border-bottom:1px solid #e5ebf3;
+  padding:11px 0;
+}
+
+.pos-line small {display:block;color:#64748b}
+
+.qty {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  justify-content:flex-end;
+}
+
+.qty button {padding:6px 10px}
+.qty strong {min-width:22px;text-align:center}
+
+.pos-total {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 0;
+  font-size:20px;
+  font-weight:800;
+  border-top:2px solid #e1eaf5;
+}
+
+.pos-change {
+  background:#edf8f2;
+  border-radius:12px;
+  padding:14px;
+  margin:10px 0;
+}
+
+.pos-change strong {
+  display:block;
+  font-size:26px;
+  color:#13704a;
+}
+
+.pos-confirm {width:100%;margin-top:10px}
+
+.sale-result {
+  border:1px solid #c1e8d2;
+  background:#f0fbf5;
+  border-radius:12px;
+  padding:15px;
+  margin-top:14px;
+}
+
+.ticket-dialog {width:min(94vw,550px)}
+.ticket {max-width:410px;margin:auto;color:#182c46}
+
+.ticket-head {
+  text-align:center;
+  border-bottom:2px dashed #9ca9ba;
+  padding-bottom:14px;
+}
+
+.ticket-head h2 {margin:0 0 5px;color:#176bd1}
+.ticket-head strong {display:block;margin-top:10px}
+.ticket-meta {font-size:14px;margin:16px 0}
+.ticket-meta p {margin:5px 0}
+.ticket-table {width:100%;min-width:0;font-size:13px}
+
+.ticket-table th,
+.ticket-table td {
+  padding:9px 3px;
+  overflow-wrap:anywhere;
+}
+
+.ticket-table th:last-child,
+.ticket-table td:last-child {text-align:right}
+
+.ticket-total {
+  display:flex;
+  justify-content:space-between;
+  border-top:2px solid #18325c;
+  margin-top:14px;
+  padding-top:12px;
+  font-size:20px;
+  font-weight:800;
+}
+
+.ticket-foot {
+  text-align:center;
+  margin-top:24px;
+  border-top:1px dashed #9ca9ba;
+  padding-top:12px;
+  font-size:13px;
+}
+
+.receipt-actions {justify-content:center}
+.receipt-actions button {flex:1}
+
+.cash-status {
+  padding:16px;
+  border-radius:12px;
+  background:#fff0f0;
+  border:1px solid #f0c4c4;
+  margin-bottom:16px;
+}
+
+.cash-status.open {
+  background:#edfbf2;
+  border-color:#b5e6ca;
+}
+
+.cash-status strong {font-size:19px}
+
+.cash-columns {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+
+.cash-figures {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.cash-figure {
+  background:#f1f6ff;
+  padding:14px;
+  border-radius:10px;
+}
+
+.cash-figure span {
+  display:block;
+  font-size:13px;
+  color:#64748b;
+}
+
+.cash-figure strong {
+  display:block;
+  margin-top:5px;
+  font-size:20px;
+}
+
+.cash-banner {margin-bottom:18px}
+.cash-banner button {margin-top:10px}
+
+@media(max-width:900px) {
+  .pos-grid,.cash-columns {
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:720px) {
+  .layout {display:block}
+  .sidebar {width:100%;padding:14px}
+  .logo {margin:0 0 12px}
+
+  .nav {
+    display:flex;
+    gap:5px;
+    overflow-x:auto;
+  }
+
+  .sidebar button,
+  .sidebar a {
+    white-space:nowrap;
+    width:auto;
+    margin:0;
+    font-size:13px;
+  }
+
+  .content {padding:15px}
+
+  .stats {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+  }
+
+  .stat {padding:12px}
+  .stat strong {font-size:21px}
+  .stat span {font-size:12px}
+  .form-grid {grid-template-columns:1fr}
+  .card {padding:16px}
+  .pos-product {gap:8px}
+  .pos-product button {padding:9px}
+  .ticket-dialog {padding:15px}
+  .ticket-table {font-size:12px}
+}
+
+@media print {
+  @page {size:80mm 180mm;margin:0}
+
+  html,body {
+    width:80mm!important;
+    margin:0!important;
+    padding:0!important;
+    background:white!important;
+    color:black!important;
+  }
+
+  .login-wrap,.layout,.receipt-actions,#receiptStatus {
+    display:none!important;
+  }
+
+  dialog#receiptDialog {
+    position:static!important;
+    display:block!important;
+    width:80mm!important;
+    max-width:80mm!important;
+    max-height:none!important;
+    height:auto!important;
+    margin:0!important;
+    padding:4mm!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+    background:white!important;
+  }
+
+  .ticket {
+    width:72mm!important;
+    max-width:72mm!important;
+    margin:0!important;
+    padding:0!important;
+    color:black!important;
+    font-size:11px!important;
+  }
+
+  .ticket-head h2 {
+    color:black!important;
+    font-size:17px!important;
+  }
+
+  .ticket-head {padding-bottom:9px!important}
+  .ticket-meta {font-size:11px!important;margin:10px 0!important}
+
+  .ticket-table {
+    width:100%!important;
+    min-width:0!important;
+    font-size:10px!important;
+    table-layout:fixed!important;
+  }
+
+  .ticket-table th,
+  .ticket-table td {
+    padding:5px 2px!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .ticket-table th:first-child {width:39%}
+  .ticket-table th:nth-child(2) {width:12%}
+  .ticket-table th:nth-child(3) {width:23%}
+  .ticket-table th:nth-child(4) {width:26%}
+
+  .ticket-total {
+    font-size:16px!important;
+    margin-top:10px!important;
+    padding-top:8px!important;
+  }
+
+  .ticket-foot {
+    font-size:10px!important;
+    margin-top:14px!important;
+    padding-top:10px!important;
+  }
 }
 </style>
 </head>
+
 <body>
 
 <section id="loginScreen" class="login-wrap">
   <div class="login-logo">🔵 Graphic Blue</div>
   <div class="card">
     <h2>Acceso del personal</h2>
-    <p class="muted">Ingresa con tu cuenta de administrador o empleado.</p>
+    <p class="muted">
+      Ingresa con tu cuenta de administrador o empleado.
+    </p>
+
     <form id="loginForm">
-      <label>Correo electrónico
-        <input id="email" type="email" autocomplete="username" required>
+      <label>
+        Correo electrónico
+        <input id="email" type="email"
+               autocomplete="username" required>
       </label>
-      <label>Contraseña
-        <input id="password" type="password" autocomplete="current-password" required>
+
+      <label>
+        Contraseña
+        <input id="password" type="password"
+               autocomplete="current-password" required>
       </label>
+
       <p id="loginStatus" role="status"></p>
-      <button id="loginBtn" class="primary" type="submit" style="width:100%">
+
+      <button id="loginBtn" class="primary"
+              type="submit" style="width:100%">
         Iniciar sesión
       </button>
     </form>
+
     <p style="text-align:center">
       <a href="index.html">← Volver a la tienda</a>
     </p>
@@ -169,8 +603,10 @@ dialog#receiptDialog::backdrop{display:none!important}
 </section>
 
 <div id="dashboard" class="layout hidden">
+
   <aside class="sidebar">
     <div class="logo">🔵 Graphic Blue</div>
+
     <div class="nav">
       <button id="navHome">🏠 Panel principal</button>
       <button id="navProducts">📦 Productos</button>
@@ -184,492 +620,836 @@ dialog#receiptDialog::backdrop{display:none!important}
   </aside>
 
   <main class="content">
+
     <div class="header">
       <div>
         <h1 id="pageTitle">Panel principal</h1>
         <p id="welcome" class="muted"></p>
       </div>
-      <button id="newBtn" class="primary">+ Agregar producto</button>
+
+      <button id="newBtn" class="primary">
+        + Agregar producto
+      </button>
     </div>
 
+    <!-- PANEL PRINCIPAL -->
+
     <section id="homeSection">
+
       <div class="stats">
         <div class="stat">
           <span>Productos</span>
           <strong id="totalProducts">0</strong>
         </div>
+
         <div class="stat">
           <span>Publicados</span>
           <strong id="publishedProducts">0</strong>
         </div>
+
         <div class="stat">
           <span>Stock bajo</span>
           <strong id="lowCount">0</strong>
         </div>
       </div>
+
       <div id="homeCashStatus" class="cash-status"></div>
+
       <div class="card">
         <h2>⚠️ Alertas de inventario</h2>
-        <div id="lowList" class="muted">Cargando...</div>
-      </div>
-      <div class="card">
-        <h2>Graphic Blue</h2>
-        <p>Administra tus productos, existencias y ventas desde un mismo lugar.</p>
-        <div class="notice">
-          Las ventas de mostrador requieren que la caja esté abierta.
-          Solo el administrador puede abrirla y cerrarla.
+        <div id="lowList" class="muted">
+          Cargando...
         </div>
       </div>
+
+      <div class="card">
+        <h2>Graphic Blue</h2>
+        <p>
+          Administra tus productos, existencias y ventas
+          desde un mismo lugar.
+        </p>
+
+        <div class="notice">
+          Las ventas de mostrador requieren que la caja
+          esté abierta. Solo el administrador puede
+          abrirla y cerrarla.
+        </div>
+      </div>
+
     </section>
+
+    <!-- PRODUCTOS -->
 
     <section id="productsSection" class="hidden">
       <div class="card">
+
         <h2>Administración de productos</h2>
+
         <div class="toolbar">
-          <input id="search" type="search" placeholder="Buscar por nombre o código...">
+          <input id="search" type="search"
+                 placeholder="Buscar por nombre o código...">
+
           <select id="filterCategory">
             <option value="">Todas las categorías</option>
           </select>
         </div>
+
         <p id="staffStatus" role="status"></p>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Imagen</th><th>Producto</th><th>Categoría</th>
-                <th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
               </tr>
             </thead>
+
             <tbody id="productRows"></tbody>
           </table>
         </div>
+
       </div>
     </section>
 
+    <!-- INVENTARIO -->
+
     <section id="inventorySection" class="hidden">
       <div class="card">
+
         <h2>Inventario</h2>
-        <p class="muted">Control de existencias y cantidades mínimas.</p>
+        <p class="muted">
+          Control de existencias y cantidades mínimas.
+        </p>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Código</th><th>Producto</th><th>Stock actual</th>
-                <th>Stock mínimo</th><th>Estado</th><th>Acción</th>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Stock actual</th>
+                <th>Stock mínimo</th>
+                <th>Estado</th>
+                <th>Acción</th>
               </tr>
             </thead>
+
             <tbody id="inventoryRows"></tbody>
           </table>
         </div>
+
       </div>
     </section>
 
+    <!-- CAJA DE VENTAS -->
+
     <section id="cashSection" class="hidden">
+
       <div id="posCashBanner" class="cash-status"></div>
+
       <div class="pos-grid">
+
         <div class="card">
           <h2>🛒 Seleccionar productos</h2>
-          <label for="posSearch">Buscar por nombre o código</label>
-          <input id="posSearch" type="search" placeholder="Ej. cuaderno, bolígrafo, PRUEBA001">
+
+          <label for="posSearch">
+            Buscar por nombre o código
+          </label>
+
+          <input id="posSearch" type="search"
+                 placeholder="Ej. cuaderno, bolígrafo">
+
           <p id="posProductsStatus" class="muted"></p>
+
           <div id="posProducts" class="pos-list"></div>
         </div>
+
         <div class="card">
           <h2>💵 Nueva venta</h2>
+
           <div id="posCart"></div>
+
           <div class="pos-total">
-            <span>Total</span><span id="posTotal">$0,00</span>
+            <span>Total</span>
+            <span id="posTotal">$0,00</span>
           </div>
-          <label for="posMethod">Forma de pago</label>
+
+          <label for="posMethod">
+            Forma de pago
+          </label>
+
           <select id="posMethod">
             <option value="efectivo">💵 Efectivo</option>
             <option value="transferencia">🏦 Transferencia</option>
           </select>
+
           <div id="posCashFields">
-            <label for="posReceived">Dinero recibido ($)</label>
-            <input id="posReceived" type="number" min="0" step="0.01"
-                   inputmode="decimal" placeholder="Ej. 20.00">
+            <label for="posReceived">
+              Dinero recibido ($)
+            </label>
+
+            <input id="posReceived"
+                   type="text"
+                   inputmode="decimal"
+                   placeholder="Ej. 20.00"
+                   autocomplete="off">
+
             <div class="pos-change">
               <span>Cambio a entregar</span>
               <strong id="posChange">$0,00</strong>
             </div>
           </div>
+
           <div id="posTransferFields" class="notice hidden">
-            Confirma que recibiste la transferencia antes de registrar la venta.
-            Esta caja no verifica transferencias bancarias automáticamente.
+            Confirma que recibiste la transferencia
+            antes de registrar la venta.
+            Esta caja no verifica transferencias
+            bancarias automáticamente.
           </div>
+
           <p id="posStatus" role="status"></p>
-          <button id="posConfirm" class="primary pos-confirm" disabled>
+
+          <button id="posConfirm"
+                  class="primary pos-confirm"
+                  disabled>
             Confirmar venta
           </button>
-          <button id="posClear" class="secondary pos-confirm">
+
+          <button id="posClear"
+                  class="secondary pos-confirm">
             Vaciar carrito
           </button>
-          <div id="posReceipt" class="sale-result hidden" role="status"></div>
+
+          <div id="posReceipt"
+               class="sale-result hidden"
+               role="status"></div>
+
         </div>
       </div>
     </section>
 
+    <!-- CONTROL DE CAJA -->
+
     <section id="cashControlSection" class="hidden">
-      <div id="controlCashBanner" class="cash-status"></div>
+
+      <div id="controlCashBanner"
+           class="cash-status"></div>
+
       <p id="cashControlStatus" role="status"></p>
 
       <div class="cash-columns">
+
+        <!-- APERTURA -->
+
         <div class="card">
           <h2>🔓 Apertura de caja</h2>
-          <p class="muted">Registra el efectivo con el que comienza la jornada.</p>
+
+          <p class="muted">
+            Registra el efectivo con el que comienza
+            la jornada.
+          </p>
+
           <form id="cashOpenForm">
-            <label for="cashOpeningAmount">Fondo inicial ($)</label>
-            <input id="cashOpeningAmount" type="number" min="0" step="0.01"
-                   inputmode="decimal" value="0" required>
-            <button id="cashOpenBtn" class="primary" type="submit">
+            <label for="cashOpeningAmount">
+              Fondo inicial ($)
+            </label>
+
+            <input id="cashOpeningAmount"
+                   type="text"
+                   inputmode="decimal"
+                   placeholder="Ej. 0.00"
+                   autocomplete="off"
+                   value="0"
+                   required>
+
+            <button id="cashOpenBtn"
+                    class="primary"
+                    type="submit">
               Abrir caja
             </button>
           </form>
         </div>
 
+        <!-- MOVIMIENTOS -->
+
         <div class="card">
           <h2>💸 Movimientos de efectivo</h2>
-          <p class="muted">Registra ingresos adicionales y retiros de caja.</p>
+
+          <p class="muted">
+            Registra ingresos adicionales y retiros
+            de caja.
+          </p>
+
           <form id="cashMovementForm">
-            <label for="cashMovementType">Tipo de movimiento</label>
+
+            <label for="cashMovementType">
+              Tipo de movimiento
+            </label>
+
             <select id="cashMovementType">
-              <option value="retiro">Retiro de efectivo</option>
-              <option value="ingreso">Ingreso adicional</option>
+              <option value="retiro">
+                Retiro de efectivo
+              </option>
+
+              <option value="ingreso">
+                Ingreso adicional
+              </option>
             </select>
-            <label for="cashMovementAmount">Monto ($)</label>
-            <input id="cashMovementAmount" type="number" min="0.01"
-                   step="0.01" inputmode="decimal" required>
-            <label for="cashMovementConcept">Concepto</label>
-            <input id="cashMovementConcept" maxlength="250"
-                   placeholder="Ej. Compra de suministros" required>
-            <button id="cashMovementBtn" class="secondary" type="submit">
+
+            <label for="cashMovementAmount">
+              Monto ($)
+            </label>
+
+            <input id="cashMovementAmount"
+                   type="text"
+                   inputmode="decimal"
+                   placeholder="Ej. 5.00"
+                   autocomplete="off"
+                   required>
+
+            <label for="cashMovementConcept">
+              Concepto
+            </label>
+
+            <input id="cashMovementConcept"
+                   maxlength="250"
+                   placeholder="Ej. Compra de suministros"
+                   required>
+
+            <button id="cashMovementBtn"
+                    class="secondary"
+                    type="submit">
               Registrar movimiento
             </button>
           </form>
         </div>
+
       </div>
 
+      <!-- RESUMEN -->
+
       <div class="card">
+
         <div class="header">
           <h2>📊 Resumen de la jornada</h2>
-          <button id="refreshCashSummary" class="secondary" type="button">
+
+          <button id="refreshCashSummary"
+                  class="secondary"
+                  type="button">
             Actualizar
           </button>
         </div>
+
         <p id="cashSummaryStatus" role="status"></p>
-        <div id="cashFigures" class="cash-figures"></div>
+
+        <div id="cashFigures"
+             class="cash-figures"></div>
+
       </div>
 
+      <!-- CIERRE -->
+
       <div class="card">
+
         <h2>🔒 Cierre de caja</h2>
+
         <p class="muted">
           Cuenta el efectivo físico que tienes en caja.
           El sistema calculará si existe una diferencia.
         </p>
+
         <form id="cashCloseForm">
-          <label for="cashCountedAmount">Efectivo contado ($)</label>
-          <input id="cashCountedAmount" type="number" min="0" step="0.01"
-                 inputmode="decimal" required>
-          <label for="cashCloseNotes">Observaciones (opcional)</label>
-          <textarea id="cashCloseNotes" rows="2"
+
+          <label for="cashCountedAmount">
+            Efectivo contado ($)
+          </label>
+
+          <!-- CORREGIDO PARA IPHONE -->
+
+          <input id="cashCountedAmount"
+                 type="text"
+                 inputmode="decimal"
+                 placeholder="Ej. 0.50"
+                 autocomplete="off"
+                 required>
+
+          <p class="muted" style="font-size:13px">
+            Puedes escribir 0.50 o 0,50.
+          </p>
+
+          <label for="cashCloseNotes">
+            Observaciones (opcional)
+          </label>
+
+          <textarea id="cashCloseNotes"
+                    rows="2"
                     placeholder="Ej. Todo correcto"></textarea>
-          <button id="cashCloseBtn" class="primary" type="submit">
+
+          <button id="cashCloseBtn"
+                  class="primary"
+                  type="submit">
             Cerrar caja
           </button>
+
         </form>
       </div>
 
+      <!-- HISTORIAL DE CIERRES -->
+
       <div class="card">
+
         <div class="header">
           <h2>📅 Historial de cierres</h2>
-          <button id="refreshCashHistory" class="secondary" type="button">
+
+          <button id="refreshCashHistory"
+                  class="secondary"
+                  type="button">
             Actualizar
           </button>
         </div>
+
         <p id="cashHistoryStatus" role="status"></p>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Fecha</th><th>Estado</th><th>Fondo inicial</th>
-                <th>Efectivo vendido</th><th>Transferencias</th>
-                <th>Esperado</th><th>Contado</th><th>Diferencia</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Fondo inicial</th>
+                <th>Efectivo vendido</th>
+                <th>Transferencias</th>
+                <th>Esperado</th>
+                <th>Contado</th>
+                <th>Diferencia</th>
               </tr>
             </thead>
+
             <tbody id="cashHistoryRows"></tbody>
           </table>
         </div>
+
       </div>
+
     </section>
+
+    <!-- HISTORIAL DE VENTAS -->
 
     <section id="salesSection" class="hidden">
       <div class="card">
+
         <div class="header">
           <div>
             <h2>🧾 Historial de ventas</h2>
-            <p class="muted">Pedidos recientes registrados en Graphic Blue.</p>
+            <p class="muted">
+              Pedidos recientes registrados en Graphic Blue.
+            </p>
           </div>
-          <button id="refreshSales" class="secondary">Actualizar</button>
+
+          <button id="refreshSales" class="secondary">
+            Actualizar
+          </button>
         </div>
+
         <p id="salesStatus" role="status"></p>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>N.º</th><th>Fecha</th><th>Cliente</th>
-                <th>Total</th><th>Método</th><th>Estado</th><th>Comprobante</th>
+                <th>N.º</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Método</th>
+                <th>Estado</th>
+                <th>Comprobante</th>
               </tr>
             </thead>
+
             <tbody id="salesRows"></tbody>
           </table>
         </div>
+
       </div>
     </section>
+
   </main>
 </div>
 
+<!-- FORMULARIO DE PRODUCTO -->
+
 <dialog id="productDialog">
+
   <h2 id="formTitle">Agregar producto</h2>
+
   <form id="productForm">
+
     <div class="form-grid">
-      <label>Código<input id="pCode" maxlength="80" required></label>
-      <label>Nombre<input id="pName" maxlength="200" required></label>
-      <label class="wide">Descripción
+
+      <label>
+        Código
+        <input id="pCode" maxlength="80" required>
+      </label>
+
+      <label>
+        Nombre
+        <input id="pName" maxlength="200" required>
+      </label>
+
+      <label class="wide">
+        Descripción
         <textarea id="pDescription" rows="2"></textarea>
       </label>
-      <label>Categoría<select id="pCategory" required></select></label>
-      <label>Precio de compra ($)
-        <input id="pCost" type="number" min="0" step="0.01" required>
+
+      <label>
+        Categoría
+        <select id="pCategory" required></select>
       </label>
-      <label>Precio de venta ($)
-        <input id="pPrice" type="number" min="0" step="0.01" required>
+
+      <label>
+        Precio de compra ($)
+        <input id="pCost" type="number"
+               min="0" step="0.01" required>
       </label>
-      <label>Stock
-        <input id="pStock" type="number" min="0" step="1" required>
+
+      <label>
+        Precio de venta ($)
+        <input id="pPrice" type="number"
+               min="0" step="0.01" required>
       </label>
-      <label>Stock mínimo
-        <input id="pMinStock" type="number" min="0" step="1" required>
+
+      <label>
+        Stock
+        <input id="pStock" type="number"
+               min="0" step="1" required>
       </label>
+
+      <label>
+        Stock mínimo
+        <input id="pMinStock" type="number"
+               min="0" step="1" required>
+      </label>
+
       <div class="wide upload-box">
-        <label for="pFile">📷 Imagen del producto</label>
+        <label for="pFile">
+          📷 Imagen del producto
+        </label>
+
         <p class="upload-help">
-          Selecciona una foto desde tu celular o computadora.
-          Formatos: JPG, PNG o WebP. Máximo 5 MB.
+          Selecciona una foto desde tu celular
+          o computadora. Formatos JPG, PNG o WebP.
+          Máximo 5 MB.
         </p>
-        <input id="pFile" type="file" accept="image/jpeg,image/png,image/webp">
-        <img id="imagePreview" class="preview hidden" alt="Vista previa del producto">
+
+        <input id="pFile"
+               type="file"
+               accept="image/jpeg,image/png,image/webp">
+
+        <img id="imagePreview"
+             class="preview hidden"
+             alt="Vista previa del producto">
+
         <p id="imageHint" class="upload-help">
           Todavía no has seleccionado una imagen.
         </p>
       </div>
-      <label class="wide">URL de imagen (opcional)
-        <input id="pImage" type="url" placeholder="https://...">
+
+      <label class="wide">
+        URL de imagen (opcional)
+        <input id="pImage"
+               type="url"
+               placeholder="https://...">
       </label>
+
     </div>
+
     <label class="check">
-      <input id="pPublished" type="checkbox"> Publicar en la tienda
+      <input id="pPublished" type="checkbox">
+      Publicar en la tienda
     </label>
+
     <p id="formStatus" role="status"></p>
+
     <div class="actions">
-      <button id="saveBtn" type="submit" class="primary">Guardar producto</button>
-      <button id="cancelBtn" type="button" class="secondary">Cancelar</button>
+      <button id="saveBtn"
+              type="submit"
+              class="primary">
+        Guardar producto
+      </button>
+
+      <button id="cancelBtn"
+              type="button"
+              class="secondary">
+        Cancelar
+      </button>
     </div>
+
   </form>
 </dialog>
 
-<dialog id="receiptDialog" class="ticket-dialog" aria-label="Comprobante de venta">
+<!-- COMPROBANTE DE VENTA -->
+
+<dialog id="receiptDialog"
+        class="ticket-dialog"
+        aria-label="Comprobante de venta">
+
   <div id="receiptContent" class="ticket"></div>
+
   <p id="receiptStatus" role="status"></p>
+
   <div class="actions receipt-actions">
-    <button id="downloadTicketPdf" class="primary" type="button" disabled>
+
+    <button id="downloadTicketPdf"
+            class="primary"
+            type="button"
+            disabled>
       📄 Descargar ticket PDF (80 mm)
     </button>
-    <button id="printReceipt" class="secondary" type="button" disabled>
+
+    <button id="printReceipt"
+            class="secondary"
+            type="button"
+            disabled>
       🖨️ Imprimir
     </button>
-    <button id="closeReceipt" class="secondary" type="button">Cerrar</button>
+
+    <button id="closeReceipt"
+            class="secondary"
+            type="button">
+      Cerrar
+    </button>
+
   </div>
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
+
 <script type="module">
 
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const SUPABASE_URL='https://bszdopscbugyfnakqmbw.supabase.co';
-const SUPABASE_KEY='sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
-const BUCKET='productos-imagenes';
+const SUPABASE_URL = "https://bszdopscbugyfnakqmbw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-";
+const BUCKET = "productos-imagenes";
 
-const db=createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
 
-const money=n=>new Intl.NumberFormat('es-EC',{
-  style:'currency',
-  currency:'USD'
-}).format(Number(n)||0);
+const money = value => new Intl.NumberFormat("es-EC", {
+  style: "currency",
+  currency: "USD"
+}).format(Number(value) || 0);
 
-const cents=n=>Math.round(Number(n)*100);
+const cents = value => Math.round(Number(value) * 100);
 
-function el(tag,text='',className=''){
-  const node=document.createElement(tag);
-  node.textContent=text;
-  node.className=className;
-  return node;
+function parseMoney(value) {
+  const raw = String(value ?? "").trim().replace(",", ".");
+  if (!/^\d+(?:\.\d{1,2})?$/.test(raw)) return NaN;
+  const amount = Number(raw);
+  return Number.isFinite(amount) ? amount : NaN;
 }
 
-function message(id,text,error=false){
-  $(id).textContent=text;
-  $(id).className=error?'error':'success';
+function node(tag, text = "", className = "") {
+  const item = document.createElement(tag);
+  item.textContent = text;
+  item.className = className;
+  return item;
 }
 
-const dateEC=s=>s
-  ?new Date(s).toLocaleString('es-EC',{
-    timeZone:'America/Guayaquil'
-  })
-  :'—';
+function status(id, text, error = false) {
+  $(id).textContent = text;
+  $(id).className = error ? "error" : "success";
+}
 
-let products=[];
-let categories=[];
-let role=null;
-let editingId=null;
-let previewObjectUrl=null;
-let saving=false;
-let posCart=new Map();
-let posSaving=false;
-let currentReceipt=null;
-let openJourney=null;
-let cashBusy=false;
-let cashLoading=false;
+function dateEC(value) {
+  return value
+    ? new Date(value).toLocaleString("es-EC", {
+        timeZone: "America/Guayaquil"
+      })
+    : "—";
+}
 
-function showSection(name){
-  const nav={
-    home:'navHome',
-    products:'navProducts',
-    inventory:'navInventory',
-    cash:'navCash',
-    cashControl:'navCashControl',
-    sales:'navSales'
+function validUrl(value) {
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+let products = [];
+let categories = [];
+let role = null;
+let editingId = null;
+let previewObjectUrl = null;
+let saving = false;
+
+let posCart = new Map();
+let posSaving = false;
+let currentReceipt = null;
+
+let openJourney = null;
+let cashBusy = false;
+let cashLoaded = false;
+let cashError = false;
+
+/* =====================================
+   NAVEGACIÓN Y SESIÓN
+===================================== */
+
+function showSection(name) {
+  const sections = {
+    home: "navHome",
+    products: "navProducts",
+    inventory: "navInventory",
+    cash: "navCash",
+    cashControl: "navCashControl",
+    sales: "navSales"
   };
 
-  for(const section of Object.keys(nav)){
-    $(section+'Section').classList.toggle(
-      'hidden',section!==name
+  for (const [section, nav] of Object.entries(sections)) {
+    $(section + "Section").classList.toggle(
+      "hidden",
+      section !== name
     );
-    $(nav[section]).classList.toggle(
-      'active',section===name
-    );
+    $(nav).classList.toggle("active", section === name);
   }
 
-  $('pageTitle').textContent={
-    home:'Panel principal',
-    products:'Productos',
-    inventory:'Inventario',
-    cash:'Caja registradora',
-    cashControl:'Control de caja',
-    sales:'Historial de ventas'
-  }[name];
+  const titles = {
+    home: "Panel principal",
+    products: "Productos",
+    inventory: "Inventario",
+    cash: "Caja registradora",
+    cashControl: "Control de caja",
+    sales: "Historial de ventas"
+  };
 
-  $('newBtn').classList.toggle(
-    'hidden',
-    !['home','products','inventory'].includes(name)
+  $("pageTitle").textContent = titles[name] || "Graphic Blue";
+
+  $("newBtn").classList.toggle(
+    "hidden",
+    !["home", "products", "inventory"].includes(name)
   );
 
-  if(name==='cash'){
+  if (name === "cash") {
     refreshCashProducts();
-    loadCashState();
   }
 
-  if(name==='cashControl'){
+  if (name === "cashControl") {
     loadCashControl();
   }
 
-  if(name==='sales'){
+  if (name === "sales") {
     loadSales();
   }
 }
 
-async function checkSession(){
-  const {data:{user},error}=await db.auth.getUser();
+function showLogin() {
+  role = null;
+  openJourney = null;
+  cashLoaded = false;
+  cashError = false;
+  posCart.clear();
+  currentReceipt = null;
 
-  if(error||!user){
+  $("dashboard").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+}
+
+async function checkSession() {
+  const { data: { user }, error } = await db.auth.getUser();
+
+  if (error || !user) {
     showLogin();
     return;
   }
 
-  const result=await db.from('perfiles')
-    .select('nombre,rol')
-    .eq('id',user.id)
+  const result = await db.from("perfiles")
+    .select("nombre,rol")
+    .eq("id", user.id)
     .maybeSingle();
 
-  if(
-    result.error||
-    !result.data||
-    !['administrador','empleado'].includes(result.data.rol)
-  ){
+  if (
+    result.error ||
+    !result.data ||
+    !["administrador", "empleado"].includes(result.data.rol)
+  ) {
     await db.auth.signOut();
     showLogin();
-    message(
-      'loginStatus',
-      'Esta cuenta no tiene acceso al panel.',
+    status(
+      "loginStatus",
+      "Esta cuenta no tiene acceso al panel.",
       true
     );
     return;
   }
 
-  role=result.data.rol;
+  role = result.data.rol;
 
-  $('welcome').textContent=
-    `${result.data.nombre||'Personal'} · ${role}`;
+  $("welcome").textContent =
+    `${result.data.nombre || "Personal"} · ${role}`;
 
-  $('loginScreen').classList.add('hidden');
-  $('dashboard').classList.remove('hidden');
+  $("navCashControl").classList.toggle(
+    "hidden",
+    role !== "administrador"
+  );
+
+  $("cashControlSection").classList.toggle(
+    "hidden",
+    role !== "administrador"
+  );
+
+  $("loginScreen").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
 
   await loadData();
   await loadCashState();
 
-  showSection('home');
+  showSection("home");
 }
 
-function showLogin(){
-  role=null;
-  openJourney=null;
-  posCart.clear();
-  currentReceipt=null;
+/* =====================================
+   PRODUCTOS E INVENTARIO
+===================================== */
 
-  $('dashboard').classList.add('hidden');
-  $('loginScreen').classList.remove('hidden');
-}
-
-async function loadData(){
-  const [p,c]=await Promise.all([
-    db.from('productos')
+async function loadData() {
+  const [productResult, categoryResult] = await Promise.all([
+    db.from("productos")
       .select(
-        'id,codigo,nombre,descripcion,categoria,'+
-        'precio_compra,precio_venta,stock,stock_minimo,'+
-        'imagen_url,publicado'
+        "id,codigo,nombre,descripcion,categoria," +
+        "precio_compra,precio_venta,stock,stock_minimo," +
+        "imagen_url,publicado"
       )
-      .order('nombre'),
+      .order("nombre"),
 
-    db.from('categorias')
-      .select('nombre')
-      .order('nombre')
+    db.from("categorias")
+      .select("nombre")
+      .order("nombre")
   ]);
 
-  if(p.error){
-    message(
-      'staffStatus',
-      'Error: '+p.error.message,
+  if (productResult.error) {
+    status(
+      "staffStatus",
+      "Error al cargar productos: " + productResult.error.message,
       true
     );
-    showSection('products');
     return false;
   }
 
-  products=p.data||[];
-  categories=c.error
-    ?[]
-    :(c.data||[]).map(x=>x.nombre).filter(Boolean);
+  products = productResult.data || [];
+
+  categories = categoryResult.error
+    ? []
+    : (categoryResult.data || [])
+        .map(item => item.nombre)
+        .filter(Boolean);
 
   renderStats();
   renderCategoryFilter();
@@ -681,2039 +1461,1824 @@ async function loadData(){
   return true;
 }
 
-function lowProducts(){
-  return products.filter(
-    p=>Number(p.stock)<=Number(p.stock_minimo)
+function renderStats() {
+  $("totalProducts").textContent = products.length;
+
+  $("publishedProducts").textContent =
+    products.filter(p => p.publicado).length;
+
+  const low = products.filter(
+    p => Number(p.stock) <= Number(p.stock_minimo)
   );
-}
 
-function renderStats(){
-  $('totalProducts').textContent=products.length;
+  $("lowCount").textContent = low.length;
 
-  $('publishedProducts').textContent=
-    products.filter(p=>p.publicado).length;
-
-  const low=lowProducts();
-  $('lowCount').textContent=low.length;
-
-  const box=$('lowList');
+  const box = $("lowList");
   box.replaceChildren();
 
-  if(!low.length){
-    box.append(
-      el('p','No hay productos con stock bajo.')
-    );
+  if (!low.length) {
+    box.append(node("p", "No hay productos con stock bajo."));
     return;
   }
 
-  for(const p of low){
+  for (const product of low) {
     box.append(
-      el(
-        'p',
-        `⚠️ ${p.nombre}: ${p.stock} unidades `+
-        `(mínimo ${p.stock_minimo})`,
-        'stock-low'
+      node(
+        "p",
+        `⚠️ ${product.nombre}: ${product.stock} unidades ` +
+        `(mínimo ${product.stock_minimo})`,
+        "stock-low"
       )
     );
   }
 }
 
-function renderCategoryFilter(){
-  const select=$('filterCategory');
-  const previous=select.value;
+function renderCategoryFilter() {
+  const select = $("filterCategory");
+  const previous = select.value;
+
+  const names = [...new Set([
+    ...categories,
+    ...products.map(p => p.categoria)
+  ].filter(Boolean))].sort();
 
   select.replaceChildren();
 
-  const all=document.createElement('option');
-  all.value='';
-  all.textContent='Todas las categorías';
+  const all = node("option", "Todas las categorías");
+  all.value = "";
   select.append(all);
 
-  const names=[
-    ...new Set([
-      ...categories,
-      ...products.map(p=>p.categoria)
-    ].filter(Boolean))
-  ].sort();
-
-  for(const name of names){
-    const option=document.createElement('option');
-    option.value=name;
-    option.textContent=name;
+  for (const name of names) {
+    const option = node("option", name);
+    option.value = name;
     select.append(option);
   }
 
-  select.value=names.includes(previous)?previous:'';
+  select.value = names.includes(previous) ? previous : "";
 }
 
-function renderProducts(){
-  const box=$('productRows');
+function renderProducts() {
+  const box = $("productRows");
   box.replaceChildren();
 
-  const query=$('search').value.toLowerCase().trim();
-  const category=$('filterCategory').value;
+  const query = $("search").value.trim().toLowerCase();
+  const category = $("filterCategory").value;
 
-  const filtered=products.filter(
-    p=>
-      (!category||p.categoria===category)&&
-      `${p.nombre} ${p.codigo}`
-        .toLowerCase()
-        .includes(query)
+  const filtered = products.filter(p =>
+    (!category || p.categoria === category) &&
+    `${p.nombre} ${p.codigo || ""}`
+      .toLowerCase()
+      .includes(query)
   );
 
-  if(!filtered.length){
-    const row=el('tr');
-    const cell=el('td','No hay productos para mostrar.');
-    cell.colSpan=7;
+  if (!filtered.length) {
+    const row = node("tr");
+    const cell = node("td", "No hay productos para mostrar.");
+    cell.colSpan = 7;
     row.append(cell);
     box.append(row);
     return;
   }
 
-  for(const p of filtered){
-    const row=el('tr');
-    const imageCell=el('td');
+  for (const product of filtered) {
+    const row = node("tr");
+    const imageCell = node("td");
 
-    if(
-      p.imagen_url&&
-      /^https:\/\//i.test(p.imagen_url)
-    ){
-      const img=document.createElement('img');
-      img.src=p.imagen_url;
-      img.alt=p.nombre;
-      img.className='thumb';
-
-      img.onerror=()=>img.replaceWith(
-        el('div','📦','placeholder')
+    if (product.imagen_url && validUrl(product.imagen_url)) {
+      const img = document.createElement("img");
+      img.src = product.imagen_url;
+      img.alt = product.nombre;
+      img.className = "thumb";
+      img.onerror = () => img.replaceWith(
+        node("div", "📦", "placeholder")
       );
-
       imageCell.append(img);
-    }else{
-      imageCell.append(
-        el('div','📦','placeholder')
-      );
+    } else {
+      imageCell.append(node("div", "📦", "placeholder"));
     }
 
-    const nameCell=el('td');
+    const nameCell = node("td");
     nameCell.append(
-      el('strong',p.nombre),
-      el('div',p.codigo||'Sin código','muted')
+      node("strong", product.nombre),
+      node("div", product.codigo || "Sin código", "muted")
     );
+
+    const actionCell = node("td");
+
+    const edit = node("button", "✏️ Editar", "secondary");
+    edit.onclick = () => openForm(product);
+
+    const toggle = node(
+      "button",
+      product.publicado ? "Ocultar" : "Publicar",
+      "secondary"
+    );
+    toggle.onclick = () => toggleProduct(product);
+
+    actionCell.append(edit, toggle);
 
     row.append(
       imageCell,
       nameCell,
-      el('td',p.categoria||''),
-      el('td',money(p.precio_venta)),
-      el(
-        'td',
-        String(p.stock),
-        Number(p.stock)<=Number(p.stock_minimo)
-          ?'stock-low':''
+      node("td", product.categoria || ""),
+      node("td", money(product.precio_venta)),
+      node(
+        "td",
+        String(product.stock),
+        Number(product.stock) <= Number(product.stock_minimo)
+          ? "stock-low"
+          : ""
       ),
-      el('td',p.publicado?'Publicado':'Oculto')
+      node("td", product.publicado ? "Publicado" : "Oculto"),
+      actionCell
     );
 
-    const actions=el('td');
-
-    const edit=el('button','✏️ Editar','secondary');
-    edit.onclick=()=>openForm(p);
-
-    const toggle=el(
-      'button',
-      p.publicado?'Ocultar':'Publicar',
-      'secondary'
-    );
-    toggle.onclick=()=>toggleProduct(p);
-
-    actions.append(edit,toggle);
-    row.append(actions);
     box.append(row);
   }
 }
 
-function renderInventory(){
-  const box=$('inventoryRows');
+function renderInventory() {
+  const box = $("inventoryRows");
   box.replaceChildren();
 
-  for(const p of products){
-    const row=el('tr');
-    const low=
-      Number(p.stock)<=Number(p.stock_minimo);
+  for (const product of products) {
+    const low =
+      Number(product.stock) <= Number(product.stock_minimo);
+
+    const row = node("tr");
+    const action = node("td");
+
+    const edit = node("button", "Actualizar", "secondary");
+    edit.onclick = () => openForm(product);
+    action.append(edit);
 
     row.append(
-      el('td',p.codigo||''),
-      el('td',p.nombre),
-      el(
-        'td',
-        String(p.stock),
-        low?'stock-low':''
+      node("td", product.codigo || ""),
+      node("td", product.nombre),
+      node(
+        "td",
+        String(product.stock),
+        low ? "stock-low" : ""
       ),
-      el('td',String(p.stock_minimo)),
-      el(
-        'td',
-        low?'⚠️ Stock bajo':'Correcto'
-      )
+      node("td", String(product.stock_minimo)),
+      node("td", low ? "⚠️ Stock bajo" : "Correcto"),
+      action
     );
 
-    const action=el('td');
-    const edit=el('button','Actualizar','secondary');
-
-    edit.onclick=()=>openForm(p);
-    action.append(edit);
-    row.append(action);
     box.append(row);
   }
 }
 
-function fillFormCategories(selected=''){
-  const select=$('pCategory');
+function fillFormCategories(selected = "") {
+  const select = $("pCategory");
+
+  const names = [...new Set([
+    ...categories,
+    ...products.map(p => p.categoria),
+    selected
+  ].filter(Boolean))].sort();
+
   select.replaceChildren();
 
-  const names=[
-    ...new Set([
-      ...categories,
-      ...products.map(p=>p.categoria),
-      selected
-    ].filter(Boolean))
-  ].sort();
-
-  for(const name of names){
-    const option=document.createElement('option');
-    option.value=name;
-    option.textContent=name;
+  for (const name of names) {
+    const option = node("option", name);
+    option.value = name;
     select.append(option);
   }
 
-  if(selected){
-    select.value=selected;
-  }
+  if (selected) select.value = selected;
 }
 
-function clearPreview(){
-  if(previewObjectUrl){
+function clearPreview() {
+  if (previewObjectUrl) {
     URL.revokeObjectURL(previewObjectUrl);
-    previewObjectUrl=null;
+    previewObjectUrl = null;
   }
 
-  $('imagePreview').removeAttribute('src');
-  $('imagePreview').classList.add('hidden');
+  $("imagePreview").removeAttribute("src");
+  $("imagePreview").classList.add("hidden");
 }
 
-function showImagePreview(src){
-  $('imagePreview').src=src;
-  $('imagePreview').classList.remove('hidden');
+function showImagePreview(src) {
+  $("imagePreview").src = src;
+  $("imagePreview").classList.remove("hidden");
 }
 
-function updatePreview(){
+function updatePreview() {
   clearPreview();
 
-  const file=$('pFile').files?.[0];
+  const file = $("pFile").files?.[0];
 
-  if(file){
-    if(
-      !['image/jpeg','image/png','image/webp']
-        .includes(file.type)
-    ){
-      $('imageHint').textContent=
-        'Selecciona una imagen JPG, PNG o WebP.';
+  if (file) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      $("imageHint").textContent =
+        "Selecciona una imagen JPG, PNG o WebP.";
       return;
     }
 
-    previewObjectUrl=URL.createObjectURL(file);
+    previewObjectUrl = URL.createObjectURL(file);
     showImagePreview(previewObjectUrl);
 
-    $('imageHint').textContent=
-      'Vista previa: '+file.name;
-
+    $("imageHint").textContent = "Vista previa: " + file.name;
     return;
   }
 
-  const url=$('pImage').value.trim();
+  const url = $("pImage").value.trim();
 
-  if(/^https:\/\//i.test(url)){
+  if (validUrl(url)) {
     showImagePreview(url);
-    $('imageHint').textContent=
-      'Imagen actual del producto.';
-  }else{
-    $('imageHint').textContent=
-      'Todavía no has seleccionado una imagen.';
+    $("imageHint").textContent = "Imagen actual del producto.";
+  } else {
+    $("imageHint").textContent =
+      "Todavía no has seleccionado una imagen.";
   }
 }
 
-function openForm(p=null){
-  if(!role)return;
+function openForm(product = null) {
+  if (!role) return;
 
-  editingId=p?.id??null;
+  editingId = product?.id ?? null;
 
-  $('productForm').reset();
+  $("productForm").reset();
+  $("formStatus").textContent = "";
 
-  $('formTitle').textContent=
-    p?'Editar producto':'Agregar producto';
+  $("formTitle").textContent =
+    product ? "Editar producto" : "Agregar producto";
 
-  $('formStatus').textContent='';
+  fillFormCategories(product?.categoria || "");
 
-  fillFormCategories(p?.categoria||'');
-
-  $('pCode').value=p?.codigo||'';
-  $('pName').value=p?.nombre||'';
-  $('pDescription').value=p?.descripcion||'';
-  $('pCost').value=p?.precio_compra??0;
-  $('pPrice').value=p?.precio_venta??0;
-  $('pStock').value=p?.stock??0;
-  $('pMinStock').value=p?.stock_minimo??0;
-  $('pImage').value=p?.imagen_url||'';
-  $('pPublished').checked=p?.publicado??false;
+  $("pCode").value = product?.codigo || "";
+  $("pName").value = product?.nombre || "";
+  $("pDescription").value = product?.descripcion || "";
+  $("pCost").value = product?.precio_compra ?? 0;
+  $("pPrice").value = product?.precio_venta ?? 0;
+  $("pStock").value = product?.stock ?? 0;
+  $("pMinStock").value = product?.stock_minimo ?? 0;
+  $("pImage").value = product?.imagen_url || "";
+  $("pPublished").checked = product?.publicado ?? false;
 
   updatePreview();
-  $('productDialog').showModal();
+  $("productDialog").showModal();
 }
 
-function numberValue(id,integer=false){
-  const value=Number($(id).value);
+function numberValue(id, integer = false) {
+  const raw = $(id).value.trim();
+  const value = Number(raw);
 
-  if(
-    !Number.isFinite(value)||
-    value<0||
-    (integer&&!Number.isInteger(value))
-  ){
-    throw Error(
-      'Revisa los precios y las cantidades.'
-    );
+  if (
+    raw === "" ||
+    !Number.isFinite(value) ||
+    value < 0 ||
+    (integer && !Number.isInteger(value))
+  ) {
+    throw Error("Revisa los precios y las cantidades.");
   }
 
   return value;
 }
 
-function validateFile(file){
-  if(!file)return;
+function validateFile(file) {
+  if (!file) return;
 
-  if(
-    !['image/jpeg','image/png','image/webp']
-      .includes(file.type)
-  ){
-    throw Error(
-      'La imagen debe ser JPG, PNG o WebP.'
-    );
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    throw Error("La imagen debe ser JPG, PNG o WebP.");
   }
 
-  if(file.size>5*1024*1024){
-    throw Error('La imagen supera los 5 MB.');
-  }
-
-  if(file.size===0){
-    throw Error('La imagen está vacía.');
+  if (!file.size || file.size > 5 * 1024 * 1024) {
+    throw Error("La imagen debe tener un tamaño máximo de 5 MB.");
   }
 }
 
-async function uploadImage(file){
+async function uploadImage(file) {
   validateFile(file);
 
-  const {data:{user},error:userError}=
-    await db.auth.getUser();
+  const { data: { user }, error } = await db.auth.getUser();
 
-  if(userError||!user){
-    throw Error(
-      'Tu sesión expiró. Inicia sesión nuevamente.'
-    );
+  if (error || !user) {
+    throw Error("Tu sesión expiró. Inicia sesión nuevamente.");
   }
 
-  const extension={
-    'image/jpeg':'jpg',
-    'image/png':'png',
-    'image/webp':'webp'
+  const extension = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp"
   }[file.type];
 
-  const path=
+  const path =
     `productos/${user.id}/${crypto.randomUUID()}.${extension}`;
 
-  const result=await db.storage
-    .from(BUCKET)
-    .upload(path,file,{
-      contentType:file.type,
-      cacheControl:'3600',
-      upsert:false
+  const result = await db.storage.from(BUCKET)
+    .upload(path, file, {
+      contentType: file.type,
+      cacheControl: "3600",
+      upsert: false
     });
 
-  if(result.error){
-    throw Error(
-      'No se pudo subir la imagen: '+
-      result.error.message
-    );
+  if (result.error) {
+    throw Error("No se pudo subir la imagen: " + result.error.message);
   }
 
-  const {data}=db.storage
-    .from(BUCKET)
-    .getPublicUrl(path);
+  const { data } = db.storage.from(BUCKET).getPublicUrl(path);
 
-  if(!data?.publicUrl){
-    throw Error(
-      'No se pudo obtener la URL de la imagen.'
-    );
+  if (!data?.publicUrl) {
+    throw Error("No se pudo obtener la URL de la imagen.");
   }
 
   return data.publicUrl;
 }
 
-async function saveProduct(event){
+async function saveProduct(event) {
   event.preventDefault();
+  if (!role || saving) return;
 
-  if(!role||saving)return;
+  let record;
+  let file;
 
-  let record,file;
-
-  try{
-    const url=$('pImage').value.trim();
-    file=$('pFile').files?.[0]||null;
+  try {
+    const url = $("pImage").value.trim();
+    file = $("pFile").files?.[0] || null;
 
     validateFile(file);
 
-    if(url&&!/^https:\/\//i.test(url)){
-      throw Error(
-        'La URL debe comenzar con https://'
-      );
+    if (url && !validUrl(url)) {
+      throw Error("La URL debe comenzar con https://");
     }
 
-    record={
-      codigo:$('pCode').value.trim(),
-      nombre:$('pName').value.trim(),
-      descripcion:$('pDescription').value.trim(),
-      categoria:$('pCategory').value,
-      precio_compra:numberValue('pCost'),
-      precio_venta:numberValue('pPrice'),
-      stock:numberValue('pStock',true),
-      stock_minimo:numberValue('pMinStock',true),
-      imagen_url:url||null,
-      publicado:$('pPublished').checked
+    record = {
+      codigo: $("pCode").value.trim(),
+      nombre: $("pName").value.trim(),
+      descripcion: $("pDescription").value.trim(),
+      categoria: $("pCategory").value,
+      precio_compra: numberValue("pCost"),
+      precio_venta: numberValue("pPrice"),
+      stock: numberValue("pStock", true),
+      stock_minimo: numberValue("pMinStock", true),
+      imagen_url: url || null,
+      publicado: $("pPublished").checked
     };
 
-    if(
-      !record.codigo||
-      !record.nombre||
-      !record.categoria
-    ){
-      throw Error(
-        'Completa código, nombre y categoría.'
-      );
+    if (!record.codigo || !record.nombre || !record.categoria) {
+      throw Error("Completa código, nombre y categoría.");
     }
-  }catch(error){
-    message('formStatus',error.message,true);
+  } catch (error) {
+    status("formStatus", error.message, true);
     return;
   }
 
-  saving=true;
-  $('saveBtn').disabled=true;
-  $('cancelBtn').disabled=true;
+  saving = true;
+  $("saveBtn").disabled = true;
+  $("cancelBtn").disabled = true;
 
-  try{
-    if(file){
-      message(
-        'formStatus',
-        'Subiendo imagen...'
-      );
-
-      record.imagen_url=await uploadImage(file);
+  try {
+    if (file) {
+      status("formStatus", "Subiendo imagen...");
+      record.imagen_url = await uploadImage(file);
     }
 
-    message(
-      'formStatus',
-      'Guardando producto...'
-    );
+    status("formStatus", "Guardando producto...");
 
-    const result=editingId===null
-      ?await db.from('productos')
-        .insert(record)
-        .select('id')
-      :await db.from('productos')
-        .update(record)
-        .eq('id',editingId)
-        .select('id');
+    const result = editingId === null
+      ? await db.from("productos").insert(record).select("id")
+      : await db.from("productos")
+          .update(record)
+          .eq("id", editingId)
+          .select("id");
 
-    if(
-      result.error||
-      !result.data?.length
-    ){
+    if (result.error || !result.data?.length) {
       throw Error(
-        'No se pudo guardar el producto: '+
-        (result.error?.message||'Revisa los permisos.')
+        result.error?.message || "Revisa los permisos de productos."
       );
     }
 
-    $('productDialog').close();
+    $("productDialog").close();
     clearPreview();
 
     await loadData();
 
-    message(
-      'staffStatus',
-      'Producto guardado correctamente.'
-    );
-  }catch(error){
+    status("staffStatus", "Producto guardado correctamente.");
+  } catch (error) {
     console.error(error);
-    message(
-      'formStatus',
-      error.message,
-      true
-    );
-  }finally{
-    saving=false;
-    $('saveBtn').disabled=false;
-    $('cancelBtn').disabled=false;
+    status("formStatus", error.message, true);
+  } finally {
+    saving = false;
+    $("saveBtn").disabled = false;
+    $("cancelBtn").disabled = false;
   }
 }
 
-async function toggleProduct(p){
-  if(!role)return;
+async function toggleProduct(product) {
+  if (!role) return;
 
-  const result=await db.from('productos')
-    .update({publicado:!p.publicado})
-    .eq('id',p.id)
-    .select('id');
+  const result = await db.from("productos")
+    .update({ publicado: !product.publicado })
+    .eq("id", product.id)
+    .select("id");
 
-  if(
-    result.error||
-    !result.data?.length
-  ){
-    message(
-      'staffStatus',
-      'No se pudo cambiar el estado del producto.',
+  if (result.error || !result.data?.length) {
+    status(
+      "staffStatus",
+      "No se pudo cambiar el estado del producto.",
       true
     );
     return;
   }
 
   await loadData();
-
-  message(
-    'staffStatus',
-    'Estado actualizado correctamente.'
-  );
+  status("staffStatus", "Estado actualizado correctamente.");
 }
 
-/* ==========================================
-   GRAPHIC BLUE — PARTE 3
-   VENTAS, CONTROL DE CAJA Y COMPROBANTES
-========================================== */
+/* =====================================
+   CONTROL DE CAJA
+===================================== */
 
-/* ---------- ESTADO DE LA CAJA ---------- */
-
-function cashBanner(id){
-  const box=$(id);
+function renderCashBanner(id) {
+  const box = $(id);
   box.replaceChildren();
 
-  if(openJourney){
-    box.classList.add('open');
+  if (cashError || !cashLoaded) {
+    box.classList.remove("open");
     box.append(
-      el('strong','🟢 Caja abierta'),
-      el('p','Jornada iniciada: '+dateEC(openJourney.abierta_en)),
-      el('p','Fondo inicial: '+money(openJourney.fondo_inicial))
+      node("strong", "⚠️ Estado de caja no disponible"),
+      node("p", "No se puede vender hasta verificar la caja.")
     );
-  }else{
-    box.classList.remove('open');
+    return;
+  }
+
+  if (openJourney) {
+    box.classList.add("open");
     box.append(
-      el('strong','🔴 Caja cerrada'),
-      el('p','No se pueden registrar ventas hasta que el administrador abra la caja.')
+      node("strong", "🟢 Caja abierta"),
+      node("p", "Apertura: " + dateEC(openJourney.abierta_en)),
+      node("p", "Fondo inicial: " + money(openJourney.fondo_inicial))
+    );
+  } else {
+    box.classList.remove("open");
+    box.append(
+      node("strong", "🔴 Caja cerrada"),
+      node(
+        "p",
+        "El administrador debe abrir la caja antes de vender."
+      )
     );
   }
 }
 
-function renderCashState(){
-  cashBanner('homeCashStatus');
-  cashBanner('posCashBanner');
-  cashBanner('controlCashBanner');
+function renderCashState() {
+  renderCashBanner("homeCashStatus");
+  renderCashBanner("posCashBanner");
+  renderCashBanner("controlCashBanner");
 
-  const admin=role==='administrador';
-  const opened=Boolean(openJourney);
+  const admin = role === "administrador";
+  const opened = Boolean(openJourney);
+  const ready = cashLoaded && !cashError && !cashBusy;
 
-  $('cashOpenForm').classList.toggle('hidden',!admin||opened);
-  $('cashMovementForm').classList.toggle('hidden',!admin||!opened);
-  $('cashCloseForm').classList.toggle('hidden',!admin||!opened);
+  $("cashOpenForm").classList.toggle(
+    "hidden",
+    !admin || opened
+  );
 
-  $('cashOpenBtn').disabled=cashBusy;
-  $('cashMovementBtn').disabled=cashBusy;
-  $('cashCloseBtn').disabled=cashBusy;
+  $("cashMovementForm").classList.toggle(
+    "hidden",
+    !admin || !opened
+  );
+
+  $("cashCloseForm").classList.toggle(
+    "hidden",
+    !admin || !opened
+  );
+
+  $("cashOpenBtn").disabled = !ready;
+  $("cashMovementBtn").disabled = !ready;
+  $("cashCloseBtn").disabled = !ready;
 
   updatePosPayment();
 }
 
-async function loadCashState(){
-  if(!role)return;
+async function loadCashState() {
+  if (!role) return false;
 
-  cashLoading=true;
-  openJourney=null;
+  cashLoaded = false;
+  cashError = false;
+  openJourney = null;
   renderCashState();
 
-  const result=await db.from('jornadas_caja')
-    .select('id,fecha,fondo_inicial,estado,abierta_en')
-    .eq('estado','abierta')
+  const result = await db.from("jornadas_caja")
+    .select("id,fecha,estado,fondo_inicial,abierta_en")
+    .eq("estado", "abierta")
     .limit(1)
     .maybeSingle();
 
-  cashLoading=false;
+  cashLoaded = true;
 
-  if(result.error){
-    message(
-      'cashControlStatus',
-      'No se pudo consultar el estado de la caja: '+result.error.message,
+  if (result.error) {
+    cashError = true;
+    status(
+      "cashControlStatus",
+      "Error al consultar la caja: " + result.error.message,
       true
     );
     renderCashState();
-    return;
+    return false;
   }
 
-  openJourney=result.data||null;
+  openJourney = result.data || null;
   renderCashState();
+  return true;
 }
 
-async function loadCashControl(){
-  await loadCashState();
-  await Promise.all([
-    loadCashSummary(),
-    loadCashHistory()
-  ]);
+async function loadCashControl() {
+  if (role !== "administrador") return;
+
+  const ok = await loadCashState();
+
+  if (ok) {
+    await Promise.all([
+      loadCashSummary(),
+      loadCashHistory()
+    ]);
+  }
 }
 
-async function openCash(event){
+async function openCash(event) {
   event.preventDefault();
 
-  if(role!=='administrador'||cashBusy)return;
+  if (role !== "administrador" || cashBusy) return;
 
-  const amount=Number($('cashOpeningAmount').value);
+  const amount = parseMoney($("cashOpeningAmount").value);
 
-  if(
-    $('cashOpeningAmount').value.trim()===''||
-    !Number.isFinite(amount)||
-    amount<0
-  ){
-    message(
-      'cashControlStatus',
-      'Ingresa un fondo inicial válido.',
+  if (!Number.isFinite(amount) || amount < 0) {
+    status(
+      "cashControlStatus",
+      "Ingresa un fondo inicial válido. Ejemplo: 0.50",
       true
     );
     return;
   }
 
-  if(!confirm(
+  if (!confirm(
     `¿Abrir la caja con ${money(amount)} de fondo inicial?`
-  ))return;
+  )) return;
 
-  cashBusy=true;
+  cashBusy = true;
   renderCashState();
+  status("cashControlStatus", "Abriendo caja...");
 
-  message('cashControlStatus','Abriendo caja...');
-
-  try{
-    const result=await db.rpc('gb_abrir_caja',{
-      p_fondo_inicial:amount
+  try {
+    const result = await db.rpc("gb_abrir_caja", {
+      p_fondo_inicial: amount
     });
 
-    if(result.error)throw Error(result.error.message);
-
-    message(
-      'cashControlStatus',
-      '✅ Caja abierta correctamente.'
-    );
+    if (result.error) throw Error(result.error.message);
+    if (result.data?.exito === false) {
+      throw Error(result.data.mensaje || "No se pudo abrir la caja.");
+    }
 
     await loadCashControl();
-  }catch(error){
+
+    status("cashControlStatus", "✅ Caja abierta correctamente.");
+  } catch (error) {
     console.error(error);
-    message(
-      'cashControlStatus',
-      'No se pudo abrir la caja: '+error.message,
+    status(
+      "cashControlStatus",
+      "No se pudo abrir la caja: " + error.message,
       true
     );
-  }finally{
-    cashBusy=false;
+  } finally {
+    cashBusy = false;
     renderCashState();
   }
 }
 
-async function registerCashMovement(event){
+async function registerCashMovement(event) {
   event.preventDefault();
 
-  if(role!=='administrador'||cashBusy||!openJourney)return;
+  if (
+    role !== "administrador" ||
+    cashBusy ||
+    !openJourney
+  ) return;
 
-  const type=$('cashMovementType').value;
-  const amount=Number($('cashMovementAmount').value);
-  const concept=$('cashMovementConcept').value.trim();
+  const type = $("cashMovementType").value;
+  const amount = parseMoney($("cashMovementAmount").value);
+  const concept = $("cashMovementConcept").value.trim();
 
-  if(
-    $('cashMovementAmount').value.trim()===''||
-    !Number.isFinite(amount)||
-    amount<=0||
+  if (
+    !["ingreso", "retiro"].includes(type) ||
+    !Number.isFinite(amount) ||
+    amount <= 0 ||
     !concept
-  ){
-    message(
-      'cashControlStatus',
-      'Completa correctamente el movimiento.',
+  ) {
+    status(
+      "cashControlStatus",
+      "Completa correctamente el tipo, monto y concepto.",
       true
     );
     return;
   }
 
-  const label=type==='retiro'?'retiro':'ingreso';
+  if (!confirm(
+    `¿Registrar ${type} de ${money(amount)}?\nConcepto: ${concept}`
+  )) return;
 
-  if(!confirm(
-    `¿Registrar ${label} de ${money(amount)}?\nConcepto: ${concept}`
-  ))return;
-
-  cashBusy=true;
+  cashBusy = true;
   renderCashState();
 
-  message('cashControlStatus','Guardando movimiento...');
-
-  try{
-    const result=await db.rpc('gb_movimiento_caja',{
-      p_tipo:type,
-      p_monto:amount,
-      p_concepto:concept
+  try {
+    const result = await db.rpc("gb_movimiento_caja", {
+      p_tipo: type,
+      p_monto: amount,
+      p_concepto: concept
     });
 
-    if(result.error)throw Error(result.error.message);
+    if (result.error) throw Error(result.error.message);
+    if (result.data?.exito === false) {
+      throw Error("El movimiento no fue aceptado.");
+    }
 
-    $('cashMovementForm').reset();
-
-    message(
-      'cashControlStatus',
-      '✅ Movimiento registrado correctamente.'
-    );
+    $("cashMovementForm").reset();
 
     await loadCashSummary();
-  }catch(error){
+
+    status(
+      "cashControlStatus",
+      "✅ Movimiento registrado correctamente."
+    );
+  } catch (error) {
     console.error(error);
-    message(
-      'cashControlStatus',
-      'No se pudo registrar el movimiento: '+error.message,
+    status(
+      "cashControlStatus",
+      "Error al registrar movimiento: " + error.message,
       true
     );
-  }finally{
-    cashBusy=false;
+  } finally {
+    cashBusy = false;
     renderCashState();
   }
 }
 
-async function loadCashSummary(){
-  const box=$('cashFigures');
+async function loadCashSummary() {
+  const box = $("cashFigures");
   box.replaceChildren();
 
-  if(!openJourney){
-    box.append(el('p','No hay una jornada abierta.','muted'));
+  if (!openJourney) {
+    box.append(node("p", "No hay una jornada abierta.", "muted"));
+    $("cashSummaryStatus").textContent = "";
     return;
   }
 
-  message('cashSummaryStatus','Calculando resumen...');
+  status("cashSummaryStatus", "Calculando resumen...");
 
-  const [paymentsResult,movementsResult]=await Promise.all([
-    db.from('pedidos')
-      .select('id,total,metodo_pago,estado_pago,pagos(monto,metodo_pago,estado)')
-      .eq('jornada_caja_id',openJourney.id),
+  const [orders, movements] = await Promise.all([
+    db.from("pedidos")
+      .select(
+        "id,total,metodo_pago,estado_pago," +
+        "pagos(monto,metodo_pago,estado)"
+      )
+      .eq("jornada_caja_id", openJourney.id),
 
-    db.from('movimientos_caja')
-      .select('tipo,monto')
-      .eq('jornada_id',openJourney.id)
+    db.from("movimientos_caja")
+      .select("tipo,monto")
+      .eq("jornada_id", openJourney.id)
   ]);
 
-  if(paymentsResult.error||movementsResult.error){
-    message(
-      'cashSummaryStatus',
-      'No se pudo calcular el resumen: '+
-      (paymentsResult.error?.message||movementsResult.error?.message),
+  if (orders.error || movements.error) {
+    status(
+      "cashSummaryStatus",
+      "No se pudo calcular el resumen: " +
+      (orders.error?.message || movements.error?.message),
       true
     );
     return;
   }
 
-  let efectivo=0;
-  let transferencias=0;
-  let otros=0;
-  let ventas=0;
+  let cash = 0;
+  let transfers = 0;
+  let others = 0;
+  let sales = 0;
+  let income = 0;
+  let withdrawals = 0;
 
-  for(const order of paymentsResult.data||[]){
-    let hasPayment=false;
+  for (const order of orders.data || []) {
+    let approved = false;
 
-    for(const payment of order.pagos||[]){
-      if(payment.estado!=='aprobado')continue;
+    for (const payment of order.pagos || []) {
+      if (payment.estado !== "aprobado") continue;
 
-      hasPayment=true;
+      approved = true;
+      const amount = Number(payment.monto) || 0;
 
-      if(payment.metodo_pago==='efectivo'){
-        efectivo+=Number(payment.monto)||0;
-      }else if(payment.metodo_pago==='transferencia'){
-        transferencias+=Number(payment.monto)||0;
-      }else{
-        otros+=Number(payment.monto)||0;
+      if (payment.metodo_pago === "efectivo") {
+        cash += amount;
+      } else if (payment.metodo_pago === "transferencia") {
+        transfers += amount;
+      } else {
+        others += amount;
       }
     }
 
-    if(hasPayment)ventas++;
+    if (approved) sales++;
   }
 
-  let ingresos=0;
-  let retiros=0;
-
-  for(const movement of movementsResult.data||[]){
-    if(movement.tipo==='ingreso'){
-      ingresos+=Number(movement.monto)||0;
-    }else if(movement.tipo==='retiro'){
-      retiros+=Number(movement.monto)||0;
+  for (const movement of movements.data || []) {
+    if (movement.tipo === "ingreso") {
+      income += Number(movement.monto) || 0;
+    } else if (movement.tipo === "retiro") {
+      withdrawals += Number(movement.monto) || 0;
     }
   }
 
-  const expected=
-    Number(openJourney.fondo_inicial)+
-    efectivo+ingresos-retiros;
+  const expected =
+    Number(openJourney.fondo_inicial) +
+    cash +
+    income -
+    withdrawals;
 
-  const figures=[
-    ['Fondo inicial',openJourney.fondo_inicial],
-    ['Ventas en efectivo',efectivo],
-    ['Transferencias',transferencias],
-    ['Otros pagos',otros],
-    ['Ingresos adicionales',ingresos],
-    ['Retiros',retiros],
-    ['Efectivo esperado',expected],
-    ['Ventas registradas',ventas]
+  const figures = [
+    ["Fondo inicial", openJourney.fondo_inicial],
+    ["Ventas en efectivo", cash],
+    ["Transferencias", transfers],
+    ["Otros pagos", others],
+    ["Ingresos adicionales", income],
+    ["Retiros", withdrawals],
+    ["Efectivo esperado", expected],
+    ["Ventas registradas", sales]
   ];
 
-  for(const [label,value] of figures){
-    const card=el('div','','cash-figure');
+  for (const [label, value] of figures) {
+    const card = node("div", "", "cash-figure");
+
     card.append(
-      el('span',label),
-      el(
-        'strong',
-        label==='Ventas registradas'
-          ?String(value)
-          :money(value)
+      node("span", label),
+      node(
+        "strong",
+        label === "Ventas registradas"
+          ? String(value)
+          : money(value)
       )
     );
+
     box.append(card);
   }
 
-  message(
-    'cashSummaryStatus',
-    'Resumen actualizado. El efectivo esperado se calcula con los movimientos registrados.'
+  status(
+    "cashSummaryStatus",
+    "Resumen actualizado. Comprueba los valores antes del cierre."
   );
 }
 
-async function closeCash(event){
+async function closeCash(event) {
   event.preventDefault();
 
-  if(role!=='administrador'||cashBusy||!openJourney)return;
+  if (
+    role !== "administrador" ||
+    cashBusy ||
+    !openJourney
+  ) return;
 
-  const raw=$('cashCountedAmount').value.trim();
-  const counted=Number(raw);
+  const counted = parseMoney($("cashCountedAmount").value);
 
-  if(raw===''||!Number.isFinite(counted)||counted<0){
-    message(
-      'cashControlStatus',
-      'Ingresa el efectivo contado correctamente.',
+  if (!Number.isFinite(counted) || counted < 0) {
+    status(
+      "cashControlStatus",
+      "Escribe un monto válido, por ejemplo 0.50 o 0,50.",
       true
     );
     return;
   }
 
-  if(!confirm(
-    `¿Cerrar la caja con ${money(counted)} de efectivo contado?\n`+
-    'Después de cerrar no se podrán registrar nuevas ventas hasta la próxima apertura.'
-  ))return;
+  const notes = $("cashCloseNotes").value.trim();
 
-  cashBusy=true;
+  if (!confirm(
+    `¿Cerrar la caja con ${money(counted)} de efectivo contado?\n` +
+    "Después de cerrar no podrás vender hasta abrir otra jornada."
+  )) return;
+
+  cashBusy = true;
   renderCashState();
 
-  message('cashControlStatus','Cerrando caja...');
+  status("cashControlStatus", "Cerrando caja...");
 
-  try{
-    const result=await db.rpc('gb_cerrar_caja',{
-      p_efectivo_contado:counted,
-      p_observaciones:$('cashCloseNotes').value.trim()||null
+  try {
+    const result = await db.rpc("gb_cerrar_caja", {
+      p_efectivo_contado: counted,
+      p_observaciones: notes || null
     });
 
-    if(result.error)throw Error(result.error.message);
+    if (result.error) throw Error(result.error.message);
+    if (result.data?.exito === false) {
+      throw Error("No se pudo completar el cierre.");
+    }
 
-    const resultData=result.data;
+    const close = result.data || {};
 
-    $('cashCloseForm').reset();
-
-    message(
-      'cashControlStatus',
-      '✅ Caja cerrada. Efectivo esperado: '+
-      money(resultData.efectivo_esperado)+
-      ' · Contado: '+
-      money(resultData.efectivo_contado)+
-      ' · Diferencia: '+
-      money(resultData.diferencia)
-    );
+    $("cashCloseForm").reset();
 
     await loadCashState();
     await loadCashHistory();
     await loadCashSummary();
-  }catch(error){
+
+    status(
+      "cashControlStatus",
+      "✅ Caja cerrada correctamente. " +
+      "Esperado: " + money(close.efectivo_esperado) +
+      " · Contado: " + money(close.efectivo_contado) +
+      " · Diferencia: " + money(close.diferencia)
+    );
+  } catch (error) {
     console.error(error);
-    message(
-      'cashControlStatus',
-      'No se pudo cerrar la caja: '+error.message,
+    status(
+      "cashControlStatus",
+      "No se pudo cerrar la caja: " + error.message,
       true
     );
-  }finally{
-    cashBusy=false;
+  } finally {
+    cashBusy = false;
     renderCashState();
   }
 }
 
-async function loadCashHistory(){
-  const box=$('cashHistoryRows');
+async function loadCashHistory() {
+  if (role !== "administrador") return;
+
+  const box = $("cashHistoryRows");
   box.replaceChildren();
 
-  if(role!=='administrador'){
-    message(
-      'cashHistoryStatus',
-      'El historial de cierres está reservado al administrador.'
-    );
-    return;
-  }
+  status("cashHistoryStatus", "Cargando historial...");
 
-  message('cashHistoryStatus','Cargando historial...');
-
-  const result=await db.from('jornadas_caja')
+  const result = await db.from("jornadas_caja")
     .select(
-      'fecha,estado,fondo_inicial,total_efectivo,'+
-      'total_transferencias,efectivo_esperado,'+
-      'efectivo_contado,diferencia,abierta_en'
+      "fecha,estado,fondo_inicial,total_efectivo," +
+      "total_transferencias,efectivo_esperado," +
+      "efectivo_contado,diferencia,abierta_en"
     )
-    .order('abierta_en',{ascending:false})
+    .order("abierta_en", { ascending: false })
     .limit(100);
 
-  if(result.error){
-    message(
-      'cashHistoryStatus',
-      'No se pudo cargar el historial: '+result.error.message,
-      true
-    );
-    return;
-  }
-
-  if(!result.data?.length){
-    const row=el('tr');
-    const cell=el('td','Todavía no hay jornadas registradas.');
-    cell.colSpan=8;
-    row.append(cell);
-    box.append(row);
-    return;
-  }
-
-  for(const j of result.data){
-    const row=el('tr');
-
-    row.append(
-      el('td',j.fecha||'—'),
-      el('td',j.estado),
-      el('td',money(j.fondo_inicial)),
-      el('td',j.total_efectivo==null?'—':money(j.total_efectivo)),
-      el('td',j.total_transferencias==null?'—':money(j.total_transferencias)),
-      el('td',j.efectivo_esperado==null?'—':money(j.efectivo_esperado)),
-      el('td',j.efectivo_contado==null?'—':money(j.efectivo_contado)),
-      el(
-        'td',
-        j.diferencia==null?'—':money(j.diferencia),
-        j.diferencia<0?'error':j.diferencia>0?'success':''
-      )
-    );
-
-    box.append(row);
-  }
-
-  message(
-    'cashHistoryStatus',
-    `Mostrando ${result.data.length} jornada(s).`
-  );
-}
-
-/* ---------- VENTAS DE MOSTRADOR ---------- */
-
-function cartTotalCents(){
-  let sum=0;
-
-  for(const [id,qty] of posCart){
-    const p=products.find(
-      x=>String(x.id)===String(id)
-    );
-
-    if(p){
-      sum+=cents(p.precio_venta)*qty;
-    }
-  }
-
-  return sum;
-}
-
-function renderPosProducts(){
-  const box=$('posProducts');
-  box.replaceChildren();
-
-  const q=$('posSearch').value.trim().toLowerCase();
-
-  const matches=products.filter(
-    p=>`${p.nombre} ${p.codigo||''}`
-      .toLowerCase()
-      .includes(q)
-  );
-
-  $('posProductsStatus').textContent=
-    `${matches.length} producto(s) encontrado(s)`;
-
-  if(!matches.length){
-    box.append(
-      el('p','No se encontraron productos.','muted')
-    );
-    return;
-  }
-
-  for(const p of matches){
-    const row=el('div','','pos-product');
-
-    if(
-      p.imagen_url&&
-      /^https:\/\//i.test(p.imagen_url)
-    ){
-      const img=el('img','','thumb');
-      img.src=p.imagen_url;
-      img.alt=p.nombre;
-      row.append(img);
-    }else{
-      row.append(el('div','📦','placeholder'));
-    }
-
-    const info=el('div','','info');
-
-    info.append(
-      el('strong',p.nombre),
-      el(
-        'small',
-        `${p.codigo||'Sin código'} · `+
-        `${money(p.precio_venta)} · Stock: ${p.stock}`
-      )
-    );
-
-    const btn=el(
-      'button',
-      Number(p.stock)>0?'Agregar +':'Agotado',
-      'secondary'
-    );
-
-    btn.disabled=
-      Number(p.stock)<=0||
-      posSaving||
-      !openJourney||
-      cashLoading;
-
-    btn.onclick=()=>addPosProduct(p.id);
-
-    row.append(info,btn);
-    box.append(row);
-  }
-}
-
-function addPosProduct(id){
-  if(!openJourney){
-    message(
-      'posStatus',
-      'La caja está cerrada. Solicita al administrador que la abra.',
-      true
-    );
-    return;
-  }
-
-  const p=products.find(
-    x=>String(x.id)===String(id)
-  );
-
-  if(!p)return;
-
-  const qty=posCart.get(String(id))||0;
-
-  if(qty>=Number(p.stock)){
-    message(
-      'posStatus',
-      'No hay más unidades disponibles de '+p.nombre,
-      true
-    );
-    return;
-  }
-
-  posCart.set(String(id),qty+1);
-
-  $('posReceipt').classList.add('hidden');
-  message('posStatus','');
-  renderPosCart();
-}
-
-function changePosQty(id,delta){
-  const key=String(id);
-
-  const p=products.find(
-    x=>String(x.id)===key
-  );
-
-  if(!p)return;
-
-  const next=(posCart.get(key)||0)+delta;
-
-  if(next>Number(p.stock)){
-    message(
-      'posStatus',
-      'Stock insuficiente para '+p.nombre,
-      true
-    );
-    return;
-  }
-
-  if(next<=0){
-    posCart.delete(key);
-  }else{
-    posCart.set(key,next);
-  }
-
-  $('posReceipt').classList.add('hidden');
-  message('posStatus','');
-  renderPosCart();
-}
-
-function renderPosCart(){
-  const box=$('posCart');
-  box.replaceChildren();
-
-  if(!posCart.size){
-    box.append(
-      el(
-        'p',
-        'Todavía no has agregado productos.',
-        'muted'
-      )
-    );
-  }
-
-  for(const [id,qty] of posCart){
-    const p=products.find(
-      x=>String(x.id)===id
-    );
-
-    if(!p){
-      box.append(
-        el(
-          'p',
-          'Un producto ya no está disponible. Vacía el carrito.',
-          'error'
-        )
-      );
-      continue;
-    }
-
-    const line=el('div','','pos-line');
-    const info=el('div');
-
-    info.append(
-      el('strong',p.nombre),
-      el(
-        'small',
-        `${money(p.precio_venta)} c/u · `+
-        `${money(Number(p.precio_venta)*qty)}`
-      )
-    );
-
-    const controls=el('div','','qty');
-    const minus=el('button','−','secondary');
-    const plus=el('button','+','secondary');
-
-    minus.disabled=posSaving;
-    plus.disabled=
-      posSaving||
-      qty>=Number(p.stock)||
-      !openJourney;
-
-    minus.onclick=()=>changePosQty(id,-1);
-    plus.onclick=()=>changePosQty(id,1);
-
-    controls.append(
-      minus,
-      el('strong',String(qty)),
-      plus
-    );
-
-    line.append(info,controls);
-    box.append(line);
-  }
-
-  $('posTotal').textContent=
-    money(cartTotalCents()/100);
-
-  updatePosPayment();
-}
-
-function updatePosPayment(){
-  const cash=$('posMethod').value==='efectivo';
-
-  $('posCashFields').classList.toggle('hidden',!cash);
-  $('posTransferFields').classList.toggle('hidden',cash);
-
-  const receivedText=$('posReceived').value.trim();
-  const received=Number(receivedText);
-  const total=cartTotalCents();
-
-  const validReceived=
-    receivedText!==''&&
-    Number.isFinite(received)&&
-    received>=0&&
-    cents(received)>=total;
-
-  $('posChange').textContent=money(
-    cash&&validReceived
-      ?(cents(received)-total)/100
-      :0
-  );
-
-  $('posConfirm').disabled=
-    posSaving||
-    cashLoading||
-    !openJourney||
-    !posCart.size||
-    (cash&&!validReceived);
-
-  renderPosProducts();
-}
-
-async function refreshCashProducts(){
-  if(!role)return;
-
-  const ok=await loadData();
-
-  if(!ok){
-    message(
-      'posStatus',
-      'No se pudieron actualizar los productos.',
-      true
-    );
-  }
-}
-
-async function confirmSale(){
-  if(posSaving||!posCart.size||!role)return;
-
-  await loadCashState();
-
-  if(!openJourney){
-    message(
-      'posStatus',
-      'La caja está cerrada. No se puede registrar la venta.',
-      true
-    );
-    return;
-  }
-
-  const method=$('posMethod').value;
-  const receivedText=$('posReceived').value.trim();
-  const received=Number(receivedText);
-  const total=cartTotalCents()/100;
-
-  if(
-    method==='efectivo'&&
-    (
-      receivedText===''||
-      !Number.isFinite(received)||
-      cents(received)<cents(total)
-    )
-  ){
-    message(
-      'posStatus',
-      'El dinero recibido es insuficiente.',
-      true
-    );
-    return;
-  }
-
-  if(
-    method==='transferencia'&&
-    !confirm(
-      `¿Confirmas que recibiste la transferencia de ${money(total)}?`
-    )
-  )return;
-
-  const items=[...posCart].map(
-    ([id,quantity])=>({
-      producto_id:Number(id),
-      cantidad:quantity
-    })
-  );
-
-  if(!confirm(
-    `¿Registrar la venta por ${money(total)}? `+
-    'Esta acción descontará el inventario.'
-  ))return;
-
-  posSaving=true;
-  updatePosPayment();
-
-  $('posClear').disabled=true;
-
-  message('posStatus','Registrando venta...');
-  $('posReceipt').classList.add('hidden');
-
-  let saleRegistered=false;
-
-  try{
-    const result=await db.rpc('registrar_venta_caja',{
-      p_productos:items,
-      p_metodo_pago:method,
-      p_dinero_recibido:
-        method==='efectivo'?received:null
-    });
-
-    if(result.error){
-      throw Error(result.error.message);
-    }
-
-    if(!result.data?.exito){
-      throw Error(
-        'La venta no devolvió una confirmación válida.'
-      );
-    }
-
-    const receipt=result.data;
-
-    saleRegistered=true;
-    posCart.clear();
-    $('posReceived').value='';
-
-    const receiptBox=$('posReceipt');
-    receiptBox.replaceChildren();
-
-    receiptBox.append(
-      el(
-        'strong',
-        `✅ Venta N.º ${receipt.numero_pedido} registrada`
-      ),
-      el('p',`Total: ${money(receipt.total)}`),
-      el('p',`Pago: ${receipt.metodo_pago}`)
-    );
-
-    if(method==='efectivo'){
-      receiptBox.append(
-        el('p',`Cambio: ${money(receipt.cambio)}`)
-      );
-    }
-
-    if(receipt.pedido_id){
-      const btn=el(
-        'button',
-        '🧾 Ver / Imprimir comprobante',
-        'primary'
-      );
-
-      btn.type='button';
-      btn.onclick=()=>openReceipt(receipt.pedido_id);
-      receiptBox.append(btn);
-    }
-
-    receiptBox.classList.remove('hidden');
-
-    message(
-      'posStatus',
-      'Venta guardada correctamente.'
-    );
-
-    await loadData();
-  }catch(error){
-    console.error(error);
-
-    message(
-      'posStatus',
-      saleRegistered
-        ?'La venta se registró, pero hubo un problema al actualizar la pantalla.'
-        :'No se confirmó la venta: '+error.message,
-      true
-    );
-  }finally{
-    posSaving=false;
-    $('posClear').disabled=false;
-
-    renderPosProducts();
-    renderPosCart();
-  }
-}
-
-/* ---------- HISTORIAL DE VENTAS ---------- */
-
-async function loadSales(){
-  if(!role)return;
-
-  message('salesStatus','Cargando ventas...');
-
-  const result=await db.from('pedidos')
-    .select(
-      'id,numero_pedido,creado_en,cliente_nombre,'+
-      'total,metodo_pago,estado,estado_pago'
-    )
-    .order('creado_en',{ascending:false})
-    .limit(100);
-
-  const box=$('salesRows');
-  box.replaceChildren();
-
-  if(result.error){
-    message(
-      'salesStatus',
-      'No se pudo consultar el historial: '+
+  if (result.error) {
+    status(
+      "cashHistoryStatus",
       result.error.message,
       true
     );
     return;
   }
 
-  message(
-    'salesStatus',
-    `Mostrando ${result.data.length} pedido(s) reciente(s).`
-  );
-
-  if(!result.data.length){
-    const row=el('tr');
-    const cell=el(
-      'td',
-      'Todavía no hay ventas registradas.'
-    );
-
-    cell.colSpan=7;
+  if (!result.data?.length) {
+    const row = node("tr");
+    const cell = node("td", "Todavía no hay jornadas registradas.");
+    cell.colSpan = 8;
     row.append(cell);
     box.append(row);
     return;
   }
 
-  for(const sale of result.data){
-    const row=el('tr');
+  for (const item of result.data) {
+    const row = node("tr");
 
     row.append(
-      el('td',String(sale.numero_pedido)),
-      el('td',dateEC(sale.creado_en)),
-      el('td',sale.cliente_nombre||'—'),
-      el('td',money(sale.total)),
-      el('td',sale.metodo_pago||'—'),
-      el(
-        'td',
-        `${sale.estado||'—'} · ${sale.estado_pago||'—'}`
+      node("td", item.fecha || "—"),
+      node("td", item.estado),
+      node("td", money(item.fondo_inicial)),
+      node(
+        "td",
+        item.total_efectivo == null
+          ? "—"
+          : money(item.total_efectivo)
+      ),
+      node(
+        "td",
+        item.total_transferencias == null
+          ? "—"
+          : money(item.total_transferencias)
+      ),
+      node(
+        "td",
+        item.efectivo_esperado == null
+          ? "—"
+          : money(item.efectivo_esperado)
+      ),
+      node(
+        "td",
+        item.efectivo_contado == null
+          ? "—"
+          : money(item.efectivo_contado)
+      ),
+      node(
+        "td",
+        item.diferencia == null
+          ? "—"
+          : money(item.diferencia),
+        Number(item.diferencia) < 0
+          ? "error"
+          : Number(item.diferencia) > 0
+            ? "success"
+            : ""
       )
     );
 
-    const action=el('td');
-    const btn=el(
-      'button',
-      '🧾 Ver comprobante',
-      'secondary'
+    box.append(row);
+  }
+
+  status(
+    "cashHistoryStatus",
+    `Mostrando ${result.data.length} jornada(s).`
+  );
+}
+
+/* =====================================
+   VENTAS
+===================================== */
+
+function cartTotalCents() {
+  let total = 0;
+
+  for (const [id, quantity] of posCart) {
+    const product = products.find(
+      p => String(p.id) === String(id)
     );
 
-    btn.type='button';
-    btn.onclick=()=>openReceipt(sale.id);
+    if (product) {
+      total += cents(product.precio_venta) * quantity;
+    }
+  }
 
-    action.append(btn);
-    row.append(action);
+  return total;
+}
+
+function renderPosProducts() {
+  const box = $("posProducts");
+  box.replaceChildren();
+
+  const query = $("posSearch").value.trim().toLowerCase();
+
+  const filtered = products.filter(p =>
+    `${p.nombre} ${p.codigo || ""}`
+      .toLowerCase()
+      .includes(query)
+  );
+
+  $("posProductsStatus").textContent =
+    `${filtered.length} producto(s) encontrado(s)`;
+
+  if (!filtered.length) {
+    box.append(node("p", "No se encontraron productos.", "muted"));
+    return;
+  }
+
+  for (const product of filtered) {
+    const row = node("div", "", "pos-product");
+
+    if (product.imagen_url && validUrl(product.imagen_url)) {
+      const img = document.createElement("img");
+      img.src = product.imagen_url;
+      img.alt = product.nombre;
+      img.className = "thumb";
+      row.append(img);
+    } else {
+      row.append(node("div", "📦", "placeholder"));
+    }
+
+    const info = node("div", "", "info");
+
+    info.append(
+      node("strong", product.nombre),
+      node(
+        "small",
+        `${product.codigo || "Sin código"} · ` +
+        `${money(product.precio_venta)} · Stock: ${product.stock}`
+      )
+    );
+
+    const button = node(
+      "button",
+      Number(product.stock) > 0 ? "Agregar +" : "Agotado",
+      "secondary"
+    );
+
+    button.disabled =
+      Number(product.stock) <= 0 ||
+      posSaving ||
+      !cashLoaded ||
+      cashError ||
+      !openJourney;
+
+    button.onclick = () => addPosProduct(product.id);
+
+    row.append(info, button);
     box.append(row);
   }
 }
 
-/* ---------- COMPROBANTES ---------- */
+function addPosProduct(id) {
+  if (!cashLoaded || cashError || !openJourney) {
+    status(
+      "posStatus",
+      "La caja no está abierta. Solicita al administrador que la abra.",
+      true
+    );
+    return;
+  }
 
-function ticketLine(parent,label,value){
-  const p=el('p');
+  const product = products.find(
+    p => String(p.id) === String(id)
+  );
 
-  p.append(
-    el('strong',label+': '),
+  if (!product) return;
+
+  const key = String(id);
+  const current = posCart.get(key) || 0;
+
+  if (current >= Number(product.stock)) {
+    status("posStatus", "Stock insuficiente.", true);
+    return;
+  }
+
+  posCart.set(key, current + 1);
+
+  $("posReceipt").classList.add("hidden");
+  status("posStatus", "");
+
+  renderPosCart();
+}
+
+function changePosQty(id, delta) {
+  const key = String(id);
+  const product = products.find(
+    p => String(p.id) === key
+  );
+
+  if (!product) return;
+
+  const next = (posCart.get(key) || 0) + delta;
+
+  if (next > Number(product.stock)) {
+    status("posStatus", "Stock insuficiente.", true);
+    return;
+  }
+
+  if (next <= 0) {
+    posCart.delete(key);
+  } else {
+    posCart.set(key, next);
+  }
+
+  $("posReceipt").classList.add("hidden");
+  renderPosCart();
+}
+
+function renderPosCart() {
+  const box = $("posCart");
+  box.replaceChildren();
+
+  if (!posCart.size) {
+    box.append(
+      node("p", "Todavía no has agregado productos.", "muted")
+    );
+  }
+
+  for (const [id, quantity] of posCart) {
+    const product = products.find(
+      p => String(p.id) === id
+    );
+
+    if (!product) {
+      box.append(
+        node("p", "Producto no disponible. Vacía el carrito.", "error")
+      );
+      continue;
+    }
+
+    const line = node("div", "", "pos-line");
+    const info = node("div");
+
+    info.append(
+      node("strong", product.nombre),
+      node(
+        "small",
+        `${money(product.precio_venta)} c/u · ` +
+        money(Number(product.precio_venta) * quantity)
+      )
+    );
+
+    const controls = node("div", "", "qty");
+
+    const minus = node("button", "−", "secondary");
+    const plus = node("button", "+", "secondary");
+
+    minus.disabled = posSaving;
+    plus.disabled =
+      posSaving ||
+      quantity >= Number(product.stock) ||
+      !openJourney;
+
+    minus.onclick = () => changePosQty(id, -1);
+    plus.onclick = () => changePosQty(id, 1);
+
+    controls.append(
+      minus,
+      node("strong", String(quantity)),
+      plus
+    );
+
+    line.append(info, controls);
+    box.append(line);
+  }
+
+  $("posTotal").textContent = money(cartTotalCents() / 100);
+
+  updatePosPayment();
+}
+
+function updatePosPayment() {
+  const isCash = $("posMethod").value === "efectivo";
+
+  $("posCashFields").classList.toggle("hidden", !isCash);
+  $("posTransferFields").classList.toggle("hidden", isCash);
+
+  const received = parseMoney($("posReceived").value);
+  const total = cartTotalCents();
+
+  const validReceived =
+    Number.isFinite(received) &&
+    cents(received) >= total;
+
+  $("posChange").textContent = money(
+    isCash && validReceived
+      ? (cents(received) - total) / 100
+      : 0
+  );
+
+  const cartValid = [...posCart].every(([id, quantity]) => {
+    const product = products.find(p => String(p.id) === id);
+    return product &&
+      quantity > 0 &&
+      quantity <= Number(product.stock);
+  });
+
+  $("posConfirm").disabled =
+    posSaving ||
+    !cashLoaded ||
+    cashError ||
+    !openJourney ||
+    !posCart.size ||
+    !cartValid ||
+    (isCash && !validReceived);
+}
+
+async function refreshCashProducts() {
+  await loadData();
+  await loadCashState();
+}
+
+async function confirmSale() {
+  if (posSaving || !posCart.size || !role) return;
+
+  const cashReady = await loadCashState();
+
+  if (!cashReady || !openJourney) {
+    status(
+      "posStatus",
+      "No se puede vender porque la caja está cerrada o no disponible.",
+      true
+    );
+    return;
+  }
+
+  const method = $("posMethod").value;
+  const received = parseMoney($("posReceived").value);
+  const total = cartTotalCents() / 100;
+
+  if (!["efectivo", "transferencia"].includes(method)) {
+    status("posStatus", "Forma de pago inválida.", true);
+    return;
+  }
+
+  if (
+    method === "efectivo" &&
+    (!Number.isFinite(received) || cents(received) < cents(total))
+  ) {
+    status("posStatus", "El dinero recibido es insuficiente.", true);
+    return;
+  }
+
+  const items = [...posCart].map(([id, quantity]) => ({
+    producto_id: Number(id),
+    cantidad: quantity
+  }));
+
+  if (method === "transferencia") {
+    if (!confirm(
+      `¿Confirmas que recibiste la transferencia de ${money(total)}?`
+    )) return;
+  }
+
+  if (!confirm(
+    `¿Registrar venta por ${money(total)}? Se descontará el inventario.`
+  )) return;
+
+  posSaving = true;
+  updatePosPayment();
+  renderPosProducts();
+
+  $("posClear").disabled = true;
+  $("posReceipt").classList.add("hidden");
+
+  status("posStatus", "Registrando venta...");
+
+  let registered = false;
+
+  try {
+    const result = await db.rpc("registrar_venta_caja", {
+      p_productos: items,
+      p_metodo_pago: method,
+      p_dinero_recibido: method === "efectivo"
+        ? received
+        : null
+    });
+
+    if (result.error) throw Error(result.error.message);
+
+    if (!result.data?.exito) {
+      throw Error("La venta no devolvió confirmación.");
+    }
+
+    registered = true;
+
+    const receipt = result.data;
+
+    posCart.clear();
+    $("posReceived").value = "";
+
+    const box = $("posReceipt");
+    box.replaceChildren();
+
+    box.append(
+      node(
+        "strong",
+        `✅ Venta N.º ${receipt.numero_pedido} registrada`
+      ),
+      node("p", "Total: " + money(receipt.total)),
+      node("p", "Pago: " + receipt.metodo_pago)
+    );
+
+    if (method === "efectivo") {
+      box.append(
+        node("p", "Cambio: " + money(receipt.cambio))
+      );
+    }
+
+    if (receipt.pedido_id) {
+      const button = node(
+        "button",
+        "🧾 Ver / Imprimir comprobante",
+        "primary"
+      );
+
+      button.onclick = () => openReceipt(receipt.pedido_id);
+      box.append(button);
+    }
+
+    box.classList.remove("hidden");
+
+    status("posStatus", "Venta guardada correctamente.");
+
+    await loadData();
+  } catch (error) {
+    console.error(error);
+
+    status(
+      "posStatus",
+      registered
+        ? "La venta se registró, pero hubo un problema al actualizar la pantalla."
+        : "No se confirmó la venta: " + error.message,
+      true
+    );
+  } finally {
+    posSaving = false;
+    $("posClear").disabled = false;
+
+    renderPosProducts();
+    renderPosCart();
+  }
+}
+
+/* =====================================
+   HISTORIAL DE VENTAS
+===================================== */
+
+async function loadSales() {
+  if (!role) return;
+
+  status("salesStatus", "Cargando ventas...");
+
+  const result = await db.from("pedidos")
+    .select(
+      "id,numero_pedido,creado_en,cliente_nombre," +
+      "total,metodo_pago,estado,estado_pago"
+    )
+    .order("creado_en", { ascending: false })
+    .limit(100);
+
+  const box = $("salesRows");
+  box.replaceChildren();
+
+  if (result.error) {
+    status("salesStatus", result.error.message, true);
+    return;
+  }
+
+  for (const sale of result.data || []) {
+    const row = node("tr");
+
+    const action = node("td");
+    const button = node(
+      "button",
+      "🧾 Ver comprobante",
+      "secondary"
+    );
+
+    button.onclick = () => openReceipt(sale.id);
+    action.append(button);
+
+    row.append(
+      node("td", String(sale.numero_pedido)),
+      node("td", dateEC(sale.creado_en)),
+      node("td", sale.cliente_nombre || "—"),
+      node("td", money(sale.total)),
+      node("td", sale.metodo_pago || "—"),
+      node(
+        "td",
+        `${sale.estado || "—"} · ${sale.estado_pago || "—"}`
+      ),
+      action
+    );
+
+    box.append(row);
+  }
+
+  status(
+    "salesStatus",
+    `Mostrando ${(result.data || []).length} pedido(s).`
+  );
+}
+
+/* =====================================
+   COMPROBANTES DE VENTA
+===================================== */
+
+function ticketLine(parent, label, value) {
+  const line = node("p");
+
+  line.append(
+    node("strong", label + ": "),
     document.createTextNode(String(value))
   );
 
-  parent.append(p);
+  parent.append(line);
 }
 
-async function openReceipt(pedidoId){
-  if(!role||!pedidoId)return;
+async function openReceipt(pedidoId) {
+  if (!role || !pedidoId) return;
 
-  const dialog=$('receiptDialog');
-  const box=$('receiptContent');
+  const dialog = $("receiptDialog");
+  const box = $("receiptContent");
 
-  currentReceipt=null;
+  currentReceipt = null;
 
-  box.replaceChildren(
-    el('p','Cargando comprobante...')
-  );
+  box.replaceChildren(node("p", "Cargando comprobante..."));
 
-  message('receiptStatus','');
+  $("printReceipt").disabled = true;
+  $("downloadTicketPdf").disabled = true;
+  $("receiptStatus").textContent = "";
 
-  $('printReceipt').disabled=true;
-  $('downloadTicketPdf').disabled=true;
+  if (!dialog.open) dialog.showModal();
 
-  if(!dialog.open){
-    dialog.showModal();
-  }
+  try {
+    const [orderResult, itemsResult, paymentsResult] =
+      await Promise.all([
+        db.from("pedidos")
+          .select(
+            "id,numero_pedido,creado_en,cliente_nombre," +
+            "total,metodo_pago,estado_pago"
+          )
+          .eq("id", pedidoId)
+          .single(),
 
-  try{
-    const [
-      orderResult,
-      itemsResult,
-      paymentsResult
-    ]=await Promise.all([
-      db.from('pedidos')
-        .select(
-          'id,numero_pedido,creado_en,'+
-          'cliente_nombre,total,metodo_pago,estado_pago'
-        )
-        .eq('id',pedidoId)
-        .single(),
+        db.from("detalle_pedidos")
+          .select(
+            "nombre_producto,cantidad,precio_unitario,subtotal"
+          )
+          .eq("pedido_id", pedidoId)
+          .order("creado_en", { ascending: true }),
 
-      db.from('detalle_pedidos')
-        .select(
-          'nombre_producto,cantidad,precio_unitario,subtotal'
-        )
-        .eq('pedido_id',pedidoId)
-        .order('creado_en',{ascending:true}),
+        db.from("pagos")
+          .select(
+            "metodo_pago,estado,dinero_recibido," +
+            "cambio_entregado,creado_en"
+          )
+          .eq("pedido_id", pedidoId)
+          .order("creado_en", { ascending: false })
+          .limit(1)
+      ]);
 
-      db.from('pagos')
-        .select(
-          'metodo_pago,estado,dinero_recibido,'+
-          'cambio_entregado,creado_en'
-        )
-        .eq('pedido_id',pedidoId)
-        .order('creado_en',{ascending:false})
-        .limit(1)
-    ]);
+    if (orderResult.error) throw Error(orderResult.error.message);
+    if (itemsResult.error) throw Error(itemsResult.error.message);
+    if (paymentsResult.error) throw Error(paymentsResult.error.message);
 
-    if(orderResult.error){
-      throw Error(orderResult.error.message);
-    }
+    const order = orderResult.data;
+    const items = itemsResult.data || [];
+    const payment = paymentsResult.data?.[0] || null;
 
-    if(itemsResult.error){
-      throw Error(itemsResult.error.message);
-    }
+    currentReceipt = { order, items, payment };
 
-    if(paymentsResult.error){
-      throw Error(paymentsResult.error.message);
-    }
-
-    const order=orderResult.data;
-    const items=itemsResult.data||[];
-    const payment=paymentsResult.data?.[0]||null;
-
-    currentReceipt={order,items,payment};
     box.replaceChildren();
 
-    const head=el('div','','ticket-head');
+    const head = node("div", "", "ticket-head");
 
     head.append(
-      el('h2','🔵 GRAPHIC BLUE'),
-      el('div','Papelería y suministros'),
-      el('strong','COMPROBANTE DE VENTA')
+      node("h2", "🔵 GRAPHIC BLUE"),
+      node("div", "Papelería y suministros"),
+      node("strong", "COMPROBANTE DE VENTA")
     );
 
     box.append(head);
 
-    const meta=el('div','','ticket-meta');
+    const meta = node("div", "", "ticket-meta");
 
-    ticketLine(meta,'Venta N.º',order.numero_pedido);
-
+    ticketLine(meta, "Venta N.º", order.numero_pedido);
+    ticketLine(meta, "Fecha", dateEC(order.creado_en));
     ticketLine(
       meta,
-      'Fecha',
-      order.creado_en
-        ?dateEC(order.creado_en)
-        :'No registrada'
-    );
-
-    ticketLine(
-      meta,
-      'Cliente',
-      order.cliente_nombre||'Cliente de mostrador'
+      "Cliente",
+      order.cliente_nombre || "Cliente de mostrador"
     );
 
     box.append(meta);
 
-    const table=el('table','','ticket-table');
-    const thead=el('thead');
-    const header=el('tr');
+    const table = node("table", "", "ticket-table");
+    const thead = node("thead");
+    const header = node("tr");
 
-    for(const h of [
-      'Producto',
-      'Cant.',
-      'P. unit.',
-      'Subtotal'
-    ]){
-      header.append(el('th',h));
+    for (const title of [
+      "Producto", "Cant.", "P. unit.", "Subtotal"
+    ]) {
+      header.append(node("th", title));
     }
 
     thead.append(header);
     table.append(thead);
 
-    const tbody=el('tbody');
+    const tbody = node("tbody");
 
-    for(const item of items){
-      const row=el('tr');
+    for (const item of items) {
+      const row = node("tr");
 
       row.append(
-        el('td',item.nombre_producto||'Producto'),
-        el('td',String(item.cantidad)),
-        el('td',money(item.precio_unitario)),
-        el('td',money(item.subtotal))
+        node("td", item.nombre_producto || "Producto"),
+        node("td", String(item.cantidad)),
+        node("td", money(item.precio_unitario)),
+        node("td", money(item.subtotal))
       );
 
-      tbody.append(row);
-    }
-
-    if(!items.length){
-      const row=el('tr');
-      const cell=el('td','Sin detalle disponible');
-      cell.colSpan=4;
-      row.append(cell);
       tbody.append(row);
     }
 
     table.append(tbody);
     box.append(table);
 
-    const total=el('div','','ticket-total');
+    const total = node("div", "", "ticket-total");
 
     total.append(
-      el('span','TOTAL'),
-      el('span',money(order.total))
+      node("span", "TOTAL"),
+      node("span", money(order.total))
     );
 
     box.append(total);
 
-    const details=el('div','','ticket-meta');
+    const details = node("div", "", "ticket-meta");
+    const method =
+      payment?.metodo_pago ||
+      order.metodo_pago ||
+      "No registrado";
 
-    const method=
-      payment?.metodo_pago||
-      order.metodo_pago||
-      'No registrada';
+    ticketLine(details, "Forma de pago", method);
 
-    ticketLine(details,'Forma de pago',method);
-
-    if(method==='efectivo'){
+    if (method === "efectivo") {
       ticketLine(
         details,
-        'Dinero recibido',
-        payment?.dinero_recibido==null
-          ?'No registrado'
-          :money(payment.dinero_recibido)
+        "Dinero recibido",
+        payment?.dinero_recibido == null
+          ? "No registrado"
+          : money(payment.dinero_recibido)
       );
 
       ticketLine(
         details,
-        'Cambio entregado',
-        payment?.cambio_entregado==null
-          ?'No registrado'
-          :money(payment.cambio_entregado)
+        "Cambio entregado",
+        payment?.cambio_entregado == null
+          ? "No registrado"
+          : money(payment.cambio_entregado)
       );
     }
 
     ticketLine(
       details,
-      'Estado del pago',
-      payment?.estado||
-      order.estado_pago||
-      'No registrado'
+      "Estado del pago",
+      payment?.estado || order.estado_pago || "No registrado"
     );
 
     box.append(details);
 
-    const foot=el('div','','ticket-foot');
+    const foot = node("div", "", "ticket-foot");
 
     foot.append(
-      el('strong','¡Gracias por tu compra! 💙'),
-      el(
-        'p',
-        'Comprobante de venta de mostrador. '+
-        'No constituye una factura electrónica '+
-        'autorizada por el SRI.'
+      node("strong", "¡Gracias por tu compra! 💙"),
+      node(
+        "p",
+        "Comprobante de mostrador. No constituye una " +
+        "factura electrónica autorizada por el SRI."
       )
     );
 
     box.append(foot);
 
-    $('printReceipt').disabled=false;
-    $('downloadTicketPdf').disabled=false;
-  }catch(error){
+    $("printReceipt").disabled = false;
+    $("downloadTicketPdf").disabled = false;
+  } catch (error) {
     console.error(error);
 
-    currentReceipt=null;
-
     box.replaceChildren(
-      el(
-        'p',
-        'No se pudo cargar el comprobante.',
-        'error'
-      )
+      node("p", "No se pudo cargar el comprobante.", "error")
     );
 
-    message(
-      'receiptStatus',
-      error.message,
-      true
-    );
+    status("receiptStatus", error.message, true);
   }
 }
 
-/* ---------- TICKET PDF DE 80 MM ---------- */
+/* =====================================
+   DESCARGAR TICKET PDF DE 80 MM
+===================================== */
 
-function downloadTicketPDF(){
-  if(!currentReceipt)return;
+function downloadTicketPDF() {
+  if (!currentReceipt) return;
 
-  const JsPDF=window.jspdf?.jsPDF;
+  const JsPDF = window.jspdf?.jsPDF;
 
-  if(!JsPDF){
-    message(
-      'receiptStatus',
-      'No se pudo cargar el generador PDF. '+
-      'Comprueba tu conexión e inténtalo de nuevo.',
+  if (!JsPDF) {
+    status(
+      "receiptStatus",
+      "No se pudo cargar el generador de PDF.",
       true
     );
     return;
   }
 
-  try{
-    const {order,items,payment}=currentReceipt;
+  try {
+    const { order, items, payment } = currentReceipt;
 
-    const measure=new JsPDF({
-      unit:'mm',
-      format:[80,200],
-      orientation:'portrait'
-    });
+    const method =
+      payment?.metodo_pago ||
+      order.metodo_pago ||
+      "No registrado";
 
-    const left=5;
-    const right=75;
-    const usable=70;
-
-    let height=54;
-
-    measure.setFont('helvetica','normal');
-    measure.setFontSize(9);
-
-    const textLines=(s,w=usable)=>
-      measure.splitTextToSize(String(s),w);
-
-    const date=order.creado_en
-      ?dateEC(order.creado_en)
-      :'No registrada';
-
-    const method=
-      payment?.metodo_pago||
-      order.metodo_pago||
-      'No registrado';
-
-    const details=[
+    const lines = [
       `Venta N.: ${order.numero_pedido}`,
-      `Fecha: ${date}`,
-      `Cliente: ${order.cliente_nombre||'Cliente de mostrador'}`
+      `Fecha: ${dateEC(order.creado_en)}`,
+      `Cliente: ${order.cliente_nombre || "Cliente de mostrador"}`
     ];
 
-    const payments=[
+    const paymentLines = [
       `Forma de pago: ${method}`
     ];
 
-    if(method==='efectivo'){
-      payments.push(
-        'Dinero recibido: '+
+    if (method === "efectivo") {
+      paymentLines.push(
+        "Dinero recibido: " +
         (
-          payment?.dinero_recibido==null
-            ?'No registrado'
-            :money(payment.dinero_recibido)
+          payment?.dinero_recibido == null
+            ? "No registrado"
+            : money(payment.dinero_recibido)
         )
       );
 
-      payments.push(
-        'Cambio entregado: '+
+      paymentLines.push(
+        "Cambio entregado: " +
         (
-          payment?.cambio_entregado==null
-            ?'No registrado'
-            :money(payment.cambio_entregado)
+          payment?.cambio_entregado == null
+            ? "No registrado"
+            : money(payment.cambio_entregado)
         )
       );
     }
 
-    payments.push(
-      'Estado del pago: '+
-      (payment?.estado||order.estado_pago||'No registrado')
+    paymentLines.push(
+      "Estado del pago: " +
+      (payment?.estado || order.estado_pago || "No registrado")
     );
 
-    for(const s of details){
-      height+=textLines(s).length*4.3+1;
-    }
-
-    for(const item of items){
-      height+=textLines(
-        item.nombre_producto||'Producto',
-        usable
-      ).length*4.2+5;
-    }
-
-    if(!items.length){
-      height+=6;
-    }
-
-    for(const s of payments){
-      height+=textLines(s).length*4.3+1;
-    }
-
-    height+=22;
-
-    const doc=new JsPDF({
-      unit:'mm',
-      format:[
-        80,
-        Math.max(100,Math.min(1200,height))
-      ],
-      orientation:'portrait',
-      compress:true
+    const measure = new JsPDF({
+      unit: "mm",
+      format: [80, 200]
     });
 
-    let y=8;
+    measure.setFont("helvetica", "normal");
+    measure.setFontSize(9);
 
-    const line=(
-      text,
-      size=9,
-      bold=false,
-      align='left'
-    )=>{
-      doc.setFont(
-        'helvetica',
-        bold?'bold':'normal'
-      );
+    let estimated = 70;
 
+    for (const text of [...lines, ...paymentLines]) {
+      estimated += measure.splitTextToSize(text, 70).length * 5;
+    }
+
+    for (const item of items) {
+      estimated +=
+        measure.splitTextToSize(
+          item.nombre_producto || "Producto",
+          70
+        ).length * 5 + 8;
+    }
+
+    const doc = new JsPDF({
+      unit: "mm",
+      format: [80, Math.max(120, Math.min(1200, estimated))],
+      compress: true
+    });
+
+    let y = 8;
+
+    function pdfLine(text, size = 9, bold = false, center = false) {
+      doc.setFont("helvetica", bold ? "bold" : "normal");
       doc.setFontSize(size);
 
-      const ls=doc.splitTextToSize(
-        String(text),
-        usable
-      );
+      const split = doc.splitTextToSize(String(text), 70);
 
-      for(const t of ls){
+      for (const part of split) {
         doc.text(
-          t,
-          align==='center'?40:left,
+          part,
+          center ? 40 : 5,
           y,
-          {align}
+          center ? { align: "center" } : {}
         );
 
-        y+=size*0.45+0.7;
+        y += size * 0.45 + 0.8;
       }
-    };
-
-    const rule=()=>{
-      doc.setDrawColor(130);
-      doc.setLineWidth(.2);
-      doc.line(left,y,right,y);
-      y+=4;
-    };
-
-    line('GRAPHIC BLUE',16,true,'center');
-    line('Papeleria y suministros',9,false,'center');
-
-    y+=1;
-
-    line(
-      'COMPROBANTE DE VENTA',
-      10,
-      true,
-      'center'
-    );
-
-    y+=3;
-    rule();
-
-    for(const s of details){
-      line(s);
     }
 
-    y+=2;
-    rule();
+    function separator() {
+      y += 2;
+      doc.setDrawColor(150);
+      doc.line(5, y, 75, y);
+      y += 5;
+    }
 
-    for(const item of items){
-      line(
-        item.nombre_producto||'Producto',
-        9,
-        true
+    pdfLine("GRAPHIC BLUE", 16, true, true);
+    pdfLine("Papeleria y suministros", 9, false, true);
+
+    y += 3;
+
+    pdfLine("COMPROBANTE DE VENTA", 10, true, true);
+    separator();
+
+    for (const line of lines) pdfLine(line);
+
+    separator();
+
+    for (const item of items) {
+      pdfLine(item.nombre_producto || "Producto", 9, true);
+      pdfLine(
+        `${item.cantidad} x ${money(item.precio_unitario)}  ` +
+        money(item.subtotal)
       );
-
-      const desc=
-        `${item.cantidad} x ${money(item.precio_unitario)}`+
-        `     ${money(item.subtotal)}`;
-
-      line(desc,9);
-      y+=1;
+      y += 2;
     }
 
-    if(!items.length){
-      line('Sin detalle disponible');
-    }
+    separator();
 
-    rule();
+    pdfLine("TOTAL: " + money(order.total), 13, true);
+    separator();
 
-    line(
-      'TOTAL: '+money(order.total),
-      13,
-      true
-    );
+    for (const line of paymentLines) pdfLine(line);
 
-    y+=2;
-    rule();
+    separator();
 
-    for(const s of payments){
-      line(s);
-    }
+    pdfLine("Gracias por tu compra!", 10, true, true);
+    pdfLine("Comprobante de mostrador.", 8, false, true);
+    pdfLine("No es factura electronica del SRI.", 8, false, true);
 
-    y+=4;
-    rule();
+    doc.save(`Graphic-Blue-Ticket-${order.numero_pedido}.pdf`);
 
-    line(
-      'Gracias por tu compra!',
-      10,
-      true,
-      'center'
-    );
-
-    y+=2;
-
-    line(
-      'Comprobante de venta de mostrador.',
-      8,
-      false,
-      'center'
-    );
-
-    line(
-      'No constituye una factura electronica',
-      8,
-      false,
-      'center'
-    );
-
-    line(
-      'autorizada por el SRI.',
-      8,
-      false,
-      'center'
-    );
-
-    doc.save(
-      `Graphic-Blue-Ticket-${order.numero_pedido}.pdf`
-    );
-
-    message(
-      'receiptStatus',
-      'PDF de 80 mm generado. '+
-      'En iPhone, revisa Descargas o el menú Compartir.'
-    );
-  }catch(error){
+    status("receiptStatus", "Ticket PDF generado correctamente.");
+  } catch (error) {
     console.error(error);
-
-    message(
-      'receiptStatus',
-      'No se pudo generar el PDF: '+error.message,
-      true
-    );
+    status("receiptStatus", error.message, true);
   }
 }
 
-/* ---------- CONEXIÓN DE BOTONES ---------- */
+/* =====================================
+   EVENTOS Y BOTONES
+===================================== */
 
-$('loginForm').onsubmit=async event=>{
+$("loginForm").onsubmit = async event => {
   event.preventDefault();
 
-  $('loginBtn').disabled=true;
-  message('loginStatus','Ingresando...');
+  $("loginBtn").disabled = true;
+  status("loginStatus", "Ingresando...");
 
-  const result=await db.auth.signInWithPassword({
-    email:$('email').value.trim(),
-    password:$('password').value
+  const result = await db.auth.signInWithPassword({
+    email: $("email").value.trim(),
+    password: $("password").value
   });
 
-  $('loginBtn').disabled=false;
+  $("loginBtn").disabled = false;
 
-  if(result.error){
-    message(
-      'loginStatus',
-      'Correo o contraseña incorrectos.',
+  if (result.error) {
+    status(
+      "loginStatus",
+      "Correo o contraseña incorrectos.",
       true
     );
     return;
   }
 
-  $('password').value='';
+  $("password").value = "";
   await checkSession();
 };
 
-$('logoutBtn').onclick=async()=>{
-  const result=await db.auth.signOut();
+$("logoutBtn").onclick = async () => {
+  const result = await db.auth.signOut();
 
-  if(result.error){
-    alert('No se pudo cerrar sesión.');
+  if (result.error) {
+    alert("No se pudo cerrar sesión.");
     return;
   }
 
   showLogin();
 };
 
-$('navHome').onclick=()=>showSection('home');
-$('navProducts').onclick=()=>showSection('products');
-$('navInventory').onclick=()=>showSection('inventory');
-$('navCash').onclick=()=>showSection('cash');
-$('navCashControl').onclick=()=>showSection('cashControl');
-$('navSales').onclick=()=>showSection('sales');
+$("navHome").onclick = () => showSection("home");
+$("navProducts").onclick = () => showSection("products");
+$("navInventory").onclick = () => showSection("inventory");
+$("navCash").onclick = () => showSection("cash");
 
-$('newBtn').onclick=()=>openForm();
-
-$('cancelBtn').onclick=()=>{
-  if(saving)return;
-  $('productDialog').close();
-  clearPreview();
-};
-
-$('productForm').onsubmit=saveProduct;
-$('search').oninput=renderProducts;
-$('filterCategory').onchange=renderProducts;
-$('pFile').onchange=updatePreview;
-
-$('pImage').oninput=()=>{
-  if(!$('pFile').files?.length){
-    updatePreview();
+$("navCashControl").onclick = () => {
+  if (role === "administrador") {
+    showSection("cashControl");
   }
 };
 
-$('posSearch').oninput=renderPosProducts;
-$('posMethod').onchange=updatePosPayment;
-$('posReceived').oninput=updatePosPayment;
-$('posConfirm').onclick=confirmSale;
+$("navSales").onclick = () => showSection("sales");
 
-$('posClear').onclick=()=>{
-  if(posSaving)return;
+$("newBtn").onclick = () => openForm();
+
+$("cancelBtn").onclick = () => {
+  if (saving) return;
+  $("productDialog").close();
+  clearPreview();
+};
+
+$("productForm").onsubmit = saveProduct;
+$("search").oninput = renderProducts;
+$("filterCategory").onchange = renderProducts;
+$("pFile").onchange = updatePreview;
+
+$("pImage").oninput = () => {
+  if (!$("pFile").files?.length) updatePreview();
+};
+
+$("posSearch").oninput = renderPosProducts;
+$("posMethod").onchange = updatePosPayment;
+$("posReceived").oninput = updatePosPayment;
+$("posConfirm").onclick = confirmSale;
+
+$("posClear").onclick = () => {
+  if (posSaving) return;
 
   posCart.clear();
-  $('posReceipt').classList.add('hidden');
-  message('posStatus','');
+  $("posReceipt").classList.add("hidden");
+  status("posStatus", "");
+
   renderPosCart();
 };
 
-$('cashOpenForm').onsubmit=openCash;
-$('cashMovementForm').onsubmit=registerCashMovement;
-$('cashCloseForm').onsubmit=closeCash;
+$("cashOpenForm").onsubmit = openCash;
+$("cashMovementForm").onsubmit = registerCashMovement;
+$("cashCloseForm").onsubmit = closeCash;
 
-$('refreshCashSummary').onclick=loadCashSummary;
-$('refreshCashHistory').onclick=loadCashHistory;
-$('refreshSales').onclick=loadSales;
+$("refreshCashSummary").onclick = loadCashSummary;
+$("refreshCashHistory").onclick = loadCashHistory;
+$("refreshSales").onclick = loadSales;
 
-$('closeReceipt').onclick=()=>{
-  $('receiptDialog').close();
+$("closeReceipt").onclick = () => {
+  $("receiptDialog").close();
 };
 
-$('printReceipt').onclick=()=>{
-  window.print();
-};
+$("printReceipt").onclick = () => window.print();
 
-$('downloadTicketPdf').onclick=downloadTicketPDF;
+$("downloadTicketPdf").onclick = downloadTicketPDF;
 
-/* ---------- INICIAR SISTEMA ---------- */
+/* =====================================
+   INICIAR GRAPHIC BLUE
+===================================== */
 
 await checkSession();
 
