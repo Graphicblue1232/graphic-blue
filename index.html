@@ -1,230 +1,492 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Graphic Blue | Papelería y suministros</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fc;
-      color: #172b4d;
-    }
-    header {
-      background: #123b80;
-      color: white;
-      padding: 22px 18px;
-    }
-    .top {
-      max-width: 1100px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-    .logo { font-size: 23px; font-weight: 800; }
-    button {
-      cursor: pointer;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: bold;
-    }
-    .login { background: white; color: #123b80; }
-    .hero {
-      background: linear-gradient(135deg, #123b80, #247de2);
-      color: white;
-      text-align: center;
-      padding: 65px 20px;
-    }
-    .hero h1 { font-size: 36px; margin: 0 0 15px; }
-    .hero p { font-size: 17px; line-height: 1.5; }
-    .search {
-      width: 100%;
-      max-width: 560px;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      margin-top: 22px;
-    }
-    main { max-width: 1100px; margin: auto; padding: 30px 18px; }
-    .categories {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 8px 0 22px;
-    }
-    .category { background: #e0ebff; color: #174785; white-space: nowrap; }
-    .category.active { background: #176bd1; color: white; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-    .product {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 5px 20px #173b7114;
-    }
-    .photo {
-      background: #e7effb;
-      height: 170px;
-      display: grid;
-      place-items: center;
-      font-size: 60px;
-    }
-    .info { padding: 18px; }
-    .info h3 { margin: 0 0 8px; }
-    .price { color: #1267c9; font-size: 22px; font-weight: bold; }
-    .add { width: 100%; background: #176bd1; color: white; margin-top: 12px; }
-    .notice { color: #66758b; }
-    footer {
-      margin-top: 40px;
-      padding: 30px;
-      text-align: center;
-      background: #102d5d;
-      color: white;
-    }
-    .cart {
-      position: fixed;
-      right: 18px;
-      bottom: 20px;
-      background: #176bd1;
-      color: white;
-      box-shadow: 0 5px 20px #0003;
-    }
-    dialog {
-      border: none;
-      border-radius: 16px;
-      width: min(92%, 440px);
-      padding: 24px;
-    }
-    dialog::backdrop { background: #0008; }
-    dialog input {
-      width: 100%;
-      padding: 13px;
-      margin: 8px 0;
-      border: 1px solid #ccd5e5;
-      border-radius: 9px;
-    }
-    .close { background: #e7effb; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphic Blue | Papelería y suministros</title>
+<style>
+:root {
+  font-family: system-ui, -apple-system, Arial, sans-serif;
+  color: #18325c;
+  background: #f3f7fd;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 700;
+}
+button:disabled { opacity: .55; cursor: not-allowed; }
+.wrap { max-width: 1120px; margin: auto; padding: 0 18px; }
+.top { background: #123b80; color: white; }
+.top .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 17px;
+  padding-bottom: 17px;
+}
+.brand { font-size: 22px; font-weight: 900; letter-spacing: .5px; }
+.top button { background: white; color: #123b80; }
+.hero {
+  background: linear-gradient(125deg, #123b80, #2685ea);
+  color: white;
+  padding: 60px 0;
+}
+.hero h1 { font-size: clamp(30px, 6vw, 48px); margin: 0 0 12px; }
+.hero p { max-width: 620px; line-height: 1.6; }
+.search {
+  width: 100%;
+  max-width: 600px;
+  border: 0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 14px;
+}
+main { padding: 30px 0 85px; }
+.chips {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding: 8px 0 22px;
+}
+.chip { background: #e2edff; color: #174785; white-space: nowrap; }
+.chip.active, .primary { background: #176bd1; color: white; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+.product {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 22px #173b7114;
+}
+.photo {
+  height: 175px;
+  background: #e7effb;
+  display: grid;
+  place-items: center;
+  font-size: 58px;
+}
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+.info { padding: 18px; }
+.info h3 { margin: 0 0 8px; }
+.muted { color: #60728e; font-size: 14px; }
+.price { color: #1267c9; font-size: 23px; font-weight: 800; }
+.add {
+  width: 100%;
+  margin-top: 12px;
+  background: #176bd1;
+  color: white;
+}
+.cart-button {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  background: #176bd1;
+  color: white;
+  box-shadow: 0 5px 20px #0003;
+}
+dialog {
+  border: 0;
+  border-radius: 18px;
+  width: min(94vw, 480px);
+  padding: 25px;
+  max-height: 85vh;
+  overflow: auto;
+}
+dialog::backdrop { background: #001b4388; }
+dialog input {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  border: 1px solid #cbd6e6;
+  border-radius: 9px;
+}
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.secondary { background: #e7effb; color: #123b80; }
+.error { color: #b42318; }
+.success { color: #13704a; }
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid #e6ecf4;
+  padding: 12px 0;
+}
+.line button { padding: 7px 10px; }
+.panel {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 24px;
+  box-shadow: 0 6px 22px #173b7114;
+}
+.hidden { display: none !important; }
+footer {
+  background: #102d5d;
+  color: white;
+  text-align: center;
+  padding: 28px;
+}
+.small { font-size: 13px; }
+.status { min-height: 22px; }
+@media(max-width:540px) {
+  .brand { font-size: 19px; }
+  .hero { padding: 44px 0; }
+  .grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .photo { height: 125px; }
+  .info { padding: 12px; }
+  .info h3 { font-size: 15px; }
+  .price { font-size: 19px; }
+  .add { font-size: 13px; padding: 10px 6px; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <div class="top">
-      <div class="logo">GRAPHIC BLUE</div>
-      <button class="login" onclick="openLogin()">Personal</button>
-    </div>
-  </header>
 
-  <section class="hero">
+<header class="top">
+  <div class="wrap">
+    <div class="brand">GRAPHIC BLUE</div>
+    <button id="personalBtn">Personal</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
     <h1>Todo lo que necesitas, en un solo lugar</h1>
-    <p>Encuentra artículos de papelería, oficina y suministros para tus proyectos.</p>
-    <input class="search" id="search" placeholder="🔎 Buscar productos..." oninput="render()">
-  </section>
+    <p>Artículos de papelería, oficina y suministros para tus proyectos. Compra en línea y retira en nuestro local.</p>
+    <input id="search" class="search" type="search" placeholder="🔎 Buscar productos..." aria-label="Buscar productos">
+  </div>
+</section>
 
-  <main>
-    <h2>Nuestro catálogo</h2>
-    <div class="categories" id="categories">
-      <button class="category active" onclick="filterCategory('Todos',this)">Todos</button>
-      <button class="category" onclick="filterCategory('Papelería',this)">Papelería</button>
-      <button class="category" onclick="filterCategory('Oficina',this)">Oficina</button>
-      <button class="category" onclick="filterCategory('Suministros',this)">Suministros</button>
+<main class="wrap">
+  <h2>Nuestro catálogo</h2>
+  <div id="categories" class="chips"></div>
+  <p id="catalogStatus" class="muted status">Cargando productos...</p>
+  <div id="products" class="grid"></div>
+
+  <section id="staffPanel" class="panel hidden">
+    <div class="line">
+      <h2>Panel del personal</h2>
+      <button id="logoutBtn" class="secondary">Salir</button>
     </div>
-    <div class="grid" id="products"></div>
-    <p class="notice" id="empty"></p>
-  </main>
+    <p id="staffWelcome"></p>
+    <p class="muted">Esta es la primera conexión segura del personal. Las herramientas para agregar productos, gestionar pedidos y ver alertas se incorporarán después.</p>
+    <h3>Productos con stock bajo</h3>
+    <div id="lowStock">Cargando...</div>
+  </section>
+</main>
 
-  <button class="cart" onclick="showCart()">🛒 Carrito (<span id="count">0</span>)</button>
+<button id="cartBtn" class="cart-button">🛒 Carrito (<span id="cartCount">0</span>)</button>
 
-  <dialog id="cartDialog">
-    <h2>Tu carrito</h2>
-    <div id="cartItems"></div>
-    <p id="total"></p>
-    <p class="notice">La confirmación de pedidos estará disponible próximamente.</p>
-    <button class="close" onclick="cartDialog.close()">Cerrar</button>
-  </dialog>
+<dialog id="cartDialog">
+  <h2>Tu carrito</h2>
+  <div id="cartItems"></div>
+  <p><strong id="cartTotal">Total: $0.00</strong></p>
+  <p class="muted small">Esta es una vista previa del carrito. Todavía no se aceptan pagos ni pedidos.</p>
+  <div class="actions">
+    <button id="cartClose" class="secondary">Cerrar</button>
+  </div>
+</dialog>
 
-  <dialog id="loginDialog">
-    <h2>Acceso del personal</h2>
-    <p>Administradores y empleados</p>
-    <input type="email" placeholder="Correo electrónico" autocomplete="username">
-    <input type="password" placeholder="Contraseña" autocomplete="current-password">
-    <p class="notice">Conectaremos el inicio de sesión con Supabase en el siguiente paso.</p>
-    <button class="close" onclick="loginDialog.close()">Cerrar</button>
-  </dialog>
+<dialog id="loginDialog">
+  <h2>Acceso del personal</h2>
+  <p class="muted">Administradores y empleados</p>
+  <form id="loginForm">
+    <label>Correo electrónico
+      <input id="email" type="email" autocomplete="username" required>
+    </label>
+    <label>Contraseña
+      <input id="password" type="password" autocomplete="current-password" required>
+    </label>
+    <p id="loginStatus" class="small status" role="status"></p>
+    <div class="actions">
+      <button type="submit" class="primary" id="loginSubmit">Iniciar sesión</button>
+      <button type="button" class="secondary" id="loginClose">Cerrar</button>
+    </div>
+  </form>
+</dialog>
 
-  <footer>© 2026 Graphic Blue · Papelería y suministros</footer>
+<footer>© 2026 Graphic Blue · Papelería y suministros</footer>
 
-  <script>
-    // Productos de demostración. No son inventario real.
-    const products = [
-      { id: 1, name: "Cuaderno universitario", category: "Papelería", price: 3.50, icon: "📓" },
-      { id: 2, name: "Bolígrafos de colores", category: "Papelería", price: 2.75, icon: "🖊️" },
-      { id: 3, name: "Carpeta organizadora", category: "Oficina", price: 4.25, icon: "📁" },
-      { id: 4, name: "Papel para impresión", category: "Suministros", price: 5.90, icon: "📄" }
-    ];
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    let category = "Todos";
-    let cart = [];
+const SUPABASE_URL = 'https://bszdopscbugyfnakqmbw.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
 
-    const money = value => "$" + value.toFixed(2);
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-    function filterCategory(value, button) {
-      category = value;
-      document.querySelectorAll(".category").forEach(b => b.classList.remove("active"));
-      button.classList.add("active");
-      render();
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat('es-EC', {
+  style: 'currency',
+  currency: 'USD'
+}).format(Number(n) || 0);
+
+let products = [];
+let categories = [];
+let activeCategory = 'Todos';
+let cart = new Map();
+
+const el = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+};
+
+function renderCategories() {
+  const box = $('categories');
+  box.replaceChildren();
+
+  for (const name of ['Todos', ...categories]) {
+    const b = el('button', 'chip' + (activeCategory === name ? ' active' : ''), name);
+    b.onclick = () => {
+      activeCategory = name;
+      renderCategories();
+      renderProducts();
+    };
+    box.append(b);
+  }
+}
+
+function renderProducts() {
+  const box = $('products');
+  box.replaceChildren();
+
+  const q = $('search').value.trim().toLocaleLowerCase();
+
+  const filtered = products.filter(p =>
+    (activeCategory === 'Todos' || p.categoria === activeCategory) &&
+    [p.nombre, p.codigo, p.descripcion].some(v =>
+      String(v || '').toLocaleLowerCase().includes(q)
+    )
+  );
+
+  for (const p of filtered) {
+    const card = el('article', 'product');
+    const photo = el('div', 'photo');
+
+    if (p.imagen_url && /^https:\/\//i.test(p.imagen_url)) {
+      const img = document.createElement('img');
+      img.src = p.imagen_url;
+      img.alt = p.nombre || 'Producto';
+      img.loading = 'lazy';
+      img.onerror = () => { photo.replaceChildren('📚'); };
+      photo.append(img);
+    } else {
+      photo.textContent = '📚';
     }
 
-    function render() {
-      const query = document.getElementById("search").value.toLowerCase();
-      const filtered = products.filter(p =>
-        (category === "Todos" || p.category === category) &&
-        p.name.toLowerCase().includes(query)
-      );
+    const info = el('div', 'info');
+    info.append(
+      el('h3', '', p.nombre || 'Producto'),
+      el('p', 'muted', p.categoria || 'Papelería'),
+      el('div', 'price', money(p.precio_venta))
+    );
 
-      document.getElementById("products").innerHTML = filtered.map(p => `
-        <article class="product">
-          <div class="photo">${p.icon}</div>
-          <div class="info">
-            <h3>${p.name}</h3>
-            <p>${p.category}</p>
-            <div class="price">${money(p.price)}</div>
-            <button class="add" onclick="addCart(${p.id})">Agregar al carrito</button>
-          </div>
-        </article>
-      `).join("");
+    const available = Number(p.stock) > 0;
+    info.append(el('p', 'muted', available ? 'Disponible' : 'Agotado'));
 
-      document.getElementById("empty").textContent =
-        filtered.length ? "" : "No encontramos productos.";
+    const btn = el('button', 'add', available ? 'Agregar al carrito' : 'Agotado');
+    btn.disabled = !available;
+    btn.onclick = () => addToCart(p);
+
+    info.append(btn);
+    card.append(photo, info);
+    box.append(card);
+  }
+
+  $('catalogStatus').textContent = products.length === 0
+    ? 'Todavía no hay productos publicados.'
+    : filtered.length === 0
+      ? 'No encontramos productos.'
+      : '';
+}
+
+async function loadCatalog() {
+  try {
+    const [c, p] = await Promise.all([
+      supabase.from('categorias').select('nombre').order('nombre'),
+      supabase.from('productos')
+        .select('id,codigo,nombre,descripcion,categoria,precio_venta,stock,imagen_url')
+        .eq('publicado', true)
+        .order('nombre')
+    ]);
+
+    if (c.error) throw c.error;
+    if (p.error) throw p.error;
+
+    categories = (c.data || []).map(x => x.nombre);
+    products = p.data || [];
+
+    renderCategories();
+    renderProducts();
+  } catch (err) {
+    $('catalogStatus').textContent =
+      'No pudimos cargar el catálogo. Intenta actualizar la página.';
+    console.error(err);
+  }
+}
+
+function addToCart(p) {
+  const current = cart.get(p.id) || { product: p, qty: 0 };
+
+  if (current.qty >= Number(p.stock)) {
+    alert('No hay más unidades disponibles.');
+    return;
+  }
+
+  current.qty++;
+  cart.set(p.id, current);
+  updateCount();
+}
+
+function updateCount() {
+  $('cartCount').textContent = [...cart.values()]
+    .reduce((n, x) => n + x.qty, 0);
+}
+
+function showCart() {
+  const box = $('cartItems');
+  box.replaceChildren();
+  let total = 0;
+
+  if (!cart.size) {
+    box.append(el('p', 'muted', 'Tu carrito está vacío.'));
+  }
+
+  for (const [id, item] of cart) {
+    const row = el('div', 'line');
+
+    row.append(el('span', '',
+      `${item.product.nombre} × ${item.qty} — ${money(item.product.precio_venta * item.qty)}`
+    ));
+
+    total += Number(item.product.precio_venta) * item.qty;
+
+    const remove = el('button', 'secondary', 'Quitar');
+    remove.onclick = () => {
+      cart.delete(id);
+      updateCount();
+      showCart();
+    };
+
+    row.append(remove);
+    box.append(row);
+  }
+
+  $('cartTotal').textContent = 'Total: ' + money(total);
+
+  if (!$('cartDialog').open) {
+    $('cartDialog').showModal();
+  }
+}
+
+async function refreshStaff() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    $('staffPanel').classList.add('hidden');
+    $('personalBtn').textContent = 'Personal';
+    return;
+  }
+
+  const { data: profile, error } = await supabase
+    .from('perfiles')
+    .select('nombre,rol')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (error || !profile || !['administrador', 'empleado'].includes(profile.rol)) {
+    await supabase.auth.signOut();
+    $('loginStatus').textContent = 'Esta cuenta no tiene acceso de personal.';
+    $('loginStatus').className = 'error small';
+    return;
+  }
+
+  $('staffPanel').classList.remove('hidden');
+  $('personalBtn').textContent = 'Mi panel';
+  $('staffWelcome').textContent =
+    `Bienvenido/a, ${profile.nombre} (${profile.rol}).`;
+
+  const { data, error: lowErr } = await supabase
+    .from('productos_stock_bajo')
+    .select('nombre,stock,stock_minimo')
+    .order('nombre');
+
+  const list = $('lowStock');
+  list.replaceChildren();
+
+  if (lowErr) {
+    list.textContent = 'No pudimos consultar las alertas.';
+  } else if (!data?.length) {
+    list.textContent = 'No hay productos con stock bajo.';
+  } else {
+    for (const p of data) {
+      list.append(el('p', '',
+        `⚠️ ${p.nombre}: ${p.stock} unidades (mínimo ${p.stock_minimo})`
+      ));
     }
+  }
+}
 
-    function addCart(id) {
-      cart.push(products.find(p => p.id === id));
-      document.getElementById("count").textContent = cart.length;
-    }
+$('search').addEventListener('input', renderProducts);
+$('cartBtn').onclick = showCart;
+$('cartClose').onclick = () => $('cartDialog').close();
+$('loginClose').onclick = () => $('loginDialog').close();
 
-    function showCart() {
-      document.getElementById("cartItems").textContent =
-        cart.length ? cart.map(p => p.name + " — " + money(p.price)).join(" | ") : "Tu carrito está vacío.";
-      document.getElementById("total").textContent =
-        "Total: " + money(cart.reduce((sum, p) => sum + p.price, 0));
-      document.getElementById("cartDialog").showModal();
-    }
+$('personalBtn').onclick = () => {
+  $('staffPanel').classList.contains('hidden')
+    ? $('loginDialog').showModal()
+    : $('staffPanel').scrollIntoView({ behavior: 'smooth' });
+};
 
-    function openLogin() {
-      document.getElementById("loginDialog").showModal();
-    }
+$('logoutBtn').onclick = async () => {
+  await supabase.auth.signOut();
+  await refreshStaff();
+};
 
-    render();
-  </script>
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+
+  const btn = $('loginSubmit');
+  btn.disabled = true;
+  $('loginStatus').textContent = 'Ingresando...';
+  $('loginStatus').className = 'small status';
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('password').value
+  });
+
+  btn.disabled = false;
+
+  if (error) {
+    $('loginStatus').textContent =
+      'No se pudo iniciar sesión. Revisa el correo y la contraseña.';
+    $('loginStatus').className = 'error small';
+    return;
+  }
+
+  $('password').value = '';
+  $('loginDialog').close();
+  await refreshStaff();
+};
+
+renderCategories();
+await loadCatalog();
+await refreshStaff();
+</script>
 </body>
 </html>
