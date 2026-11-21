@@ -23,11 +23,8 @@
 }
 
 *{box-sizing:border-box}
-
 html{scroll-behavior:smooth}
-
 body{margin:0}
-
 button,input{font:inherit}
 
 button{
@@ -58,7 +55,7 @@ a{
 
 .hidden{display:none!important}
 
-/* TOP BAR */
+/* BARRA SUPERIOR */
 
 .announcement{
   background:#0b2b5b;
@@ -70,7 +67,7 @@ a{
   letter-spacing:.3px;
 }
 
-/* HEADER */
+/* ENCABEZADO */
 
 .header{
   background:white;
@@ -167,7 +164,7 @@ a{
 
 .header-cart:hover{background:#1056af}
 
-/* HERO */
+/* BANNER PRINCIPAL */
 
 .hero{
   padding:42px 0 22px;
@@ -239,9 +236,7 @@ a{
   font-weight:800;
 }
 
-.hero-button:hover{
-  background:#e9f3ff;
-}
+.hero-button:hover{background:#e9f3ff}
 
 .hero-art{
   height:100%;
@@ -268,7 +263,7 @@ a{
   filter:drop-shadow(0 15px 16px #092c5e50);
 }
 
-/* BENEFITS */
+/* BENEFICIOS */
 
 .benefits{
   display:grid;
@@ -311,10 +306,11 @@ a{
   line-height:1.5;
 }
 
-/* SECTIONS */
+/* SECCIONES */
 
 .section{
   padding:14px 0 40px;
+  scroll-margin-top:125px;
 }
 
 .section-heading{
@@ -356,7 +352,7 @@ a{
   white-space:nowrap;
 }
 
-/* SEARCH */
+/* BUSCADOR */
 
 .search-panel{
   background:white;
@@ -391,7 +387,7 @@ a{
 
 .search-field input::placeholder{color:#91a0b3}
 
-/* CATEGORIES */
+/* CATEGORÍAS */
 
 .categories{
   display:flex;
@@ -412,9 +408,7 @@ a{
   white-space:nowrap;
 }
 
-.chip:hover{
-  background:#eef5ff;
-}
+.chip:hover{background:#eef5ff}
 
 .chip.active{
   background:var(--blue);
@@ -422,9 +416,10 @@ a{
   border-color:var(--blue);
 }
 
-/* PRODUCT CARDS */
+/* PRODUCTOS */
 
-.products-grid{
+.products-grid,
+.featured-grid{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:19px;
@@ -479,9 +474,7 @@ a{
   box-shadow:0 3px 10px #0000000d;
 }
 
-.product-badge.soldout{
-  color:#b42318;
-}
+.product-badge.soldout{color:#b42318}
 
 .product-body{
   padding:17px;
@@ -556,15 +549,7 @@ a{
   margin:10px 0 16px;
 }
 
-/* FEATURED */
-
-.featured-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:19px;
-}
-
-/* INFO BANNER */
+/* BANNER INFORMATIVO */
 
 .info-banner{
   background:#eaf3ff;
@@ -602,7 +587,7 @@ a{
   white-space:nowrap;
 }
 
-/* FOOTER */
+/* PIE DE PÁGINA */
 
 .footer{
   background:#0d2851;
@@ -626,7 +611,8 @@ a{
   font-size:14px;
 }
 
-.footer p,.footer a{
+.footer p,
+.footer a{
   color:#b8c9e1;
   font-size:12px;
   line-height:1.9;
@@ -648,7 +634,7 @@ a{
   text-align:center;
 }
 
-/* CART */
+/* CARRITO */
 
 dialog{
   border:0;
@@ -738,9 +724,7 @@ dialog::backdrop{background:#061d3c9c}
   margin:23px 0;
 }
 
-.cart-total span:last-child{
-  color:var(--blue);
-}
+.cart-total span:last-child{color:var(--blue)}
 
 .cart-note{
   font-size:12px;
@@ -766,16 +750,21 @@ dialog::backdrop{background:#061d3c9c}
   margin-top:12px;
 }
 
-/* MOBILE */
+/* TABLET */
 
 @media(max-width:1000px){
-  .products-grid,.featured-grid{
+  .products-grid,
+  .featured-grid{
     grid-template-columns:repeat(3,minmax(0,1fr));
   }
+
   .nav{gap:14px}
 }
 
+/* CELULARES */
+
 @media(max-width:720px){
+
   .announcement{font-size:10px}
 
   .header-inner{
@@ -785,7 +774,12 @@ dialog::backdrop{background:#061d3c9c}
   }
 
   .brand-name{font-size:19px}
-  .brand-mark{width:38px;height:38px}
+
+  .brand-mark{
+    width:38px;
+    height:38px;
+  }
+
   .brand-subtitle{font-size:8px}
 
   .nav{
@@ -798,40 +792,66 @@ dialog::backdrop{background:#061d3c9c}
 
   .nav a{font-size:12px}
 
-  .staff-btn,.header-cart{
+  .staff-btn,
+  .header-cart{
     padding:10px;
     font-size:11px;
   }
 
-  .hero{padding:20px 0}
+  /* BANNER MÁS COMPACTO */
+
+  .hero{
+    padding:16px 0 12px;
+  }
 
   .hero-card{
     min-height:auto;
     grid-template-columns:1fr;
+    border-radius:20px;
   }
 
   .hero-content{
-    padding:35px 27px 12px;
+    padding:26px 24px 8px;
+  }
+
+  .eyebrow{
+    padding:7px 10px;
+    font-size:9px;
+    letter-spacing:.6px;
   }
 
   .hero h1{
-    font-size:35px;
-    letter-spacing:-1px;
+    font-size:29px;
+    line-height:1.15;
+    letter-spacing:-.7px;
+    margin:16px 0 12px;
   }
 
-  .hero p{font-size:13px}
+  .hero p{
+    font-size:12px;
+    line-height:1.6;
+    margin-bottom:18px;
+  }
+
+  .hero-button{
+    padding:12px 17px;
+    font-size:12px;
+  }
 
   .hero-art{
-    min-height:155px;
-    padding:10px 20px 25px;
+    height:auto;
+    min-height:95px;
+    padding:0 15px 18px;
   }
 
   .hero-circle{
-    width:145px;
-    box-shadow:0 0 0 20px rgba(255,255,255,.04);
+    width:95px;
+    box-shadow:none;
   }
 
-  .hero-icon{font-size:80px}
+  .hero-icon{font-size:52px}
+
+  /* BENEFICIOS */
 
   .benefits{
     grid-template-columns:1fr;
@@ -841,7 +861,10 @@ dialog::backdrop{background:#061d3c9c}
 
   .benefit{padding:13px}
 
-  .products-grid,.featured-grid{
+  /* CATÁLOGO */
+
+  .products-grid,
+  .featured-grid{
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:11px;
   }
@@ -892,7 +915,7 @@ dialog::backdrop{background:#061d3c9c}
   .header-actions{gap:5px}
   .staff-btn,.header-cart{font-size:10px}
   .product-photo{height:135px}
-  .hero h1{font-size:30px}
+  .hero h1{font-size:27px}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -986,6 +1009,7 @@ dialog::backdrop{background:#061d3c9c}
 <main class="wrap">
 
   <div class="benefits">
+
     <div class="benefit">
       <div class="benefit-icon">📚</div>
       <div>
@@ -1005,10 +1029,11 @@ dialog::backdrop{background:#061d3c9c}
     <div class="benefit">
       <div class="benefit-icon">🛍️</div>
       <div>
-        <strong>Compra a tu ritmo</strong>
-        <small>Explora nuestro catálogo en línea.</small>
+        <strong>Explora a tu ritmo</strong>
+        <small>Conoce nuestro catálogo en línea.</small>
       </div>
     </div>
+
   </div>
 
   <section class="section" id="catalogo">
@@ -1061,6 +1086,7 @@ dialog::backdrop{background:#061d3c9c}
   </section>
 
   <section class="info-banner">
+
     <div>
       <h2>💙 Tus proyectos comienzan aquí</h2>
       <p>
@@ -1072,6 +1098,7 @@ dialog::backdrop{background:#061d3c9c}
     <a href="#catalogo">
       Ver productos →
     </a>
+
   </section>
 
 </main>
@@ -1122,7 +1149,8 @@ dialog::backdrop{background:#061d3c9c}
     <button
       id="cartClose"
       class="close-btn"
-      type="button">
+      type="button"
+      aria-label="Cerrar carrito">
       ✕
     </button>
   </div>
@@ -1187,6 +1215,8 @@ let categories=[];
 let activeCategory='Todos';
 let cart=new Map();
 
+/* CATEGORÍAS */
+
 function renderCategories(){
   const container=$('categories');
   container.replaceChildren();
@@ -1212,6 +1242,8 @@ function renderCategories(){
   }
 }
 
+/* TARJETAS DE PRODUCTOS */
+
 function productCard(p){
   const card=make('article','product');
 
@@ -1224,7 +1256,7 @@ function productCard(p){
     image.loading='lazy';
 
     image.onerror=()=>{
-      photo.replaceChildren(
+      image.replaceWith(
         make('span','product-placeholder','📚')
       );
     };
@@ -1304,6 +1336,8 @@ function productCard(p){
   return card;
 }
 
+/* CATÁLOGO */
+
 function renderProducts(){
   const container=$('products');
   container.replaceChildren();
@@ -1337,6 +1371,8 @@ function renderProducts(){
         :'';
 }
 
+/* DESTACADOS */
+
 function renderFeatured(){
   const container=$('featuredProducts');
   container.replaceChildren();
@@ -1360,6 +1396,8 @@ function renderFeatured(){
     container.append(productCard(p));
   }
 }
+
+/* SUPABASE */
 
 async function loadCatalog(){
   try{
@@ -1408,6 +1446,8 @@ async function loadCatalog(){
     $('featuredProducts').replaceChildren();
   }
 }
+
+/* CARRITO */
 
 function addToCart(p){
   const existing=cart.get(p.id);
@@ -1532,6 +1572,8 @@ function openCart(){
   }
 }
 
+/* BOTONES */
+
 $('personalBtn').onclick=()=>{
   window.location.href='admin.html';
 };
@@ -1552,6 +1594,8 @@ $('search').addEventListener(
   'input',
   renderProducts
 );
+
+/* INICIAR TIENDA */
 
 renderCategories();
 await loadCatalog();
