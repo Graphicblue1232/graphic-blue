@@ -4,473 +4,1554 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#103d82">
+<meta name="description" content="Graphic Blue: papelería, útiles escolares y suministros de oficina.">
 <title>Graphic Blue | Papelería y suministros</title>
+
 <style>
 :root{
-  font-family:system-ui,-apple-system,Arial,sans-serif;
-  color:#18325c;
-  background:#f3f7fd
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:#173153;
+  background:#f5f8fc;
+  --blue:#176bd1;
+  --dark:#103d82;
+  --navy:#102b53;
+  --light:#eaf3ff;
+  --muted:#64748b;
+  --border:#e3eaf3;
+  --shadow:0 12px 35px rgba(25,66,120,.08);
 }
+
 *{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
 body{margin:0}
+
 button,input{font:inherit}
+
 button{
   cursor:pointer;
   border:0;
-  border-radius:12px;
-  padding:12px 16px;
-  font-weight:700
+  font-weight:700;
+  transition:transform .2s,background .2s,box-shadow .2s;
 }
-button:disabled{opacity:.55;cursor:not-allowed}
-.wrap{max-width:1120px;margin:auto;padding:0 18px}
-.top{background:#123b80;color:white}
-.top .wrap{
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+button:not(:disabled):active{
+  transform:scale(.97);
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.wrap{
+  width:min(1180px,calc(100% - 36px));
+  margin:auto;
+}
+
+.hidden{display:none!important}
+
+/* TOP BAR */
+
+.announcement{
+  background:#0b2b5b;
+  color:#e7f0ff;
+  text-align:center;
+  padding:10px 15px;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.3px;
+}
+
+/* HEADER */
+
+.header{
+  background:white;
+  position:sticky;
+  top:0;
+  z-index:20;
+  border-bottom:1px solid var(--border);
+}
+
+.header-inner{
+  min-height:78px;
   display:flex;
+  align-items:center;
   justify-content:space-between;
+  gap:18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  flex-shrink:0;
+}
+
+.brand-mark{
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#0e408e,#2687ed);
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:24px;
+  font-weight:900;
+  box-shadow:0 6px 15px #176bd12c;
+}
+
+.brand-name{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.8px;
+  color:var(--navy);
+}
+
+.brand-name span{color:var(--blue)}
+
+.brand-subtitle{
+  display:block;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:1.7px;
+  color:#8190a5;
+  margin-top:2px;
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
+
+.nav a{
+  color:#40536f;
+  font-size:14px;
+  font-weight:700;
+}
+
+.nav a:hover{color:var(--blue)}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.staff-btn{
+  background:#edf4ff;
+  color:#1759b1;
+  border-radius:11px;
+  padding:12px 16px;
+  font-size:13px;
+}
+
+.staff-btn:hover{background:#dbeaff}
+
+.header-cart{
+  background:var(--blue);
+  color:white;
+  border-radius:11px;
+  padding:12px 15px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.header-cart:hover{background:#1056af}
+
+/* HERO */
+
+.hero{
+  padding:42px 0 22px;
+}
+
+.hero-card{
+  background:
+    radial-gradient(circle at 85% 25%,rgba(114,192,255,.32),transparent 28%),
+    radial-gradient(circle at 65% 100%,rgba(33,127,235,.4),transparent 35%),
+    linear-gradient(120deg,#0d3474,#1356aa 60%,#2688e7);
+  color:white;
+  border-radius:27px;
+  min-height:355px;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  align-items:center;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 18px 40px #103d8226;
+}
+
+.hero-content{
+  padding:48px 54px;
+  position:relative;
+  z-index:1;
+}
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border-radius:50px;
+  padding:9px 13px;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.18);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.hero h1{
+  font-size:clamp(31px,4.7vw,53px);
+  line-height:1.12;
+  letter-spacing:-1.8px;
+  margin:23px 0 17px;
+  max-width:650px;
+}
+
+.hero h1 span{color:#a8d7ff}
+
+.hero p{
+  color:#e2edff;
+  font-size:15px;
+  line-height:1.8;
+  max-width:470px;
+  margin:0 0 25px;
+}
+
+.hero-button{
+  display:inline-flex;
   align-items:center;
   gap:12px;
-  padding-top:17px;
-  padding-bottom:17px
-}
-.brand{font-size:22px;font-weight:900;letter-spacing:.5px}
-.top button{background:white;color:#123b80}
-.hero{
-  background:linear-gradient(125deg,#123b80,#2685ea);
-  color:white;
-  padding:60px 0
-}
-.hero h1{font-size:clamp(30px,6vw,48px);margin:0 0 12px}
-.hero p{max-width:620px;line-height:1.6}
-.search{
-  width:100%;
-  max-width:600px;
-  border:0;
-  border-radius:12px;
-  padding:16px;
-  margin-top:14px
-}
-main{padding:30px 0 85px}
-.chips{display:flex;gap:9px;overflow-x:auto;padding:8px 0 22px}
-.chip{background:#e2edff;color:#174785;white-space:nowrap}
-.chip.active{background:#176bd1;color:white}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:18px
-}
-.product{
-  min-width:0;
+  padding:15px 22px;
   background:white;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 6px 22px #173b7114;
-  display:flex;
-  flex-direction:column
+  color:#1352a5;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:800;
 }
-.photo{
-  height:190px;
-  min-width:0;
-  overflow:hidden;
-  background:#e7effb;
+
+.hero-button:hover{
+  background:#e9f3ff;
+}
+
+.hero-art{
+  height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:58px
+  position:relative;
+  padding:25px;
 }
-.photo img{
+
+.hero-circle{
+  width:min(290px,90%);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.2);
+  display:grid;
+  place-items:center;
+  box-shadow:0 0 0 35px rgba(255,255,255,.04);
+}
+
+.hero-icon{
+  font-size:clamp(95px,15vw,165px);
+  filter:drop-shadow(0 15px 16px #092c5e50);
+}
+
+/* BENEFITS */
+
+.benefits{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin:20px 0 40px;
+}
+
+.benefit{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:19px;
+  display:flex;
+  gap:13px;
+  align-items:center;
+}
+
+.benefit-icon{
+  width:43px;
+  height:43px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  background:#eaf3ff;
+  border-radius:12px;
+  font-size:22px;
+}
+
+.benefit strong{
   display:block;
+  font-size:13px;
+}
+
+.benefit small{
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* SECTIONS */
+
+.section{
+  padding:14px 0 40px;
+}
+
+.section-heading{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:22px;
+}
+
+.section-kicker{
+  font-size:11px;
+  color:var(--blue);
+  font-weight:900;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  margin:0 0 9px;
+}
+
+.section-heading h2{
+  font-size:clamp(23px,3vw,32px);
+  letter-spacing:-.9px;
+  margin:0;
+  color:var(--navy);
+}
+
+.section-heading p{
+  color:var(--muted);
+  font-size:13px;
+  margin:9px 0 0;
+}
+
+.view-all{
+  background:#e9f2ff;
+  color:#1559b3;
+  padding:11px 14px;
+  border-radius:10px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+/* SEARCH */
+
+.search-panel{
+  background:white;
+  border:1px solid var(--border);
+  padding:17px;
+  border-radius:17px;
+  box-shadow:var(--shadow);
+  margin-bottom:21px;
+}
+
+.search-field{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:1px solid #dce5f0;
+  background:#f8fbff;
+  padding:0 15px;
+  border-radius:12px;
+}
+
+.search-field span{font-size:20px}
+
+.search-field input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--navy);
+  padding:16px 0;
+  font-size:14px;
+}
+
+.search-field input::placeholder{color:#91a0b3}
+
+/* CATEGORIES */
+
+.categories{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  overflow-x:auto;
+  padding:3px 0 17px;
+  scrollbar-width:thin;
+}
+
+.chip{
+  background:white;
+  color:#516681;
+  border:1px solid var(--border);
+  border-radius:50px;
+  padding:11px 17px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.chip:hover{
+  background:#eef5ff;
+}
+
+.chip.active{
+  background:var(--blue);
+  color:white;
+  border-color:var(--blue);
+}
+
+/* PRODUCT CARDS */
+
+.products-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:19px;
+}
+
+.product{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:19px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  box-shadow:0 5px 17px #173b7108;
+  transition:transform .2s,box-shadow .2s;
+}
+
+.product:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 28px #173b7115;
+}
+
+.product-photo{
+  height:210px;
+  background:#f0f5fc;
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+
+.product-photo img{
   width:100%;
   height:100%;
-  max-width:100%;
-  max-height:100%;
   object-fit:contain;
-  object-position:center
+  display:block;
+  padding:12px;
 }
-.info{
-  padding:18px;
+
+.product-placeholder{font-size:70px}
+
+.product-badge{
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:white;
+  color:#176bd1;
+  padding:7px 10px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:900;
+  box-shadow:0 3px 10px #0000000d;
+}
+
+.product-badge.soldout{
+  color:#b42318;
+}
+
+.product-body{
+  padding:17px;
   display:flex;
   flex-direction:column;
   flex:1;
-  min-width:0
 }
-.info h3{margin:0 0 8px;overflow-wrap:anywhere}
-.info p{overflow-wrap:anywhere}
-.muted{color:#60728e;font-size:14px}
-.price{color:#1267c9;font-size:23px;font-weight:800}
-.add{
-  width:100%;
-  margin-top:auto;
-  background:#176bd1;
-  color:white
+
+.product-category{
+  font-size:11px;
+  font-weight:700;
+  color:#7a8ca4;
+  margin:0 0 8px;
 }
-.cart-button{
-  position:fixed;
-  bottom:18px;
-  right:18px;
-  background:#176bd1;
+
+.product-name{
+  color:var(--navy);
+  font-size:15px;
+  font-weight:800;
+  line-height:1.4;
+  margin:0 0 10px;
+  overflow-wrap:anywhere;
+}
+
+.product-description{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+  margin:0 0 14px;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+
+.product-bottom{margin-top:auto}
+
+.product-price{
+  display:block;
+  font-size:23px;
+  font-weight:900;
+  color:var(--blue);
+  margin-bottom:7px;
+}
+
+.product-stock{
+  font-size:11px;
+  color:#25845c;
+  margin:0 0 13px;
+  font-weight:700;
+}
+
+.product-stock.out{color:#b42318}
+
+.add-button{
+  background:var(--blue);
   color:white;
-  box-shadow:0 5px 20px #0003;
-  z-index:2
+  width:100%;
+  border-radius:11px;
+  padding:12px;
+  font-size:12px;
 }
-dialog{
-  border:0;
-  border-radius:18px;
-  width:min(94vw,540px);
-  padding:25px;
-  max-height:85vh;
-  overflow:auto
+
+.add-button:hover:not(:disabled){
+  background:#1058b7;
 }
-dialog::backdrop{background:#001b4388}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.secondary{background:#e7effb;color:#123b80}
-.line{
+
+.catalog-status{
+  color:var(--muted);
+  font-size:13px;
+  min-height:18px;
+  margin:10px 0 16px;
+}
+
+/* FEATURED */
+
+.featured-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:19px;
+}
+
+/* INFO BANNER */
+
+.info-banner{
+  background:#eaf3ff;
+  border:1px solid #d5e7ff;
+  border-radius:22px;
+  padding:30px 35px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:10px;
-  border-bottom:1px solid #e6ecf4;
-  padding:12px 0
+  gap:20px;
+  margin:18px 0 48px;
 }
-.line button{padding:7px 10px}
-.small{font-size:13px}
-.status{min-height:22px}
-footer{
-  background:#102d5d;
+
+.info-banner h2{
+  margin:0 0 9px;
+  color:#103d82;
+  font-size:23px;
+}
+
+.info-banner p{
+  color:#56708e;
+  margin:0;
+  line-height:1.6;
+  font-size:13px;
+}
+
+.info-banner a{
+  display:inline-block;
+  background:#176bd1;
   color:white;
-  text-align:center;
-  padding:28px
+  padding:13px 19px;
+  border-radius:11px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
 }
-@media(max-width:540px){
-  .brand{font-size:19px}
-  .hero{padding:44px 0}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .photo{height:145px}
-  .info{padding:12px}
-  .info h3{font-size:15px}
-  .price{font-size:19px}
-  .add{font-size:13px;padding:10px 6px}
+
+/* FOOTER */
+
+.footer{
+  background:#0d2851;
+  color:white;
+  padding:48px 0 23px;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr;
+  gap:35px;
+}
+
+.footer h3{
+  font-size:22px;
+  margin:0 0 13px;
+}
+
+.footer h4{
+  margin:0 0 16px;
+  font-size:14px;
+}
+
+.footer p,.footer a{
+  color:#b8c9e1;
+  font-size:12px;
+  line-height:1.9;
+}
+
+.footer-links{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+}
+
+.footer-bottom{
+  border-top:1px solid #ffffff22;
+  padding-top:20px;
+  margin-top:35px;
+  color:#a6bad6;
+  font-size:11px;
+  text-align:center;
+}
+
+/* CART */
+
+dialog{
+  border:0;
+  border-radius:20px;
+  padding:0;
+  width:min(94vw,540px);
+  max-height:85vh;
+  overflow:auto;
+  box-shadow:0 25px 65px #001b4340;
+}
+
+dialog::backdrop{background:#061d3c9c}
+
+.cart-header{
+  background:#103d82;
+  color:white;
+  padding:23px 25px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.cart-header h2{
+  margin:0;
+  font-size:21px;
+}
+
+.close-btn{
+  background:#ffffff22;
+  color:white;
+  border-radius:9px;
+  padding:8px 12px;
+}
+
+.cart-content{padding:22px}
+
+.cart-line{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+  padding:15px 0;
+}
+
+.cart-line strong{
+  display:block;
+  font-size:13px;
+}
+
+.cart-line small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px;
+}
+
+.cart-controls{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.qty-btn{
+  background:#e9f2ff;
+  color:#1559b3;
+  width:30px;
+  height:30px;
+  padding:0;
+  border-radius:8px;
+}
+
+.remove-btn{
+  background:#fff0f0;
+  color:#b42318;
+  padding:8px;
+  border-radius:8px;
+  font-size:11px;
+}
+
+.cart-total{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:18px;
+  font-weight:900;
+  margin:23px 0;
+}
+
+.cart-total span:last-child{
+  color:var(--blue);
+}
+
+.cart-note{
+  font-size:12px;
+  line-height:1.7;
+  color:var(--muted);
+  background:#f3f7fd;
+  padding:13px;
+  border-radius:11px;
+}
+
+.cart-empty{
+  color:var(--muted);
+  text-align:center;
+  padding:30px 10px;
+}
+
+.cart-clear{
+  background:#edf4ff;
+  color:#1458b2;
+  padding:12px;
+  border-radius:10px;
+  width:100%;
+  margin-top:12px;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+  .products-grid,.featured-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .nav{gap:14px}
+}
+
+@media(max-width:720px){
+  .announcement{font-size:10px}
+
+  .header-inner{
+    min-height:70px;
+    flex-wrap:wrap;
+    padding:12px 0;
+  }
+
+  .brand-name{font-size:19px}
+  .brand-mark{width:38px;height:38px}
+  .brand-subtitle{font-size:8px}
+
+  .nav{
+    order:3;
+    width:100%;
+    justify-content:center;
+    padding-top:9px;
+    border-top:1px solid var(--border);
+  }
+
+  .nav a{font-size:12px}
+
+  .staff-btn,.header-cart{
+    padding:10px;
+    font-size:11px;
+  }
+
+  .hero{padding:20px 0}
+
+  .hero-card{
+    min-height:auto;
+    grid-template-columns:1fr;
+  }
+
+  .hero-content{
+    padding:35px 27px 12px;
+  }
+
+  .hero h1{
+    font-size:35px;
+    letter-spacing:-1px;
+  }
+
+  .hero p{font-size:13px}
+
+  .hero-art{
+    min-height:155px;
+    padding:10px 20px 25px;
+  }
+
+  .hero-circle{
+    width:145px;
+    box-shadow:0 0 0 20px rgba(255,255,255,.04);
+  }
+
+  .hero-icon{font-size:80px}
+
+  .benefits{
+    grid-template-columns:1fr;
+    gap:9px;
+    margin:10px 0 27px;
+  }
+
+  .benefit{padding:13px}
+
+  .products-grid,.featured-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:11px;
+  }
+
+  .product-photo{height:165px}
+
+  .product-body{padding:12px}
+
+  .product-name{font-size:13px}
+
+  .product-price{font-size:19px}
+
+  .product-description{font-size:11px}
+
+  .product-category{font-size:10px}
+
+  .add-button{
+    font-size:11px;
+    padding:11px 6px;
+  }
+
+  .section{padding:12px 0 28px}
+
+  .section-heading h2{font-size:23px}
+
+  .section-heading p{font-size:12px}
+
+  .info-banner{
+    flex-direction:column;
+    align-items:flex-start;
+    padding:23px;
+  }
+
+  .info-banner h2{font-size:20px}
+
+  .footer-grid{
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+  }
+
+  .footer-grid>div:first-child{
+    grid-column:1/-1;
+  }
+}
+
+@media(max-width:370px){
+  .brand-name{font-size:16px}
+  .header-actions{gap:5px}
+  .staff-btn,.header-cart{font-size:10px}
+  .product-photo{height:135px}
+  .hero h1{font-size:30px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  button,.product{transition:none}
 }
 </style>
 </head>
+
 <body>
 
-<header class="top">
-  <div class="wrap">
-    <div class="brand">GRAPHIC BLUE</div>
-    <button id="personalBtn" type="button">Personal</button>
+<div class="announcement">
+  💙 GRAPHIC BLUE · PAPELERÍA Y SUMINISTROS
+</div>
+
+<header class="header">
+  <div class="wrap header-inner">
+
+    <a class="brand" href="index.html" aria-label="Graphic Blue, inicio">
+      <div class="brand-mark">G</div>
+      <div>
+        <div class="brand-name">
+          GRAPHIC <span>BLUE</span>
+        </div>
+        <small class="brand-subtitle">
+          PAPELERÍA Y SUMINISTROS
+        </small>
+      </div>
+    </a>
+
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#catalogo">Productos</a>
+      <a href="#destacados">Destacados</a>
+    </nav>
+
+    <div class="header-actions">
+      <button
+        id="personalBtn"
+        class="staff-btn"
+        type="button">
+        🔐 Personal
+      </button>
+
+      <button
+        id="headerCart"
+        class="header-cart"
+        type="button">
+        🛒 <span id="headerCartCount">0</span>
+      </button>
+    </div>
+
   </div>
 </header>
 
-<section class="hero">
+<section class="hero" id="inicio">
   <div class="wrap">
-    <h1>Todo lo que necesitas, en un solo lugar</h1>
-    <p>
-      Artículos de papelería, oficina y suministros
-      para tus proyectos. Compra en línea y retira
-      en nuestro local.
-    </p>
-    <input
-      id="search"
-      class="search"
-      type="search"
-      placeholder="🔎 Buscar productos..."
-      aria-label="Buscar productos"
-    >
+    <div class="hero-card">
+
+      <div class="hero-content">
+        <span class="eyebrow">
+          ✨ Bienvenido a Graphic Blue
+        </span>
+
+        <h1>
+          Todo para tus ideas,
+          <span>en un solo lugar.</span>
+        </h1>
+
+        <p>
+          Descubre artículos de papelería, útiles escolares
+          y suministros de oficina para acompañarte
+          en cada proyecto.
+        </p>
+
+        <a href="#catalogo" class="hero-button">
+          Explorar productos →
+        </a>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-circle">
+          <span class="hero-icon">📚</span>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <main class="wrap">
-  <h2>Nuestro catálogo</h2>
-  <div id="categories" class="chips"></div>
-  <p id="catalogStatus" class="muted status">
-    Cargando productos...
-  </p>
-  <div id="products" class="grid"></div>
+
+  <div class="benefits">
+    <div class="benefit">
+      <div class="benefit-icon">📚</div>
+      <div>
+        <strong>Variedad de productos</strong>
+        <small>Encuentra artículos para estudiar y trabajar.</small>
+      </div>
+    </div>
+
+    <div class="benefit">
+      <div class="benefit-icon">💙</div>
+      <div>
+        <strong>Calidad y confianza</strong>
+        <small>Productos para acompañar tus proyectos.</small>
+      </div>
+    </div>
+
+    <div class="benefit">
+      <div class="benefit-icon">🛍️</div>
+      <div>
+        <strong>Compra a tu ritmo</strong>
+        <small>Explora nuestro catálogo en línea.</small>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="catalogo">
+
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Explora nuestra tienda</p>
+        <h2>Nuestro catálogo</h2>
+        <p>Encuentra lo que necesitas para cada ocasión.</p>
+      </div>
+    </div>
+
+    <div class="search-panel">
+      <label class="search-field" for="search">
+        <span aria-hidden="true">🔎</span>
+        <input
+          id="search"
+          type="search"
+          placeholder="Buscar cuadernos, bolígrafos, materiales..."
+          autocomplete="off">
+      </label>
+    </div>
+
+    <div id="categories" class="categories"></div>
+
+    <p id="catalogStatus" class="catalog-status" role="status">
+      Cargando productos...
+    </p>
+
+    <div id="products" class="products-grid"></div>
+
+  </section>
+
+  <section class="section" id="destacados">
+
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Selección Graphic Blue</p>
+        <h2>Productos destacados</h2>
+        <p>Algunos artículos de nuestro catálogo.</p>
+      </div>
+
+      <a href="#catalogo" class="view-all">
+        Ver catálogo →
+      </a>
+    </div>
+
+    <div id="featuredProducts" class="featured-grid"></div>
+
+  </section>
+
+  <section class="info-banner">
+    <div>
+      <h2>💙 Tus proyectos comienzan aquí</h2>
+      <p>
+        Explora nuestro catálogo de papelería y suministros.
+        Siempre estamos incorporando nuevos productos.
+      </p>
+    </div>
+
+    <a href="#catalogo">
+      Ver productos →
+    </a>
+  </section>
+
 </main>
 
-<button id="cartBtn" class="cart-button" type="button">
-  🛒 Carrito (<span id="cartCount">0</span>)
-</button>
+<footer class="footer">
+  <div class="wrap">
+
+    <div class="footer-grid">
+
+      <div>
+        <h3>GRAPHIC BLUE</h3>
+        <p>
+          Papelería, útiles escolares y suministros
+          para tus ideas, estudios y proyectos.
+        </p>
+      </div>
+
+      <div>
+        <h4>Explorar</h4>
+        <div class="footer-links">
+          <a href="#inicio">Inicio</a>
+          <a href="#catalogo">Productos</a>
+          <a href="#destacados">Destacados</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Accesos</h4>
+        <div class="footer-links">
+          <a href="admin.html">Acceso del personal</a>
+          <a href="#catalogo">Nuestro catálogo</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 Graphic Blue · Todos los derechos reservados.
+    </div>
+
+  </div>
+</footer>
 
 <dialog id="cartDialog">
-  <h2>Tu carrito</h2>
-  <div id="cartItems"></div>
-  <p><strong id="cartTotal">Total: $0.00</strong></p>
-  <p class="muted small">
-    Este carrito es una demostración.
-    Todavía no se aceptan pagos ni pedidos.
-  </p>
-  <div class="actions">
-    <button id="cartClose" class="secondary" type="button">
-      Cerrar
+
+  <div class="cart-header">
+    <h2>🛒 Mi carrito</h2>
+    <button
+      id="cartClose"
+      class="close-btn"
+      type="button">
+      ✕
     </button>
+  </div>
+
+  <div class="cart-content">
+
+    <div id="cartItems"></div>
+
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">$0.00</span>
+    </div>
+
+    <p class="cart-note">
+      Este carrito es una demostración.
+      Por ahora no se procesan pedidos ni pagos.
+    </p>
+
+    <button
+      id="clearCart"
+      class="cart-clear"
+      type="button">
+      Vaciar carrito
+    </button>
+
   </div>
 </dialog>
 
-<footer>
-  © 2026 Graphic Blue · Papelería y suministros
-</footer>
-
 <script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+import {createClient} from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const SUPABASE_URL =
-  'https://bszdopscbugyfnakqmbw.supabase.co';
+'https://bszdopscbugyfnakqmbw.supabase.co';
 
-const SUPABASE_PUBLISHABLE_KEY =
-  'sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
+const SUPABASE_KEY =
+'sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
 
-const db = createClient(
+const db=createClient(
   SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
+  SUPABASE_KEY
 );
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-const money = n =>
-  new Intl.NumberFormat('es-EC', {
+const money=n=>
+  new Intl.NumberFormat('es-EC',{
     style:'currency',
     currency:'USD'
-  }).format(Number(n) || 0);
+  }).format(Number(n)||0);
 
-const make = (tag, cls='', value) => {
-  const e = document.createElement(tag);
-  e.className = cls;
-  if(value !== undefined) e.textContent = value;
-  return e;
-};
+function make(tag,className='',text=''){
+  const node=document.createElement(tag);
+  node.className=className;
+  node.textContent=text;
+  return node;
+}
 
-let products = [];
-let categories = [];
-let activeCategory = 'Todos';
-let cart = new Map();
+let products=[];
+let categories=[];
+let activeCategory='Todos';
+let cart=new Map();
 
 function renderCategories(){
-  const box = $('categories');
-  box.replaceChildren();
+  const container=$('categories');
+  container.replaceChildren();
 
-  for(const name of ['Todos', ...categories]){
-    const b = make(
+  const names=['Todos',...categories];
+
+  for(const name of names){
+    const button=make(
       'button',
-      'chip' + (activeCategory === name ? ' active' : ''),
+      'chip'+(activeCategory===name?' active':''),
       name
     );
 
-    b.type = 'button';
+    button.type='button';
 
-    b.onclick = () => {
-      activeCategory = name;
+    button.onclick=()=>{
+      activeCategory=name;
       renderCategories();
       renderProducts();
     };
 
-    box.append(b);
+    container.append(button);
   }
 }
 
+function productCard(p){
+  const card=make('article','product');
+
+  const photo=make('div','product-photo');
+
+  if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){
+    const image=document.createElement('img');
+    image.src=p.imagen_url;
+    image.alt=p.nombre||'Producto';
+    image.loading='lazy';
+
+    image.onerror=()=>{
+      photo.replaceChildren(
+        make('span','product-placeholder','📚')
+      );
+    };
+
+    photo.append(image);
+  }else{
+    photo.append(
+      make('span','product-placeholder','📚')
+    );
+  }
+
+  const available=Number(p.stock)>0;
+
+  const badge=make(
+    'span',
+    'product-badge'+(!available?' soldout':''),
+    available?'DISPONIBLE':'AGOTADO'
+  );
+
+  photo.append(badge);
+
+  const body=make('div','product-body');
+
+  const category=make(
+    'p',
+    'product-category',
+    p.categoria||'Papelería'
+  );
+
+  const name=make(
+    'h3',
+    'product-name',
+    p.nombre||'Producto'
+  );
+
+  body.append(category,name);
+
+  if(p.descripcion){
+    body.append(
+      make(
+        'p',
+        'product-description',
+        p.descripcion
+      )
+    );
+  }
+
+  const bottom=make('div','product-bottom');
+
+  const price=make(
+    'span',
+    'product-price',
+    money(p.precio_venta)
+  );
+
+  const stock=make(
+    'p',
+    'product-stock'+(!available?' out':''),
+    available?'● Disponible':'● Agotado'
+  );
+
+  const button=make(
+    'button',
+    'add-button',
+    available?'Agregar al carrito':'Agotado'
+  );
+
+  button.type='button';
+  button.disabled=!available;
+  button.onclick=()=>addToCart(p);
+
+  bottom.append(price,stock,button);
+  body.append(bottom);
+
+  card.append(photo,body);
+
+  return card;
+}
+
 function renderProducts(){
-  const box = $('products');
-  box.replaceChildren();
+  const container=$('products');
+  container.replaceChildren();
 
-  const q = $('search').value.trim().toLocaleLowerCase();
+  const query=$('search').value
+    .trim()
+    .toLocaleLowerCase();
 
-  const shown = products.filter(p =>
-    (activeCategory === 'Todos' ||
-     p.categoria === activeCategory) &&
-    [p.nombre, p.codigo, p.descripcion].some(v =>
-      String(v || '').toLocaleLowerCase().includes(q)
-    )
+  const shown=products.filter(p=>
+    (
+      activeCategory==='Todos'||
+      p.categoria===activeCategory
+    )&&
+    [p.nombre,p.codigo,p.descripcion,p.categoria]
+      .some(value=>
+        String(value||'')
+          .toLocaleLowerCase()
+          .includes(query)
+      )
   );
 
   for(const p of shown){
-    const card = make('article', 'product');
-    const photo = make('div', 'photo');
-
-    if(p.imagen_url && /^https:\/\//i.test(p.imagen_url)){
-      const img = document.createElement('img');
-
-      img.src = p.imagen_url;
-      img.alt = p.nombre || 'Producto';
-      img.loading = 'lazy';
-
-      img.onerror = () => {
-        photo.replaceChildren('📚');
-      };
-
-      photo.append(img);
-    } else {
-      photo.textContent = '📚';
-    }
-
-    const info = make('div', 'info');
-
-    info.append(
-      make('h3', '', p.nombre || 'Producto'),
-      make('p', 'muted', p.categoria || 'Papelería'),
-      make('div', 'price', money(p.precio_venta))
-    );
-
-    const available = Number(p.stock) > 0;
-
-    info.append(
-      make('p', 'muted', available ? 'Disponible' : 'Agotado')
-    );
-
-    const btn = make(
-      'button',
-      'add',
-      available ? 'Agregar al carrito' : 'Agotado'
-    );
-
-    btn.type = 'button';
-    btn.disabled = !available;
-    btn.onclick = () => addToCart(p);
-
-    info.append(btn);
-    card.append(photo, info);
-    box.append(card);
+    container.append(productCard(p));
   }
 
-  $('catalogStatus').textContent =
-    products.length === 0
-      ? 'Todavía no hay productos publicados.'
-      : shown.length === 0
-        ? 'No encontramos productos.'
-        : '';
+  $('catalogStatus').textContent=
+    products.length===0
+      ?'Todavía no hay productos publicados.'
+      :shown.length===0
+        ?'No encontramos productos con esos filtros.'
+        :'';
+}
+
+function renderFeatured(){
+  const container=$('featuredProducts');
+  container.replaceChildren();
+
+  const featured=products
+    .filter(p=>Number(p.stock)>0)
+    .slice(0,4);
+
+  if(!featured.length){
+    container.append(
+      make(
+        'p',
+        'catalog-status',
+        'Próximamente encontrarás productos destacados.'
+      )
+    );
+    return;
+  }
+
+  for(const p of featured){
+    container.append(productCard(p));
+  }
 }
 
 async function loadCatalog(){
   try{
-    const [c, p] = await Promise.all([
-      db.from('categorias')
-        .select('nombre')
-        .order('nombre'),
+    const [categoryResult,productResult]=
+      await Promise.all([
+        db.from('categorias')
+          .select('nombre')
+          .order('nombre'),
 
-      db.from('productos')
-        .select(
-          'id,codigo,nombre,descripcion,categoria,precio_venta,stock,imagen_url'
-        )
-        .eq('publicado', true)
-        .order('nombre')
-    ]);
+        db.from('productos')
+          .select(
+            'id,codigo,nombre,descripcion,categoria,precio_venta,stock,imagen_url'
+          )
+          .eq('publicado',true)
+          .order('nombre')
+      ]);
 
-    if(c.error) throw c.error;
-    if(p.error) throw p.error;
+    if(categoryResult.error){
+      throw categoryResult.error;
+    }
 
-    categories = [
+    if(productResult.error){
+      throw productResult.error;
+    }
+
+    categories=[
       ...new Set(
-        (c.data || [])
-          .map(x => x.nombre)
+        (categoryResult.data||[])
+          .map(c=>c.nombre)
           .filter(Boolean)
       )
     ];
 
-    products = p.data || [];
+    products=productResult.data||[];
 
     renderCategories();
     renderProducts();
+    renderFeatured();
 
-  }catch(e){
-    console.error(e);
+  }catch(error){
+    console.error(error);
 
-    $('catalogStatus').textContent =
-      'No pudimos cargar el catálogo. Actualiza la página.';
+    $('catalogStatus').textContent=
+      'No pudimos cargar los productos. Actualiza la página.';
+
+    $('featuredProducts').replaceChildren();
   }
 }
 
 function addToCart(p){
-  const item = cart.get(p.id) || {
+  const existing=cart.get(p.id);
+
+  const item=existing||{
     product:p,
     qty:0
   };
 
-  if(item.qty >= Number(p.stock)){
+  if(item.qty>=Number(p.stock)){
     alert('No hay más unidades disponibles.');
     return;
   }
 
   item.qty++;
-  cart.set(p.id, item);
-  updateCount();
+  cart.set(p.id,item);
+
+  updateCartCount();
 }
 
-function updateCount(){
-  $('cartCount').textContent =
-    [...cart.values()].reduce(
-      (n, x) => n + x.qty,
-      0
-    );
+function updateCartCount(){
+  const count=[...cart.values()]
+    .reduce((total,item)=>total+item.qty,0);
+
+  $('headerCartCount').textContent=count;
 }
 
-function showCart(){
-  const box = $('cartItems');
-  box.replaceChildren();
+function changeQuantity(id,amount){
+  const item=cart.get(id);
 
-  let total = 0;
+  if(!item)return;
+
+  const newQty=item.qty+amount;
+
+  if(newQty<=0){
+    cart.delete(id);
+  }else if(newQty>Number(item.product.stock)){
+    alert('No hay más unidades disponibles.');
+    return;
+  }else{
+    item.qty=newQty;
+  }
+
+  updateCartCount();
+  renderCart();
+}
+
+function renderCart(){
+  const container=$('cartItems');
+  container.replaceChildren();
+
+  let total=0;
 
   if(!cart.size){
-    box.append(
-      make('p', 'muted', 'Tu carrito está vacío.')
+    container.append(
+      make(
+        'p',
+        'cart-empty',
+        '🛍️ Tu carrito está vacío.'
+      )
     );
   }
 
-  for(const [id, item] of cart){
-    const row = make('div', 'line');
+  for(const [id,item] of cart){
+    const line=make('div','cart-line');
 
-    row.append(
+    const details=make('div');
+
+    details.append(
+      make('strong','',item.product.nombre),
       make(
-        'span',
+        'small',
         '',
-        `${item.product.nombre} × ${item.qty} — ${
-          money(item.product.precio_venta * item.qty)
-        }`
+        money(item.product.precio_venta)+' por unidad'
       )
     );
 
-    total +=
-      Number(item.product.precio_venta) * item.qty;
+    const controls=make('div','cart-controls');
 
-    const btn = make(
-      'button',
-      'secondary',
-      'Quitar'
+    const minus=make('button','qty-btn','−');
+    minus.type='button';
+    minus.setAttribute('aria-label','Disminuir cantidad');
+    minus.onclick=()=>changeQuantity(id,-1);
+
+    const quantity=make(
+      'strong',
+      '',
+      String(item.qty)
     );
 
-    btn.type = 'button';
+    const plus=make('button','qty-btn','+');
+    plus.type='button';
+    plus.setAttribute('aria-label','Aumentar cantidad');
+    plus.onclick=()=>changeQuantity(id,1);
 
-    btn.onclick = () => {
+    const remove=make('button','remove-btn','✕');
+    remove.type='button';
+    remove.setAttribute('aria-label','Quitar producto');
+    remove.onclick=()=>{
       cart.delete(id);
-      updateCount();
-      showCart();
+      updateCartCount();
+      renderCart();
     };
 
-    row.append(btn);
-    box.append(row);
+    controls.append(minus,quantity,plus,remove);
+    line.append(details,controls);
+
+    container.append(line);
+
+    total+=
+      Number(item.product.precio_venta)*item.qty;
   }
 
-  $('cartTotal').textContent =
-    'Total: ' + money(total);
+  $('cartTotal').textContent=money(total);
+}
+
+function openCart(){
+  renderCart();
 
   if(!$('cartDialog').open){
     $('cartDialog').showModal();
   }
 }
 
-// El botón Personal abre el panel administrativo independiente.
-$('personalBtn').onclick = () => {
-  window.location.href = 'admin.html';
+$('personalBtn').onclick=()=>{
+  window.location.href='admin.html';
+};
+
+$('headerCart').onclick=openCart;
+
+$('cartClose').onclick=()=>{
+  $('cartDialog').close();
+};
+
+$('clearCart').onclick=()=>{
+  cart.clear();
+  updateCartCount();
+  renderCart();
 };
 
 $('search').addEventListener(
   'input',
   renderProducts
 );
-
-$('cartBtn').onclick = showCart;
-
-$('cartClose').onclick = () => {
-  $('cartDialog').close();
-};
 
 renderCategories();
 await loadCatalog();
