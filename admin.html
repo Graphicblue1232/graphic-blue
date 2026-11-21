@@ -198,6 +198,7 @@ td button {padding:8px 11px;margin:2px}
 
 .form-grid {
   display:grid;
+
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:0 14px;
 }
@@ -441,6 +442,9 @@ dialog::backdrop {background:#001b4388}
 .cash-banner {margin-bottom:18px}
 .cash-banner button {margin-top:10px}
 
+.history-actions {display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.history-hidden-note {background:#f1f6ff;border-radius:10px;padding:13px;margin:10px 0;color:#123b80}
+
 @media(max-width:900px) {
   .pos-grid,.cash-columns {
     grid-template-columns:1fr;
@@ -553,6 +557,7 @@ dialog::backdrop {background:#001b4388}
   .ticket-total {
     font-size:16px!important;
     margin-top:10px!important;
+
     padding-top:8px!important;
   }
 
@@ -900,6 +905,7 @@ dialog::backdrop {background:#001b4388}
               <option value="ingreso">
                 Ingreso adicional
               </option>
+
             </select>
 
             <label for="cashMovementAmount">
@@ -1007,16 +1013,24 @@ dialog::backdrop {background:#001b4388}
         <div class="header">
           <h2>📅 Historial de cierres</h2>
 
-          <button id="refreshCashHistory"
-                  class="secondary"
-                  type="button">
-            Actualizar
-          </button>
+          <div class="history-actions">
+            <button id="refreshCashHistory"
+                    class="secondary"
+                    type="button">Actualizar</button>
+            <button id="toggleCashHistory"
+                    class="secondary"
+                    type="button"
+                    aria-pressed="false">🧹 Limpiar vista</button>
+          </div>
         </div>
 
         <p id="cashHistoryStatus" role="status"></p>
+        <p id="cashHistoryHiddenNote" class="history-hidden-note hidden" role="status">
+          Historial oculto en esta pantalla. Los registros siguen guardados en Supabase.
+          Pulsa «Mostrar historial» para verlos nuevamente.
+        </p>
 
-        <div class="table-wrap">
+        <div id="cashHistoryTable" class="table-wrap">
           <table>
             <thead>
               <tr>
@@ -1052,14 +1066,22 @@ dialog::backdrop {background:#001b4388}
             </p>
           </div>
 
-          <button id="refreshSales" class="secondary">
-            Actualizar
-          </button>
+          <div class="history-actions">
+            <button id="refreshSales" class="secondary"
+                    type="button">Actualizar</button>
+            <button id="toggleSalesHistory" class="secondary"
+                    type="button"
+                    aria-pressed="false">🧹 Limpiar vista</button>
+          </div>
         </div>
 
         <p id="salesStatus" role="status"></p>
+        <p id="salesHiddenNote" class="history-hidden-note hidden" role="status">
+          Historial oculto en esta pantalla. Los registros siguen guardados en Supabase.
+          Pulsa «Mostrar historial» para verlos nuevamente.
+        </p>
 
-        <div class="table-wrap">
+        <div id="salesTable" class="table-wrap">
           <table>
             <thead>
               <tr>
@@ -1279,6 +1301,7 @@ function dateEC(value) {
 function validUrl(value) {
   try {
     return new URL(value).protocol === "https:";
+
   } catch {
     return false;
   }
@@ -1352,6 +1375,8 @@ function showSection(name) {
 }
 
 function showLogin() {
+  resetCashHistoryView();
+  resetSalesHistoryView();
   role = null;
   openJourney = null;
   cashLoaded = false;
@@ -1792,6 +1817,7 @@ async function saveProduct(event) {
   if (!role || saving) return;
 
   let record;
+
   let file;
 
   try {
@@ -1992,6 +2018,7 @@ async function loadCashControl() {
   const ok = await loadCashState();
 
   if (ok) {
+
     await Promise.all([
       loadCashSummary(),
       loadCashHistory()
@@ -2195,6 +2222,7 @@ async function loadCashSummary() {
 
   const figures = [
     ["Fondo inicial", openJourney.fondo_inicial],
+
     ["Ventas en efectivo", cash],
     ["Transferencias", transfers],
     ["Otros pagos", others],
@@ -2612,6 +2640,8 @@ function updatePosPayment() {
     const product = products.find(p => String(p.id) === id);
     return product &&
       quantity > 0 &&
+
+
       quantity <= Number(product.stock);
   });
 
@@ -3077,6 +3107,7 @@ function downloadTicketPDF() {
     );
 
     const measure = new JsPDF({
+
       unit: "mm",
       format: [80, 200]
     });
@@ -3267,6 +3298,33 @@ $("cashCloseForm").onsubmit = closeCash;
 $("refreshCashSummary").onclick = loadCashSummary;
 $("refreshCashHistory").onclick = loadCashHistory;
 $("refreshSales").onclick = loadSales;
+
+// Oculta o muestra los historiales sin borrar registros de Supabase.
+function setupHistoryView(buttonId, tableId, noteId) {
+  const button = $(buttonId);
+  const table = $(tableId);
+  const note = $(noteId);
+
+  function setHidden(hidden) {
+    table.classList.toggle("hidden", hidden);
+    note.classList.toggle("hidden", !hidden);
+    button.textContent = hidden
+      ? "👁️ Mostrar historial"
+      : "🧹 Limpiar vista";
+    button.setAttribute("aria-pressed", String(hidden));
+  }
+
+  button.onclick = () => setHidden(!table.classList.contains("hidden"));
+  setHidden(false);
+  return () => setHidden(false);
+}
+
+const resetCashHistoryView = setupHistoryView(
+  "toggleCashHistory", "cashHistoryTable", "cashHistoryHiddenNote"
+);
+const resetSalesHistoryView = setupHistoryView(
+  "toggleSalesHistory", "salesTable", "salesHiddenNote"
+);
 
 $("closeReceipt").onclick = () => {
   $("receiptDialog").close();
