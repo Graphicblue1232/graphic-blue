@@ -3,43 +3,228 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Graphic Blue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graphic Blue | Papelería y suministros</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f7fb;
+      background: #f4f7fc;
       color: #172b4d;
-      text-align: center;
     }
     header {
       background: #123b80;
       color: white;
-      padding: 35px 20px;
+      padding: 22px 18px;
     }
-    main {
-      padding: 50px 20px;
+    .top {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
+    .logo { font-size: 23px; font-weight: 800; }
     button {
-      background: #1677e8;
-      color: white;
+      cursor: pointer;
       border: none;
       border-radius: 10px;
-      padding: 14px 25px;
-      font-size: 16px;
+      padding: 12px 16px;
+      font-weight: bold;
     }
+    .login { background: white; color: #123b80; }
+    .hero {
+      background: linear-gradient(135deg, #123b80, #247de2);
+      color: white;
+      text-align: center;
+      padding: 65px 20px;
+    }
+    .hero h1 { font-size: 36px; margin: 0 0 15px; }
+    .hero p { font-size: 17px; line-height: 1.5; }
+    .search {
+      width: 100%;
+      max-width: 560px;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-top: 22px;
+    }
+    main { max-width: 1100px; margin: auto; padding: 30px 18px; }
+    .categories {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 8px 0 22px;
+    }
+    .category { background: #e0ebff; color: #174785; white-space: nowrap; }
+    .category.active { background: #176bd1; color: white; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .product {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px #173b7114;
+    }
+    .photo {
+      background: #e7effb;
+      height: 170px;
+      display: grid;
+      place-items: center;
+      font-size: 60px;
+    }
+    .info { padding: 18px; }
+    .info h3 { margin: 0 0 8px; }
+    .price { color: #1267c9; font-size: 22px; font-weight: bold; }
+    .add { width: 100%; background: #176bd1; color: white; margin-top: 12px; }
+    .notice { color: #66758b; }
+    footer {
+      margin-top: 40px;
+      padding: 30px;
+      text-align: center;
+      background: #102d5d;
+      color: white;
+    }
+    .cart {
+      position: fixed;
+      right: 18px;
+      bottom: 20px;
+      background: #176bd1;
+      color: white;
+      box-shadow: 0 5px 20px #0003;
+    }
+    dialog {
+      border: none;
+      border-radius: 16px;
+      width: min(92%, 440px);
+      padding: 24px;
+    }
+    dialog::backdrop { background: #0008; }
+    dialog input {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 1px solid #ccd5e5;
+      border-radius: 9px;
+    }
+    .close { background: #e7effb; }
   </style>
 </head>
 <body>
   <header>
-    <h1>GRAPHIC BLUE</h1>
-    <p>Tu tienda de papelería y suministros</p>
+    <div class="top">
+      <div class="logo">GRAPHIC BLUE</div>
+      <button class="login" onclick="openLogin()">Personal</button>
+    </div>
   </header>
+
+  <section class="hero">
+    <h1>Todo lo que necesitas, en un solo lugar</h1>
+    <p>Encuentra artículos de papelería, oficina y suministros para tus proyectos.</p>
+    <input class="search" id="search" placeholder="🔎 Buscar productos..." oninput="render()">
+  </section>
+
   <main>
-    <h2>¡Bienvenido a Graphic Blue!</h2>
-    <p>Próximamente encontrarás nuestro catálogo de productos.</p>
-    <button>Ver catálogo</button>
+    <h2>Nuestro catálogo</h2>
+    <div class="categories" id="categories">
+      <button class="category active" onclick="filterCategory('Todos',this)">Todos</button>
+      <button class="category" onclick="filterCategory('Papelería',this)">Papelería</button>
+      <button class="category" onclick="filterCategory('Oficina',this)">Oficina</button>
+      <button class="category" onclick="filterCategory('Suministros',this)">Suministros</button>
+    </div>
+    <div class="grid" id="products"></div>
+    <p class="notice" id="empty"></p>
   </main>
+
+  <button class="cart" onclick="showCart()">🛒 Carrito (<span id="count">0</span>)</button>
+
+  <dialog id="cartDialog">
+    <h2>Tu carrito</h2>
+    <div id="cartItems"></div>
+    <p id="total"></p>
+    <p class="notice">La confirmación de pedidos estará disponible próximamente.</p>
+    <button class="close" onclick="cartDialog.close()">Cerrar</button>
+  </dialog>
+
+  <dialog id="loginDialog">
+    <h2>Acceso del personal</h2>
+    <p>Administradores y empleados</p>
+    <input type="email" placeholder="Correo electrónico" autocomplete="username">
+    <input type="password" placeholder="Contraseña" autocomplete="current-password">
+    <p class="notice">Conectaremos el inicio de sesión con Supabase en el siguiente paso.</p>
+    <button class="close" onclick="loginDialog.close()">Cerrar</button>
+  </dialog>
+
+  <footer>© 2026 Graphic Blue · Papelería y suministros</footer>
+
+  <script>
+    // Productos de demostración. No son inventario real.
+    const products = [
+      { id: 1, name: "Cuaderno universitario", category: "Papelería", price: 3.50, icon: "📓" },
+      { id: 2, name: "Bolígrafos de colores", category: "Papelería", price: 2.75, icon: "🖊️" },
+      { id: 3, name: "Carpeta organizadora", category: "Oficina", price: 4.25, icon: "📁" },
+      { id: 4, name: "Papel para impresión", category: "Suministros", price: 5.90, icon: "📄" }
+    ];
+
+    let category = "Todos";
+    let cart = [];
+
+    const money = value => "$" + value.toFixed(2);
+
+    function filterCategory(value, button) {
+      category = value;
+      document.querySelectorAll(".category").forEach(b => b.classList.remove("active"));
+      button.classList.add("active");
+      render();
+    }
+
+    function render() {
+      const query = document.getElementById("search").value.toLowerCase();
+      const filtered = products.filter(p =>
+        (category === "Todos" || p.category === category) &&
+        p.name.toLowerCase().includes(query)
+      );
+
+      document.getElementById("products").innerHTML = filtered.map(p => `
+        <article class="product">
+          <div class="photo">${p.icon}</div>
+          <div class="info">
+            <h3>${p.name}</h3>
+            <p>${p.category}</p>
+            <div class="price">${money(p.price)}</div>
+            <button class="add" onclick="addCart(${p.id})">Agregar al carrito</button>
+          </div>
+        </article>
+      `).join("");
+
+      document.getElementById("empty").textContent =
+        filtered.length ? "" : "No encontramos productos.";
+    }
+
+    function addCart(id) {
+      cart.push(products.find(p => p.id === id));
+      document.getElementById("count").textContent = cart.length;
+    }
+
+    function showCart() {
+      document.getElementById("cartItems").textContent =
+        cart.length ? cart.map(p => p.name + " — " + money(p.price)).join(" | ") : "Tu carrito está vacío.";
+      document.getElementById("total").textContent =
+        "Total: " + money(cart.reduce((sum, p) => sum + p.price, 0));
+      document.getElementById("cartDialog").showModal();
+    }
+
+    function openLogin() {
+      document.getElementById("loginDialog").showModal();
+    }
+
+    render();
+  </script>
 </body>
 </html>
