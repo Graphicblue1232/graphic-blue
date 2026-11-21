@@ -92,7 +92,17 @@ dialog::backdrop{background:#001b4388}
 .ticket-foot{text-align:center;margin-top:24px;border-top:1px dashed #9ca9ba;padding-top:12px;font-size:13px}
 .receipt-actions{justify-content:center}
 .receipt-actions button{flex:1}
-@media(max-width:900px){.pos-grid{grid-template-columns:1fr}}
+.cash-status{padding:16px;border-radius:13px;background:#fff2ee;border:1px solid #f4c8bd;margin-bottom:18px}
+.cash-status.open{background:#eaf9f0;border-color:#b7e6c9}
+.cash-status strong{display:block;font-size:18px}
+.cash-status p{margin:6px 0 0}
+.cash-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cash-figures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cash-figure{background:#f1f6ff;border-radius:12px;padding:13px}
+.cash-figure span{display:block;color:#64748b;font-size:12px}
+.cash-figure strong{display:block;color:#176bd1;font-size:21px;margin-top:5px}
+.cash-form-note{font-size:13px;color:#64748b}
+@media(max-width:900px){.pos-grid,.cash-columns{grid-template-columns:1fr}}
 @media(max-width:720px){
 .layout{display:block}
 .sidebar{width:100%;padding:14px}
@@ -110,6 +120,7 @@ dialog::backdrop{background:#001b4388}
 .pos-product button{padding:9px}
 .ticket-dialog{padding:15px}
 .ticket-table{font-size:12px}
+.cash-figures{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media print{
 @page{size:80mm 180mm;margin:0}
@@ -133,541 +144,2579 @@ dialog#receiptDialog::backdrop{display:none!important}
 </style>
 </head>
 <body>
+
 <section id="loginScreen" class="login-wrap">
-<div class="login-logo">🔵 Graphic Blue</div>
-<div class="card">
-<h2>Acceso del personal</h2>
-<p class="muted">Ingresa con tu cuenta de administrador o empleado.</p>
-<form id="loginForm">
-<label>Correo electrónico<input id="email" type="email" autocomplete="username" required></label>
-<label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
-<p id="loginStatus" role="status"></p>
-<button id="loginBtn" class="primary" type="submit" style="width:100%">Iniciar sesión</button>
-</form>
-<p style="text-align:center"><a href="index.html">← Volver a la tienda</a></p>
-</div>
+  <div class="login-logo">🔵 Graphic Blue</div>
+  <div class="card">
+    <h2>Acceso del personal</h2>
+    <p class="muted">Ingresa con tu cuenta de administrador o empleado.</p>
+    <form id="loginForm">
+      <label>Correo electrónico
+        <input id="email" type="email" autocomplete="username" required>
+      </label>
+      <label>Contraseña
+        <input id="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p id="loginStatus" role="status"></p>
+      <button id="loginBtn" class="primary" type="submit" style="width:100%">
+        Iniciar sesión
+      </button>
+    </form>
+    <p style="text-align:center">
+      <a href="index.html">← Volver a la tienda</a>
+    </p>
+  </div>
 </section>
+
 <div id="dashboard" class="layout hidden">
-<aside class="sidebar">
-<div class="logo">🔵 Graphic Blue</div>
-<div class="nav">
-<button id="navHome">🏠 Panel principal</button>
-<button id="navProducts">📦 Productos</button>
-<button id="navInventory">📋 Inventario</button>
-<button id="navCash">💵 Caja</button>
-<button id="navSales">🧾 Ventas</button>
-<a href="index.html">🛍️ Ver tienda</a>
-<button id="logoutBtn">🚪 Cerrar sesión</button>
+  <aside class="sidebar">
+    <div class="logo">🔵 Graphic Blue</div>
+    <div class="nav">
+      <button id="navHome">🏠 Panel principal</button>
+      <button id="navProducts">📦 Productos</button>
+      <button id="navInventory">📋 Inventario</button>
+      <button id="navCash">💵 Caja</button>
+      <button id="navCashControl">💰 Control de caja</button>
+      <button id="navSales">🧾 Ventas</button>
+      <a href="index.html">🛍️ Ver tienda</a>
+      <button id="logoutBtn">🚪 Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="header">
+      <div>
+        <h1 id="pageTitle">Panel principal</h1>
+        <p id="welcome" class="muted"></p>
+      </div>
+      <button id="newBtn" class="primary">+ Agregar producto</button>
+    </div>
+
+    <section id="homeSection">
+      <div class="stats">
+        <div class="stat">
+          <span>Productos</span>
+          <strong id="totalProducts">0</strong>
+        </div>
+        <div class="stat">
+          <span>Publicados</span>
+          <strong id="publishedProducts">0</strong>
+        </div>
+        <div class="stat">
+          <span>Stock bajo</span>
+          <strong id="lowCount">0</strong>
+        </div>
+      </div>
+      <div id="homeCashStatus" class="cash-status"></div>
+      <div class="card">
+        <h2>⚠️ Alertas de inventario</h2>
+        <div id="lowList" class="muted">Cargando...</div>
+      </div>
+      <div class="card">
+        <h2>Graphic Blue</h2>
+        <p>Administra tus productos, existencias y ventas desde un mismo lugar.</p>
+        <div class="notice">
+          Las ventas de mostrador requieren que la caja esté abierta.
+          Solo el administrador puede abrirla y cerrarla.
+        </div>
+      </div>
+    </section>
+
+    <section id="productsSection" class="hidden">
+      <div class="card">
+        <h2>Administración de productos</h2>
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Buscar por nombre o código...">
+          <select id="filterCategory">
+            <option value="">Todas las categorías</option>
+          </select>
+        </div>
+        <p id="staffStatus" role="status"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Imagen</th><th>Producto</th><th>Categoría</th>
+                <th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="productRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="inventorySection" class="hidden">
+      <div class="card">
+        <h2>Inventario</h2>
+        <p class="muted">Control de existencias y cantidades mínimas.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th><th>Producto</th><th>Stock actual</th>
+                <th>Stock mínimo</th><th>Estado</th><th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="cashSection" class="hidden">
+      <div id="posCashBanner" class="cash-status"></div>
+      <div class="pos-grid">
+        <div class="card">
+          <h2>🛒 Seleccionar productos</h2>
+          <label for="posSearch">Buscar por nombre o código</label>
+          <input id="posSearch" type="search" placeholder="Ej. cuaderno, bolígrafo, PRUEBA001">
+          <p id="posProductsStatus" class="muted"></p>
+          <div id="posProducts" class="pos-list"></div>
+        </div>
+        <div class="card">
+          <h2>💵 Nueva venta</h2>
+          <div id="posCart"></div>
+          <div class="pos-total">
+            <span>Total</span><span id="posTotal">$0,00</span>
+          </div>
+          <label for="posMethod">Forma de pago</label>
+          <select id="posMethod">
+            <option value="efectivo">💵 Efectivo</option>
+            <option value="transferencia">🏦 Transferencia</option>
+          </select>
+          <div id="posCashFields">
+            <label for="posReceived">Dinero recibido ($)</label>
+            <input id="posReceived" type="number" min="0" step="0.01"
+                   inputmode="decimal" placeholder="Ej. 20.00">
+            <div class="pos-change">
+              <span>Cambio a entregar</span>
+              <strong id="posChange">$0,00</strong>
+            </div>
+          </div>
+          <div id="posTransferFields" class="notice hidden">
+            Confirma que recibiste la transferencia antes de registrar la venta.
+            Esta caja no verifica transferencias bancarias automáticamente.
+          </div>
+          <p id="posStatus" role="status"></p>
+          <button id="posConfirm" class="primary pos-confirm" disabled>
+            Confirmar venta
+          </button>
+          <button id="posClear" class="secondary pos-confirm">
+            Vaciar carrito
+          </button>
+          <div id="posReceipt" class="sale-result hidden" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cashControlSection" class="hidden">
+      <div id="controlCashBanner" class="cash-status"></div>
+      <p id="cashControlStatus" role="status"></p>
+
+      <div class="cash-columns">
+        <div class="card">
+          <h2>🔓 Apertura de caja</h2>
+          <p class="muted">Registra el efectivo con el que comienza la jornada.</p>
+          <form id="cashOpenForm">
+            <label for="cashOpeningAmount">Fondo inicial ($)</label>
+            <input id="cashOpeningAmount" type="number" min="0" step="0.01"
+                   inputmode="decimal" value="0" required>
+            <button id="cashOpenBtn" class="primary" type="submit">
+              Abrir caja
+            </button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>💸 Movimientos de efectivo</h2>
+          <p class="muted">Registra ingresos adicionales y retiros de caja.</p>
+          <form id="cashMovementForm">
+            <label for="cashMovementType">Tipo de movimiento</label>
+            <select id="cashMovementType">
+              <option value="retiro">Retiro de efectivo</option>
+              <option value="ingreso">Ingreso adicional</option>
+            </select>
+            <label for="cashMovementAmount">Monto ($)</label>
+            <input id="cashMovementAmount" type="number" min="0.01"
+                   step="0.01" inputmode="decimal" required>
+            <label for="cashMovementConcept">Concepto</label>
+            <input id="cashMovementConcept" maxlength="250"
+                   placeholder="Ej. Compra de suministros" required>
+            <button id="cashMovementBtn" class="secondary" type="submit">
+              Registrar movimiento
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <h2>📊 Resumen de la jornada</h2>
+          <button id="refreshCashSummary" class="secondary" type="button">
+            Actualizar
+          </button>
+        </div>
+        <p id="cashSummaryStatus" role="status"></p>
+        <div id="cashFigures" class="cash-figures"></div>
+      </div>
+
+      <div class="card">
+        <h2>🔒 Cierre de caja</h2>
+        <p class="muted">
+          Cuenta el efectivo físico que tienes en caja.
+          El sistema calculará si existe una diferencia.
+        </p>
+        <form id="cashCloseForm">
+          <label for="cashCountedAmount">Efectivo contado ($)</label>
+          <input id="cashCountedAmount" type="number" min="0" step="0.01"
+                 inputmode="decimal" required>
+          <label for="cashCloseNotes">Observaciones (opcional)</label>
+          <textarea id="cashCloseNotes" rows="2"
+                    placeholder="Ej. Todo correcto"></textarea>
+          <button id="cashCloseBtn" class="primary" type="submit">
+            Cerrar caja
+          </button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <h2>📅 Historial de cierres</h2>
+          <button id="refreshCashHistory" class="secondary" type="button">
+            Actualizar
+          </button>
+        </div>
+        <p id="cashHistoryStatus" role="status"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th><th>Estado</th><th>Fondo inicial</th>
+                <th>Efectivo vendido</th><th>Transferencias</th>
+                <th>Esperado</th><th>Contado</th><th>Diferencia</th>
+              </tr>
+            </thead>
+            <tbody id="cashHistoryRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="salesSection" class="hidden">
+      <div class="card">
+        <div class="header">
+          <div>
+            <h2>🧾 Historial de ventas</h2>
+            <p class="muted">Pedidos recientes registrados en Graphic Blue.</p>
+          </div>
+          <button id="refreshSales" class="secondary">Actualizar</button>
+        </div>
+        <p id="salesStatus" role="status"></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>N.º</th><th>Fecha</th><th>Cliente</th>
+                <th>Total</th><th>Método</th><th>Estado</th><th>Comprobante</th>
+              </tr>
+            </thead>
+            <tbody id="salesRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
-</aside>
-<main class="content">
-<div class="header">
-<div><h1 id="pageTitle">Panel principal</h1><p id="welcome" class="muted"></p></div>
-<button id="newBtn" class="primary">+ Agregar producto</button>
-</div>
-<section id="homeSection">
-<div class="stats">
-<div class="stat"><span>Productos</span><strong id="totalProducts">0</strong></div>
-<div class="stat"><span>Publicados</span><strong id="publishedProducts">0</strong></div>
-<div class="stat"><span>Stock bajo</span><strong id="lowCount">0</strong></div>
-</div>
-<div class="card"><h2>⚠️ Alertas de inventario</h2><div id="lowList" class="muted">Cargando...</div></div>
-<div class="card"><h2>Graphic Blue</h2>
-<p>Desde aquí puedes registrar productos, cambiar precios, actualizar existencias y controlar qué artículos aparecen en la tienda.</p>
-<div class="notice">La sección 💵 Caja permite registrar ventas de mostrador y generar comprobantes. Las ventas confirmadas descuentan el inventario.</div>
-</div>
-</section>
-<section id="productsSection" class="hidden">
-<div class="card">
-<h2>Administración de productos</h2>
-<div class="toolbar"><input id="search" type="search" placeholder="Buscar por nombre o código..."><select id="filterCategory"><option value="">Todas las categorías</option></select></div>
-<p id="staffStatus" role="status"></p>
-<div class="table-wrap"><table>
-<thead><tr><th>Imagen</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
-<tbody id="productRows"></tbody>
-</table></div>
-</div>
-</section>
-<section id="inventorySection" class="hidden">
-<div class="card">
-<h2>Inventario</h2><p class="muted">Control de existencias y cantidades mínimas.</p>
-<div class="table-wrap"><table>
-<thead><tr><th>Código</th><th>Producto</th><th>Stock actual</th><th>Stock mínimo</th><th>Estado</th><th>Acción</th></tr></thead>
-<tbody id="inventoryRows"></tbody>
-</table></div>
-</div>
-</section>
-<section id="cashSection" class="hidden">
-<div class="pos-grid">
-<div class="card">
-<h2>🛒 Seleccionar productos</h2>
-<label for="posSearch">Buscar por nombre o código</label>
-<input id="posSearch" type="search" placeholder="Ej. cuaderno, bolígrafo, PRUEBA001">
-<p id="posProductsStatus" class="muted"></p>
-<div id="posProducts" class="pos-list"></div>
-</div>
-<div class="card">
-<h2>💵 Nueva venta</h2>
-<div id="posCart"></div>
-<div class="pos-total"><span>Total</span><span id="posTotal">$0,00</span></div>
-<label for="posMethod">Forma de pago</label>
-<select id="posMethod"><option value="efectivo">💵 Efectivo</option><option value="transferencia">🏦 Transferencia</option></select>
-<div id="posCashFields">
-<label for="posReceived">Dinero recibido ($)</label>
-<input id="posReceived" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ej. 20.00">
-<div class="pos-change"><span>Cambio a entregar</span><strong id="posChange">$0,00</strong></div>
-</div>
-<div id="posTransferFields" class="notice hidden">Confirma que recibiste la transferencia antes de registrar la venta. Esta caja no verifica transferencias bancarias automáticamente.</div>
-<p id="posStatus" role="status"></p>
-<button id="posConfirm" class="primary pos-confirm" disabled>Confirmar venta</button>
-<button id="posClear" class="secondary pos-confirm">Vaciar carrito</button>
-<div id="posReceipt" class="sale-result hidden" role="status"></div>
-</div>
-</div>
-</section>
-<section id="salesSection" class="hidden">
-<div class="card">
-<div class="header"><div><h2>🧾 Historial de ventas</h2><p class="muted">Pedidos recientes registrados en Graphic Blue.</p></div><button id="refreshSales" class="secondary">Actualizar</button></div>
-<p id="salesStatus" role="status"></p>
-<div class="table-wrap"><table>
-<thead><tr><th>N.º</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Método</th><th>Estado</th><th>Comprobante</th></tr></thead>
-<tbody id="salesRows"></tbody>
-</table></div>
-</div>
-</section>
-</main>
-</div>
+
 <dialog id="productDialog">
-<h2 id="formTitle">Agregar producto</h2>
-<form id="productForm">
-<div class="form-grid">
-<label>Código<input id="pCode" maxlength="80" required></label>
-<label>Nombre<input id="pName" maxlength="200" required></label>
-<label class="wide">Descripción<textarea id="pDescription" rows="2"></textarea></label>
-<label>Categoría<select id="pCategory" required></select></label>
-<label>Precio de compra ($)<input id="pCost" type="number" min="0" step="0.01" required></label>
-<label>Precio de venta ($)<input id="pPrice" type="number" min="0" step="0.01" required></label>
-<label>Stock<input id="pStock" type="number" min="0" step="1" required></label>
-<label>Stock mínimo<input id="pMinStock" type="number" min="0" step="1" required></label>
-<div class="wide upload-box">
-<label for="pFile">📷 Imagen del producto</label>
-<p class="upload-help">Selecciona una foto desde tu celular o computadora. Formatos: JPG, PNG o WebP. Máximo 5 MB.</p>
-<input id="pFile" type="file" accept="image/jpeg,image/png,image/webp">
-<img id="imagePreview" class="preview hidden" alt="Vista previa del producto">
-<p id="imageHint" class="upload-help">Todavía no has seleccionado una imagen.</p>
-</div>
-<label class="wide">URL de imagen (opcional)<input id="pImage" type="url" placeholder="https://..."></label>
-</div>
-<label class="check"><input id="pPublished" type="checkbox"> Publicar en la tienda</label>
-<p id="formStatus" role="status"></p>
-<div class="actions"><button id="saveBtn" type="submit" class="primary">Guardar producto</button><button id="cancelBtn" type="button" class="secondary">Cancelar</button></div>
-</form>
+  <h2 id="formTitle">Agregar producto</h2>
+  <form id="productForm">
+    <div class="form-grid">
+      <label>Código<input id="pCode" maxlength="80" required></label>
+      <label>Nombre<input id="pName" maxlength="200" required></label>
+      <label class="wide">Descripción
+        <textarea id="pDescription" rows="2"></textarea>
+      </label>
+      <label>Categoría<select id="pCategory" required></select></label>
+      <label>Precio de compra ($)
+        <input id="pCost" type="number" min="0" step="0.01" required>
+      </label>
+      <label>Precio de venta ($)
+        <input id="pPrice" type="number" min="0" step="0.01" required>
+      </label>
+      <label>Stock
+        <input id="pStock" type="number" min="0" step="1" required>
+      </label>
+      <label>Stock mínimo
+        <input id="pMinStock" type="number" min="0" step="1" required>
+      </label>
+      <div class="wide upload-box">
+        <label for="pFile">📷 Imagen del producto</label>
+        <p class="upload-help">
+          Selecciona una foto desde tu celular o computadora.
+          Formatos: JPG, PNG o WebP. Máximo 5 MB.
+        </p>
+        <input id="pFile" type="file" accept="image/jpeg,image/png,image/webp">
+        <img id="imagePreview" class="preview hidden" alt="Vista previa del producto">
+        <p id="imageHint" class="upload-help">
+          Todavía no has seleccionado una imagen.
+        </p>
+      </div>
+      <label class="wide">URL de imagen (opcional)
+        <input id="pImage" type="url" placeholder="https://...">
+      </label>
+    </div>
+    <label class="check">
+      <input id="pPublished" type="checkbox"> Publicar en la tienda
+    </label>
+    <p id="formStatus" role="status"></p>
+    <div class="actions">
+      <button id="saveBtn" type="submit" class="primary">Guardar producto</button>
+      <button id="cancelBtn" type="button" class="secondary">Cancelar</button>
+    </div>
+  </form>
 </dialog>
+
 <dialog id="receiptDialog" class="ticket-dialog" aria-label="Comprobante de venta">
-<div id="receiptContent" class="ticket"></div>
-<p id="receiptStatus" role="status"></p>
-<div class="actions receipt-actions">
-<button id="downloadTicketPdf" class="primary" type="button" disabled>📄 Descargar ticket PDF (80 mm)</button>
-<button id="printReceipt" class="secondary" type="button" disabled>🖨️ Imprimir</button>
-<button id="closeReceipt" class="secondary" type="button">Cerrar</button>
-</div>
+  <div id="receiptContent" class="ticket"></div>
+  <p id="receiptStatus" role="status"></p>
+  <div class="actions receipt-actions">
+    <button id="downloadTicketPdf" class="primary" type="button" disabled>
+      📄 Descargar ticket PDF (80 mm)
+    </button>
+    <button id="printReceipt" class="secondary" type="button" disabled>
+      🖨️ Imprimir
+    </button>
+    <button id="closeReceipt" class="secondary" type="button">Cerrar</button>
+  </div>
 </dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
 <script type="module">
+
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const SUPABASE_URL='https://bszdopscbugyfnakqmbw.supabase.co';
 const SUPABASE_KEY='sb_publishable_-yylLSKbfr1Ya28jU9CjvA_JVgRt3K-';
 const BUCKET='productos-imagenes';
+
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-const money=n=>new Intl.NumberFormat('es-EC',{style:'currency',currency:'USD'}).format(Number(n)||0);
+
+const money=n=>new Intl.NumberFormat('es-EC',{
+  style:'currency',
+  currency:'USD'
+}).format(Number(n)||0);
+
 const cents=n=>Math.round(Number(n)*100);
-function el(tag,text='',className=''){const node=document.createElement(tag);node.textContent=text;node.className=className;return node}
-let products=[],categories=[],role=null,editingId=null,previewObjectUrl=null,saving=false,posCart=new Map(),posSaving=false,currentReceipt=null;
-function message(id,text,error=false){$(id).textContent=text;$(id).className=error?'error':'success'}
-function showSection(name){
-const nav={home:'navHome',products:'navProducts',inventory:'navInventory',cash:'navCash',sales:'navSales'};
-for(const section of Object.keys(nav)){$(section+'Section').classList.toggle('hidden',section!==name);$(nav[section]).classList.toggle('active',section===name)}
-$('pageTitle').textContent={home:'Panel principal',products:'Productos',inventory:'Inventario',cash:'Caja registradora',sales:'Historial de ventas'}[name];
-$('newBtn').classList.toggle('hidden',!['home','products','inventory'].includes(name));
-if(name==='cash')refreshCashProducts();
-if(name==='sales')loadSales();
-}
-async function checkSession(){
-const {data:{user},error}=await db.auth.getUser();
-if(error||!user){showLogin();return}
-const result=await db.from('perfiles').select('nombre,rol').eq('id',user.id).maybeSingle();
-if(result.error||!result.data||!['administrador','empleado'].includes(result.data.rol)){
-await db.auth.signOut();showLogin();message('loginStatus','Esta cuenta no tiene acceso al panel.',true);return
-}
-role=result.data.rol;
-$('welcome').textContent=`${result.data.nombre||'Personal'} · ${role}`;
-$('loginScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');
-await loadData();showSection('home');
-}
-function showLogin(){role=null;posCart.clear();currentReceipt=null;$('dashboard').classList.add('hidden');$('loginScreen').classList.remove('hidden')}
-async function loadData(){
-const [p,c]=await Promise.all([
-db.from('productos').select('id,codigo,nombre,descripcion,categoria,precio_compra,precio_venta,stock,stock_minimo,imagen_url,publicado').order('nombre'),
-db.from('categorias').select('nombre').order('nombre')
-]);
-if(p.error){message('staffStatus','Error: '+p.error.message,true);showSection('products');return false}
-products=p.data||[];categories=c.error?[]:(c.data||[]).map(x=>x.nombre).filter(Boolean);
-renderStats();renderCategoryFilter();renderProducts();renderInventory();renderPosProducts();renderPosCart();return true;
-}
-function lowProducts(){return products.filter(p=>Number(p.stock)<=Number(p.stock_minimo))}
-function renderStats(){
-$('totalProducts').textContent=products.length;
-$('publishedProducts').textContent=products.filter(p=>p.publicado).length;
-const low=lowProducts();$('lowCount').textContent=low.length;
-const box=$('lowList');box.replaceChildren();
-if(!low.length){box.append(el('p','No hay productos con stock bajo.'));return}
-for(const p of low)box.append(el('p',`⚠️ ${p.nombre}: ${p.stock} unidades (mínimo ${p.stock_minimo})`,'stock-low'));
-}
-function renderCategoryFilter(){
-const select=$('filterCategory'),previous=select.value;select.replaceChildren();
-const all=document.createElement('option');all.value='';all.textContent='Todas las categorías';select.append(all);
-const names=[...new Set([...categories,...products.map(p=>p.categoria)].filter(Boolean))].sort();
-for(const name of names){const option=document.createElement('option');option.value=name;option.textContent=name;select.append(option)}
-select.value=names.includes(previous)?previous:'';
-}
-function renderProducts(){
-const box=$('productRows');box.replaceChildren();
-const query=$('search').value.toLowerCase().trim(),category=$('filterCategory').value;
-const filtered=products.filter(p=>(!category||p.categoria===category)&&`${p.nombre} ${p.codigo}`.toLowerCase().includes(query));
-if(!filtered.length){const row=el('tr'),cell=el('td','No hay productos para mostrar.');cell.colSpan=7;row.append(cell);box.append(row);return}
-for(const p of filtered){
-const row=el('tr'),imageCell=el('td');
-if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){
-const img=document.createElement('img');img.src=p.imagen_url;img.alt=p.nombre;img.className='thumb';img.onerror=()=>img.replaceWith(el('div','📦','placeholder'));imageCell.append(img)
-}else imageCell.append(el('div','📦','placeholder'));
-const nameCell=el('td');nameCell.append(el('strong',p.nombre),el('div',p.codigo||'Sin código','muted'));
-row.append(imageCell,nameCell,el('td',p.categoria||''),el('td',money(p.precio_venta)),el('td',String(p.stock),Number(p.stock)<=Number(p.stock_minimo)?'stock-low':''),el('td',p.publicado?'Publicado':'Oculto'));
-const actions=el('td'),edit=el('button','✏️ Editar','secondary');edit.onclick=()=>openForm(p);
-const toggle=el('button',p.publicado?'Ocultar':'Publicar','secondary');toggle.onclick=()=>toggleProduct(p);
-actions.append(edit,toggle);row.append(actions);box.append(row);
-}
-}
-function renderInventory(){
-const box=$('inventoryRows');box.replaceChildren();
-for(const p of products){
-const row=el('tr'),low=Number(p.stock)<=Number(p.stock_minimo);
-row.append(el('td',p.codigo||''),el('td',p.nombre),el('td',String(p.stock),low?'stock-low':''),el('td',String(p.stock_minimo)),el('td',low?'⚠️ Stock bajo':'Correcto'));
-const action=el('td'),edit=el('button','Actualizar','secondary');edit.onclick=()=>openForm(p);action.append(edit);row.append(action);box.append(row);
-}
-}
-function fillFormCategories(selected=''){
-const select=$('pCategory');select.replaceChildren();
-const names=[...new Set([...categories,...products.map(p=>p.categoria),selected].filter(Boolean))].sort();
-for(const name of names){const option=document.createElement('option');option.value=name;option.textContent=name;select.append(option)}
-if(selected)select.value=selected;
-}
-function clearPreview(){
-if(previewObjectUrl){URL.revokeObjectURL(previewObjectUrl);previewObjectUrl=null}
-$('imagePreview').removeAttribute('src');$('imagePreview').classList.add('hidden');
-}
-function showImagePreview(src){$('imagePreview').src=src;$('imagePreview').classList.remove('hidden')}
-function updatePreview(){
-clearPreview();const file=$('pFile').files?.[0];
-if(file){
-if(!['image/jpeg','image/png','image/webp'].includes(file.type)){$('imageHint').textContent='Selecciona una imagen JPG, PNG o WebP.';return}
-previewObjectUrl=URL.createObjectURL(file);showImagePreview(previewObjectUrl);$('imageHint').textContent='Vista previa: '+file.name;return;
-}
-const url=$('pImage').value.trim();
-if(/^https:\/\//i.test(url)){showImagePreview(url);$('imageHint').textContent='Imagen actual del producto.'}
-else $('imageHint').textContent='Todavía no has seleccionado una imagen.';
-}
-function openForm(p=null){
-if(!role)return;editingId=p?.id??null;$('productForm').reset();
-$('formTitle').textContent=p?'Editar producto':'Agregar producto';$('formStatus').textContent='';
-fillFormCategories(p?.categoria||'');
-$('pCode').value=p?.codigo||'';$('pName').value=p?.nombre||'';$('pDescription').value=p?.descripcion||'';
-$('pCost').value=p?.precio_compra??0;$('pPrice').value=p?.precio_venta??0;$('pStock').value=p?.stock??0;$('pMinStock').value=p?.stock_minimo??0;
-$('pImage').value=p?.imagen_url||'';$('pPublished').checked=p?.publicado??false;updatePreview();$('productDialog').showModal();
-}
-function numberValue(id,integer=false){
-const value=Number($(id).value);
-if(!Number.isFinite(value)||value<0||(integer&&!Number.isInteger(value)))throw Error('Revisa los precios y las cantidades.');
-return value;
-}
-function validateFile(file){
-if(!file)return;
-if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('La imagen debe ser JPG, PNG o WebP.');
-if(file.size>5*1024*1024)throw Error('La imagen supera los 5 MB.');
-if(file.size===0)throw Error('La imagen está vacía.');
-}
-async function uploadImage(file){
-validateFile(file);
-const {data:{user},error:userError}=await db.auth.getUser();
-if(userError||!user)throw Error('Tu sesión expiró. Inicia sesión nuevamente.');
-const extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
-const path=`productos/${user.id}/${crypto.randomUUID()}.${extension}`;
-const result=await db.storage.from(BUCKET).upload(path,file,{contentType:file.type,cacheControl:'3600',upsert:false});
-if(result.error)throw Error('No se pudo subir la imagen: '+result.error.message);
-const {data}=db.storage.from(BUCKET).getPublicUrl(path);
-if(!data?.publicUrl)throw Error('No se pudo obtener la URL de la imagen.');
-return data.publicUrl;
-}
-async function saveProduct(event){
-event.preventDefault();if(!role||saving)return;
-let record,file;
-try{
-const url=$('pImage').value.trim();file=$('pFile').files?.[0]||null;validateFile(file);
-if(url&&!/^https:\/\//i.test(url))throw Error('La URL debe comenzar con https://');
-record={codigo:$('pCode').value.trim(),nombre:$('pName').value.trim(),descripcion:$('pDescription').value.trim(),categoria:$('pCategory').value,precio_compra:numberValue('pCost'),precio_venta:numberValue('pPrice'),stock:numberValue('pStock',true),stock_minimo:numberValue('pMinStock',true),imagen_url:url||null,publicado:$('pPublished').checked};
-if(!record.codigo||!record.nombre||!record.categoria)throw Error('Completa código, nombre y categoría.');
-}catch(error){message('formStatus',error.message,true);return}
-saving=true;$('saveBtn').disabled=true;$('cancelBtn').disabled=true;
-try{
-if(file){message('formStatus','Subiendo imagen...');record.imagen_url=await uploadImage(file)}
-message('formStatus','Guardando producto...');
-const result=editingId===null?await db.from('productos').insert(record).select('id'):await db.from('productos').update(record).eq('id',editingId).select('id');
-if(result.error||!result.data?.length)throw Error('No se pudo guardar el producto: '+(result.error?.message||'Revisa los permisos.'));
-$('productDialog').close();clearPreview();await loadData();message('staffStatus','Producto guardado correctamente.');
-}catch(error){console.error(error);message('formStatus',error.message,true)}
-finally{saving=false;$('saveBtn').disabled=false;$('cancelBtn').disabled=false}
-}
-async function toggleProduct(p){
-if(!role)return;
-const result=await db.from('productos').update({publicado:!p.publicado}).eq('id',p.id).select('id');
-if(result.error||!result.data?.length){message('staffStatus','No se pudo cambiar el estado del producto.',true);return}
-await loadData();message('staffStatus','Estado actualizado correctamente.');
-}
-function cartTotalCents(){
-let sum=0;
-for(const [id,qty] of posCart){const p=products.find(x=>String(x.id)===String(id));if(p)sum+=cents(p.precio_venta)*qty}
-return sum;
-}
-function renderPosProducts(){
-const box=$('posProducts');box.replaceChildren();
-const q=$('posSearch').value.trim().toLowerCase();
-const matches=products.filter(p=>`${p.nombre} ${p.codigo||''}`.toLowerCase().includes(q));
-$('posProductsStatus').textContent=`${matches.length} producto(s) encontrado(s)`;
-if(!matches.length){box.append(el('p','No se encontraron productos.','muted'));return}
-for(const p of matches){
-const row=el('div','','pos-product');
-if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){const img=el('img','','thumb');img.src=p.imagen_url;img.alt=p.nombre;row.append(img)}
-else row.append(el('div','📦','placeholder'));
-const info=el('div','','info');
-info.append(el('strong',p.nombre),el('small',`${p.codigo||'Sin código'} · ${money(p.precio_venta)} · Stock: ${p.stock}`));
-const btn=el('button',Number(p.stock)>0?'Agregar +':'Agotado','secondary');
-btn.disabled=Number(p.stock)<=0||posSaving;btn.onclick=()=>addPosProduct(p.id);
-row.append(info,btn);box.append(row);
-}
-}
-function addPosProduct(id){
-const p=products.find(x=>String(x.id)===String(id));if(!p)return;
-const qty=posCart.get(String(id))||0;
-if(qty>=Number(p.stock)){message('posStatus','No hay más unidades disponibles de '+p.nombre,true);return}
-posCart.set(String(id),qty+1);$('posReceipt').classList.add('hidden');message('posStatus','');renderPosCart();
-}
-function changePosQty(id,delta){
-const key=String(id),p=products.find(x=>String(x.id)===key);if(!p)return;
-const next=(posCart.get(key)||0)+delta;
-if(next>Number(p.stock)){message('posStatus','Stock insuficiente para '+p.nombre,true);return}
-if(next<=0)posCart.delete(key);else posCart.set(key,next);
-$('posReceipt').classList.add('hidden');message('posStatus','');renderPosCart();
-}
-function renderPosCart(){
-const box=$('posCart');box.replaceChildren();
-if(!posCart.size)box.append(el('p','Todavía no has agregado productos.','muted'));
-for(const [id,qty] of posCart){
-const p=products.find(x=>String(x.id)===id);
-if(!p){box.append(el('p','Un producto ya no está disponible. Vacía el carrito.','error'));continue}
-const line=el('div','','pos-line'),info=el('div');
-info.append(el('strong',p.nombre),el('small',`${money(p.precio_venta)} c/u · ${money(Number(p.precio_venta)*qty)}`));
-const controls=el('div','','qty'),minus=el('button','−','secondary'),plus=el('button','+','secondary');
-minus.disabled=posSaving;plus.disabled=posSaving||qty>=Number(p.stock);
-minus.onclick=()=>changePosQty(id,-1);plus.onclick=()=>changePosQty(id,1);
-controls.append(minus,el('strong',String(qty)),plus);line.append(info,controls);box.append(line);
-}
-$('posTotal').textContent=money(cartTotalCents()/100);updatePosPayment();
-}
-function updatePosPayment(){
-const cash=$('posMethod').value==='efectivo';
-$('posCashFields').classList.toggle('hidden',!cash);$('posTransferFields').classList.toggle('hidden',cash);
-const receivedText=$('posReceived').value.trim(),received=Number(receivedText),total=cartTotalCents();
-const validReceived=receivedText!==''&&Number.isFinite(received)&&received>=0&&cents(received)>=total;
-$('posChange').textContent=money(cash&&validReceived?(cents(received)-total)/100:0);
-$('posConfirm').disabled=posSaving||!posCart.size||(cash&&!validReceived);
-}
-async function refreshCashProducts(){
-if(!role)return;
-const ok=await loadData();
-if(!ok)message('posStatus','No se pudieron actualizar los productos.',true);
-}
-async function confirmSale(){
-if(posSaving||!posCart.size||!role)return;
-const method=$('posMethod').value,receivedText=$('posReceived').value.trim(),received=Number(receivedText),total=cartTotalCents()/100;
-if(method==='efectivo'&&(receivedText===''||!Number.isFinite(received)||cents(received)<cents(total))){message('posStatus','El dinero recibido es insuficiente.',true);return}
-if(method==='transferencia'&&!confirm(`¿Confirmas que recibiste la transferencia de ${money(total)}?`))return;
-const items=[...posCart].map(([id,quantity])=>({producto_id:Number(id),cantidad:quantity}));
-if(!confirm(`¿Registrar la venta por ${money(total)}? Esta acción descontará el inventario.`))return;
-posSaving=true;updatePosPayment();$('posClear').disabled=true;
-message('posStatus','Registrando venta...');$('posReceipt').classList.add('hidden');
-let saleRegistered=false;
-try{
-const result=await db.rpc('registrar_venta_caja',{p_productos:items,p_metodo_pago:method,p_dinero_recibido:method==='efectivo'?received:null});
-if(result.error)throw Error(result.error.message);
-if(!result.data?.exito)throw Error('La venta no devolvió una confirmación válida.');
-const receipt=result.data;saleRegistered=true;posCart.clear();$('posReceived').value='';
-const receiptBox=$('posReceipt');receiptBox.replaceChildren();
-receiptBox.append(el('strong',`✅ Venta N.º ${receipt.numero_pedido} registrada`),el('p',`Total: ${money(receipt.total)}`),el('p',`Pago: ${receipt.metodo_pago}`));
-if(method==='efectivo')receiptBox.append(el('p',`Cambio: ${money(receipt.cambio)}`));
-if(receipt.pedido_id){const btn=el('button','🧾 Ver / Imprimir comprobante','primary');btn.type='button';btn.onclick=()=>openReceipt(receipt.pedido_id);receiptBox.append(btn)}
-receiptBox.classList.remove('hidden');message('posStatus','Venta guardada correctamente.');
-try{await loadData()}catch(refreshError){console.error(refreshError);message('posStatus','Venta registrada. Actualiza la página para consultar el inventario.',true)}
-}catch(error){console.error(error);message('posStatus',saleRegistered?'La venta se registró, pero hubo un problema al actualizar la pantalla.':'No se confirmó la venta: '+error.message,true)}
-finally{posSaving=false;$('posClear').disabled=false;renderPosProducts();renderPosCart()}
-}
-async function loadSales(){
-if(!role)return;message('salesStatus','Cargando ventas...');
-const result=await db.from('pedidos').select('id,numero_pedido,creado_en,cliente_nombre,total,metodo_pago,estado,estado_pago').order('creado_en',{ascending:false}).limit(100);
-const box=$('salesRows');box.replaceChildren();
-if(result.error){message('salesStatus','No se pudo consultar el historial: '+result.error.message,true);return}
-message('salesStatus',`Mostrando ${result.data.length} pedido(s) reciente(s).`);
-if(!result.data.length){const row=el('tr'),cell=el('td','Todavía no hay ventas registradas.');cell.colSpan=7;row.append(cell);box.append(row);return}
-for(const sale of result.data){
-const row=el('tr');
-row.append(el('td',String(sale.numero_pedido)),el('td',sale.creado_en?new Date(sale.creado_en).toLocaleString('es-EC'):'—'),el('td',sale.cliente_nombre||'—'),el('td',money(sale.total)),el('td',sale.metodo_pago||'—'),el('td',`${sale.estado||'—'} · ${sale.estado_pago||'—'}`));
-const action=el('td'),btn=el('button','🧾 Ver comprobante','secondary');btn.type='button';btn.onclick=()=>openReceipt(sale.id);action.append(btn);row.append(action);box.append(row);
-}
-}
-function ticketLine(parent,label,value){
-const p=el('p');p.append(el('strong',label+': '),document.createTextNode(String(value)));parent.append(p);
-}
-async function openReceipt(pedidoId){
-if(!role||!pedidoId)return;
-const dialog=$('receiptDialog'),box=$('receiptContent');
-currentReceipt=null;box.replaceChildren(el('p','Cargando comprobante...'));message('receiptStatus','');
-$('printReceipt').disabled=true;$('downloadTicketPdf').disabled=true;
-if(!dialog.open)dialog.showModal();
-try{
-const [orderResult,itemsResult,paymentsResult]=await Promise.all([
-db.from('pedidos').select('id,numero_pedido,creado_en,cliente_nombre,total,metodo_pago,estado_pago').eq('id',pedidoId).single(),
-db.from('detalle_pedidos').select('nombre_producto,cantidad,precio_unitario,subtotal').eq('pedido_id',pedidoId).order('creado_en',{ascending:true}),
-db.from('pagos').select('metodo_pago,estado,dinero_recibido,cambio_entregado,creado_en').eq('pedido_id',pedidoId).order('creado_en',{ascending:false}).limit(1)
-]);
-if(orderResult.error)throw Error(orderResult.error.message);
-if(itemsResult.error)throw Error(itemsResult.error.message);
-if(paymentsResult.error)throw Error(paymentsResult.error.message);
-const order=orderResult.data,items=itemsResult.data||[],payment=paymentsResult.data?.[0]||null;
-currentReceipt={order,items,payment};box.replaceChildren();
-const head=el('div','','ticket-head');head.append(el('h2','🔵 GRAPHIC BLUE'),el('div','Papelería y suministros'),el('strong','COMPROBANTE DE VENTA'));box.append(head);
-const meta=el('div','','ticket-meta');
-ticketLine(meta,'Venta N.º',order.numero_pedido);
-ticketLine(meta,'Fecha',order.creado_en?new Date(order.creado_en).toLocaleString('es-EC'):'No registrada');
-ticketLine(meta,'Cliente',order.cliente_nombre||'Cliente de mostrador');box.append(meta);
-const table=el('table','','ticket-table'),thead=el('thead'),header=el('tr');
-for(const h of ['Producto','Cant.','P. unit.','Subtotal'])header.append(el('th',h));
-thead.append(header);table.append(thead);
-const tbody=el('tbody');
-for(const item of items){const row=el('tr');row.append(el('td',item.nombre_producto||'Producto'),el('td',String(item.cantidad)),el('td',money(item.precio_unitario)),el('td',money(item.subtotal)));tbody.append(row)}
-if(!items.length){const row=el('tr'),cell=el('td','Sin detalle disponible');cell.colSpan=4;row.append(cell);tbody.append(row)}
-table.append(tbody);box.append(table);
-const total=el('div','','ticket-total');total.append(el('span','TOTAL'),el('span',money(order.total)));box.append(total);
-const details=el('div','','ticket-meta'),method=payment?.metodo_pago||order.metodo_pago||'No registrada';
-ticketLine(details,'Forma de pago',method);
-if(method==='efectivo'){
-ticketLine(details,'Dinero recibido',payment?.dinero_recibido==null?'No registrado':money(payment.dinero_recibido));
-ticketLine(details,'Cambio entregado',payment?.cambio_entregado==null?'No registrado':money(payment.cambio_entregado));
-}
-ticketLine(details,'Estado del pago',payment?.estado||order.estado_pago||'No registrado');box.append(details);
-const foot=el('div','','ticket-foot');
-foot.append(el('strong','¡Gracias por tu compra! 💙'),el('p','Comprobante de venta de mostrador. No constituye una factura electrónica autorizada por el SRI.'));
-box.append(foot);
-$('printReceipt').disabled=false;$('downloadTicketPdf').disabled=false;
-}catch(error){console.error(error);currentReceipt=null;box.replaceChildren(el('p','No se pudo cargar el comprobante.','error'));message('receiptStatus',error.message,true)}
+
+function el(tag,text='',className=''){
+  const node=document.createElement(tag);
+  node.textContent=text;
+  node.className=className;
+  return node;
 }
 
-/* PDF DE 80 MM: se crea con tamaño real, independiente de AirPrint. */
+function message(id,text,error=false){
+  $(id).textContent=text;
+  $(id).className=error?'error':'success';
+}
+
+const dateEC=s=>s
+  ?new Date(s).toLocaleString('es-EC',{
+    timeZone:'America/Guayaquil'
+  })
+  :'—';
+
+let products=[];
+let categories=[];
+let role=null;
+let editingId=null;
+let previewObjectUrl=null;
+let saving=false;
+let posCart=new Map();
+let posSaving=false;
+let currentReceipt=null;
+let openJourney=null;
+let cashBusy=false;
+let cashLoading=false;
+
+function showSection(name){
+  const nav={
+    home:'navHome',
+    products:'navProducts',
+    inventory:'navInventory',
+    cash:'navCash',
+    cashControl:'navCashControl',
+    sales:'navSales'
+  };
+
+  for(const section of Object.keys(nav)){
+    $(section+'Section').classList.toggle(
+      'hidden',section!==name
+    );
+    $(nav[section]).classList.toggle(
+      'active',section===name
+    );
+  }
+
+  $('pageTitle').textContent={
+    home:'Panel principal',
+    products:'Productos',
+    inventory:'Inventario',
+    cash:'Caja registradora',
+    cashControl:'Control de caja',
+    sales:'Historial de ventas'
+  }[name];
+
+  $('newBtn').classList.toggle(
+    'hidden',
+    !['home','products','inventory'].includes(name)
+  );
+
+  if(name==='cash'){
+    refreshCashProducts();
+    loadCashState();
+  }
+
+  if(name==='cashControl'){
+    loadCashControl();
+  }
+
+  if(name==='sales'){
+    loadSales();
+  }
+}
+
+async function checkSession(){
+  const {data:{user},error}=await db.auth.getUser();
+
+  if(error||!user){
+    showLogin();
+    return;
+  }
+
+  const result=await db.from('perfiles')
+    .select('nombre,rol')
+    .eq('id',user.id)
+    .maybeSingle();
+
+  if(
+    result.error||
+    !result.data||
+    !['administrador','empleado'].includes(result.data.rol)
+  ){
+    await db.auth.signOut();
+    showLogin();
+    message(
+      'loginStatus',
+      'Esta cuenta no tiene acceso al panel.',
+      true
+    );
+    return;
+  }
+
+  role=result.data.rol;
+
+  $('welcome').textContent=
+    `${result.data.nombre||'Personal'} · ${role}`;
+
+  $('loginScreen').classList.add('hidden');
+  $('dashboard').classList.remove('hidden');
+
+  await loadData();
+  await loadCashState();
+
+  showSection('home');
+}
+
+function showLogin(){
+  role=null;
+  openJourney=null;
+  posCart.clear();
+  currentReceipt=null;
+
+  $('dashboard').classList.add('hidden');
+  $('loginScreen').classList.remove('hidden');
+}
+
+async function loadData(){
+  const [p,c]=await Promise.all([
+    db.from('productos')
+      .select(
+        'id,codigo,nombre,descripcion,categoria,'+
+        'precio_compra,precio_venta,stock,stock_minimo,'+
+        'imagen_url,publicado'
+      )
+      .order('nombre'),
+
+    db.from('categorias')
+      .select('nombre')
+      .order('nombre')
+  ]);
+
+  if(p.error){
+    message(
+      'staffStatus',
+      'Error: '+p.error.message,
+      true
+    );
+    showSection('products');
+    return false;
+  }
+
+  products=p.data||[];
+  categories=c.error
+    ?[]
+    :(c.data||[]).map(x=>x.nombre).filter(Boolean);
+
+  renderStats();
+  renderCategoryFilter();
+  renderProducts();
+  renderInventory();
+  renderPosProducts();
+  renderPosCart();
+
+  return true;
+}
+
+function lowProducts(){
+  return products.filter(
+    p=>Number(p.stock)<=Number(p.stock_minimo)
+  );
+}
+
+function renderStats(){
+  $('totalProducts').textContent=products.length;
+
+  $('publishedProducts').textContent=
+    products.filter(p=>p.publicado).length;
+
+  const low=lowProducts();
+  $('lowCount').textContent=low.length;
+
+  const box=$('lowList');
+  box.replaceChildren();
+
+  if(!low.length){
+    box.append(
+      el('p','No hay productos con stock bajo.')
+    );
+    return;
+  }
+
+  for(const p of low){
+    box.append(
+      el(
+        'p',
+        `⚠️ ${p.nombre}: ${p.stock} unidades `+
+        `(mínimo ${p.stock_minimo})`,
+        'stock-low'
+      )
+    );
+  }
+}
+
+function renderCategoryFilter(){
+  const select=$('filterCategory');
+  const previous=select.value;
+
+  select.replaceChildren();
+
+  const all=document.createElement('option');
+  all.value='';
+  all.textContent='Todas las categorías';
+  select.append(all);
+
+  const names=[
+    ...new Set([
+      ...categories,
+      ...products.map(p=>p.categoria)
+    ].filter(Boolean))
+  ].sort();
+
+  for(const name of names){
+    const option=document.createElement('option');
+    option.value=name;
+    option.textContent=name;
+    select.append(option);
+  }
+
+  select.value=names.includes(previous)?previous:'';
+}
+
+function renderProducts(){
+  const box=$('productRows');
+  box.replaceChildren();
+
+  const query=$('search').value.toLowerCase().trim();
+  const category=$('filterCategory').value;
+
+  const filtered=products.filter(
+    p=>
+      (!category||p.categoria===category)&&
+      `${p.nombre} ${p.codigo}`
+        .toLowerCase()
+        .includes(query)
+  );
+
+  if(!filtered.length){
+    const row=el('tr');
+    const cell=el('td','No hay productos para mostrar.');
+    cell.colSpan=7;
+    row.append(cell);
+    box.append(row);
+    return;
+  }
+
+  for(const p of filtered){
+    const row=el('tr');
+    const imageCell=el('td');
+
+    if(
+      p.imagen_url&&
+      /^https:\/\//i.test(p.imagen_url)
+    ){
+      const img=document.createElement('img');
+      img.src=p.imagen_url;
+      img.alt=p.nombre;
+      img.className='thumb';
+
+      img.onerror=()=>img.replaceWith(
+        el('div','📦','placeholder')
+      );
+
+      imageCell.append(img);
+    }else{
+      imageCell.append(
+        el('div','📦','placeholder')
+      );
+    }
+
+    const nameCell=el('td');
+    nameCell.append(
+      el('strong',p.nombre),
+      el('div',p.codigo||'Sin código','muted')
+    );
+
+    row.append(
+      imageCell,
+      nameCell,
+      el('td',p.categoria||''),
+      el('td',money(p.precio_venta)),
+      el(
+        'td',
+        String(p.stock),
+        Number(p.stock)<=Number(p.stock_minimo)
+          ?'stock-low':''
+      ),
+      el('td',p.publicado?'Publicado':'Oculto')
+    );
+
+    const actions=el('td');
+
+    const edit=el('button','✏️ Editar','secondary');
+    edit.onclick=()=>openForm(p);
+
+    const toggle=el(
+      'button',
+      p.publicado?'Ocultar':'Publicar',
+      'secondary'
+    );
+    toggle.onclick=()=>toggleProduct(p);
+
+    actions.append(edit,toggle);
+    row.append(actions);
+    box.append(row);
+  }
+}
+
+function renderInventory(){
+  const box=$('inventoryRows');
+  box.replaceChildren();
+
+  for(const p of products){
+    const row=el('tr');
+    const low=
+      Number(p.stock)<=Number(p.stock_minimo);
+
+    row.append(
+      el('td',p.codigo||''),
+      el('td',p.nombre),
+      el(
+        'td',
+        String(p.stock),
+        low?'stock-low':''
+      ),
+      el('td',String(p.stock_minimo)),
+      el(
+        'td',
+        low?'⚠️ Stock bajo':'Correcto'
+      )
+    );
+
+    const action=el('td');
+    const edit=el('button','Actualizar','secondary');
+
+    edit.onclick=()=>openForm(p);
+    action.append(edit);
+    row.append(action);
+    box.append(row);
+  }
+}
+
+function fillFormCategories(selected=''){
+  const select=$('pCategory');
+  select.replaceChildren();
+
+  const names=[
+    ...new Set([
+      ...categories,
+      ...products.map(p=>p.categoria),
+      selected
+    ].filter(Boolean))
+  ].sort();
+
+  for(const name of names){
+    const option=document.createElement('option');
+    option.value=name;
+    option.textContent=name;
+    select.append(option);
+  }
+
+  if(selected){
+    select.value=selected;
+  }
+}
+
+function clearPreview(){
+  if(previewObjectUrl){
+    URL.revokeObjectURL(previewObjectUrl);
+    previewObjectUrl=null;
+  }
+
+  $('imagePreview').removeAttribute('src');
+  $('imagePreview').classList.add('hidden');
+}
+
+function showImagePreview(src){
+  $('imagePreview').src=src;
+  $('imagePreview').classList.remove('hidden');
+}
+
+function updatePreview(){
+  clearPreview();
+
+  const file=$('pFile').files?.[0];
+
+  if(file){
+    if(
+      !['image/jpeg','image/png','image/webp']
+        .includes(file.type)
+    ){
+      $('imageHint').textContent=
+        'Selecciona una imagen JPG, PNG o WebP.';
+      return;
+    }
+
+    previewObjectUrl=URL.createObjectURL(file);
+    showImagePreview(previewObjectUrl);
+
+    $('imageHint').textContent=
+      'Vista previa: '+file.name;
+
+    return;
+  }
+
+  const url=$('pImage').value.trim();
+
+  if(/^https:\/\//i.test(url)){
+    showImagePreview(url);
+    $('imageHint').textContent=
+      'Imagen actual del producto.';
+  }else{
+    $('imageHint').textContent=
+      'Todavía no has seleccionado una imagen.';
+  }
+}
+
+function openForm(p=null){
+  if(!role)return;
+
+  editingId=p?.id??null;
+
+  $('productForm').reset();
+
+  $('formTitle').textContent=
+    p?'Editar producto':'Agregar producto';
+
+  $('formStatus').textContent='';
+
+  fillFormCategories(p?.categoria||'');
+
+  $('pCode').value=p?.codigo||'';
+  $('pName').value=p?.nombre||'';
+  $('pDescription').value=p?.descripcion||'';
+  $('pCost').value=p?.precio_compra??0;
+  $('pPrice').value=p?.precio_venta??0;
+  $('pStock').value=p?.stock??0;
+  $('pMinStock').value=p?.stock_minimo??0;
+  $('pImage').value=p?.imagen_url||'';
+  $('pPublished').checked=p?.publicado??false;
+
+  updatePreview();
+  $('productDialog').showModal();
+}
+
+function numberValue(id,integer=false){
+  const value=Number($(id).value);
+
+  if(
+    !Number.isFinite(value)||
+    value<0||
+    (integer&&!Number.isInteger(value))
+  ){
+    throw Error(
+      'Revisa los precios y las cantidades.'
+    );
+  }
+
+  return value;
+}
+
+function validateFile(file){
+  if(!file)return;
+
+  if(
+    !['image/jpeg','image/png','image/webp']
+      .includes(file.type)
+  ){
+    throw Error(
+      'La imagen debe ser JPG, PNG o WebP.'
+    );
+  }
+
+  if(file.size>5*1024*1024){
+    throw Error('La imagen supera los 5 MB.');
+  }
+
+  if(file.size===0){
+    throw Error('La imagen está vacía.');
+  }
+}
+
+async function uploadImage(file){
+  validateFile(file);
+
+  const {data:{user},error:userError}=
+    await db.auth.getUser();
+
+  if(userError||!user){
+    throw Error(
+      'Tu sesión expiró. Inicia sesión nuevamente.'
+    );
+  }
+
+  const extension={
+    'image/jpeg':'jpg',
+    'image/png':'png',
+    'image/webp':'webp'
+  }[file.type];
+
+  const path=
+    `productos/${user.id}/${crypto.randomUUID()}.${extension}`;
+
+  const result=await db.storage
+    .from(BUCKET)
+    .upload(path,file,{
+      contentType:file.type,
+      cacheControl:'3600',
+      upsert:false
+    });
+
+  if(result.error){
+    throw Error(
+      'No se pudo subir la imagen: '+
+      result.error.message
+    );
+  }
+
+  const {data}=db.storage
+    .from(BUCKET)
+    .getPublicUrl(path);
+
+  if(!data?.publicUrl){
+    throw Error(
+      'No se pudo obtener la URL de la imagen.'
+    );
+  }
+
+  return data.publicUrl;
+}
+
+async function saveProduct(event){
+  event.preventDefault();
+
+  if(!role||saving)return;
+
+  let record,file;
+
+  try{
+    const url=$('pImage').value.trim();
+    file=$('pFile').files?.[0]||null;
+
+    validateFile(file);
+
+    if(url&&!/^https:\/\//i.test(url)){
+      throw Error(
+        'La URL debe comenzar con https://'
+      );
+    }
+
+    record={
+      codigo:$('pCode').value.trim(),
+      nombre:$('pName').value.trim(),
+      descripcion:$('pDescription').value.trim(),
+      categoria:$('pCategory').value,
+      precio_compra:numberValue('pCost'),
+      precio_venta:numberValue('pPrice'),
+      stock:numberValue('pStock',true),
+      stock_minimo:numberValue('pMinStock',true),
+      imagen_url:url||null,
+      publicado:$('pPublished').checked
+    };
+
+    if(
+      !record.codigo||
+      !record.nombre||
+      !record.categoria
+    ){
+      throw Error(
+        'Completa código, nombre y categoría.'
+      );
+    }
+  }catch(error){
+    message('formStatus',error.message,true);
+    return;
+  }
+
+  saving=true;
+  $('saveBtn').disabled=true;
+  $('cancelBtn').disabled=true;
+
+  try{
+    if(file){
+      message(
+        'formStatus',
+        'Subiendo imagen...'
+      );
+
+      record.imagen_url=await uploadImage(file);
+    }
+
+    message(
+      'formStatus',
+      'Guardando producto...'
+    );
+
+    const result=editingId===null
+      ?await db.from('productos')
+        .insert(record)
+        .select('id')
+      :await db.from('productos')
+        .update(record)
+        .eq('id',editingId)
+        .select('id');
+
+    if(
+      result.error||
+      !result.data?.length
+    ){
+      throw Error(
+        'No se pudo guardar el producto: '+
+        (result.error?.message||'Revisa los permisos.')
+      );
+    }
+
+    $('productDialog').close();
+    clearPreview();
+
+    await loadData();
+
+    message(
+      'staffStatus',
+      'Producto guardado correctamente.'
+    );
+  }catch(error){
+    console.error(error);
+    message(
+      'formStatus',
+      error.message,
+      true
+    );
+  }finally{
+    saving=false;
+    $('saveBtn').disabled=false;
+    $('cancelBtn').disabled=false;
+  }
+}
+
+async function toggleProduct(p){
+  if(!role)return;
+
+  const result=await db.from('productos')
+    .update({publicado:!p.publicado})
+    .eq('id',p.id)
+    .select('id');
+
+  if(
+    result.error||
+    !result.data?.length
+  ){
+    message(
+      'staffStatus',
+      'No se pudo cambiar el estado del producto.',
+      true
+    );
+    return;
+  }
+
+  await loadData();
+
+  message(
+    'staffStatus',
+    'Estado actualizado correctamente.'
+  );
+}
+
+/* ==========================================
+   GRAPHIC BLUE — PARTE 3
+   VENTAS, CONTROL DE CAJA Y COMPROBANTES
+========================================== */
+
+/* ---------- ESTADO DE LA CAJA ---------- */
+
+function cashBanner(id){
+  const box=$(id);
+  box.replaceChildren();
+
+  if(openJourney){
+    box.classList.add('open');
+    box.append(
+      el('strong','🟢 Caja abierta'),
+      el('p','Jornada iniciada: '+dateEC(openJourney.abierta_en)),
+      el('p','Fondo inicial: '+money(openJourney.fondo_inicial))
+    );
+  }else{
+    box.classList.remove('open');
+    box.append(
+      el('strong','🔴 Caja cerrada'),
+      el('p','No se pueden registrar ventas hasta que el administrador abra la caja.')
+    );
+  }
+}
+
+function renderCashState(){
+  cashBanner('homeCashStatus');
+  cashBanner('posCashBanner');
+  cashBanner('controlCashBanner');
+
+  const admin=role==='administrador';
+  const opened=Boolean(openJourney);
+
+  $('cashOpenForm').classList.toggle('hidden',!admin||opened);
+  $('cashMovementForm').classList.toggle('hidden',!admin||!opened);
+  $('cashCloseForm').classList.toggle('hidden',!admin||!opened);
+
+  $('cashOpenBtn').disabled=cashBusy;
+  $('cashMovementBtn').disabled=cashBusy;
+  $('cashCloseBtn').disabled=cashBusy;
+
+  updatePosPayment();
+}
+
+async function loadCashState(){
+  if(!role)return;
+
+  cashLoading=true;
+  openJourney=null;
+  renderCashState();
+
+  const result=await db.from('jornadas_caja')
+    .select('id,fecha,fondo_inicial,estado,abierta_en')
+    .eq('estado','abierta')
+    .limit(1)
+    .maybeSingle();
+
+  cashLoading=false;
+
+  if(result.error){
+    message(
+      'cashControlStatus',
+      'No se pudo consultar el estado de la caja: '+result.error.message,
+      true
+    );
+    renderCashState();
+    return;
+  }
+
+  openJourney=result.data||null;
+  renderCashState();
+}
+
+async function loadCashControl(){
+  await loadCashState();
+  await Promise.all([
+    loadCashSummary(),
+    loadCashHistory()
+  ]);
+}
+
+async function openCash(event){
+  event.preventDefault();
+
+  if(role!=='administrador'||cashBusy)return;
+
+  const amount=Number($('cashOpeningAmount').value);
+
+  if(
+    $('cashOpeningAmount').value.trim()===''||
+    !Number.isFinite(amount)||
+    amount<0
+  ){
+    message(
+      'cashControlStatus',
+      'Ingresa un fondo inicial válido.',
+      true
+    );
+    return;
+  }
+
+  if(!confirm(
+    `¿Abrir la caja con ${money(amount)} de fondo inicial?`
+  ))return;
+
+  cashBusy=true;
+  renderCashState();
+
+  message('cashControlStatus','Abriendo caja...');
+
+  try{
+    const result=await db.rpc('gb_abrir_caja',{
+      p_fondo_inicial:amount
+    });
+
+    if(result.error)throw Error(result.error.message);
+
+    message(
+      'cashControlStatus',
+      '✅ Caja abierta correctamente.'
+    );
+
+    await loadCashControl();
+  }catch(error){
+    console.error(error);
+    message(
+      'cashControlStatus',
+      'No se pudo abrir la caja: '+error.message,
+      true
+    );
+  }finally{
+    cashBusy=false;
+    renderCashState();
+  }
+}
+
+async function registerCashMovement(event){
+  event.preventDefault();
+
+  if(role!=='administrador'||cashBusy||!openJourney)return;
+
+  const type=$('cashMovementType').value;
+  const amount=Number($('cashMovementAmount').value);
+  const concept=$('cashMovementConcept').value.trim();
+
+  if(
+    $('cashMovementAmount').value.trim()===''||
+    !Number.isFinite(amount)||
+    amount<=0||
+    !concept
+  ){
+    message(
+      'cashControlStatus',
+      'Completa correctamente el movimiento.',
+      true
+    );
+    return;
+  }
+
+  const label=type==='retiro'?'retiro':'ingreso';
+
+  if(!confirm(
+    `¿Registrar ${label} de ${money(amount)}?\nConcepto: ${concept}`
+  ))return;
+
+  cashBusy=true;
+  renderCashState();
+
+  message('cashControlStatus','Guardando movimiento...');
+
+  try{
+    const result=await db.rpc('gb_movimiento_caja',{
+      p_tipo:type,
+      p_monto:amount,
+      p_concepto:concept
+    });
+
+    if(result.error)throw Error(result.error.message);
+
+    $('cashMovementForm').reset();
+
+    message(
+      'cashControlStatus',
+      '✅ Movimiento registrado correctamente.'
+    );
+
+    await loadCashSummary();
+  }catch(error){
+    console.error(error);
+    message(
+      'cashControlStatus',
+      'No se pudo registrar el movimiento: '+error.message,
+      true
+    );
+  }finally{
+    cashBusy=false;
+    renderCashState();
+  }
+}
+
+async function loadCashSummary(){
+  const box=$('cashFigures');
+  box.replaceChildren();
+
+  if(!openJourney){
+    box.append(el('p','No hay una jornada abierta.','muted'));
+    return;
+  }
+
+  message('cashSummaryStatus','Calculando resumen...');
+
+  const [paymentsResult,movementsResult]=await Promise.all([
+    db.from('pedidos')
+      .select('id,total,metodo_pago,estado_pago,pagos(monto,metodo_pago,estado)')
+      .eq('jornada_caja_id',openJourney.id),
+
+    db.from('movimientos_caja')
+      .select('tipo,monto')
+      .eq('jornada_id',openJourney.id)
+  ]);
+
+  if(paymentsResult.error||movementsResult.error){
+    message(
+      'cashSummaryStatus',
+      'No se pudo calcular el resumen: '+
+      (paymentsResult.error?.message||movementsResult.error?.message),
+      true
+    );
+    return;
+  }
+
+  let efectivo=0;
+  let transferencias=0;
+  let otros=0;
+  let ventas=0;
+
+  for(const order of paymentsResult.data||[]){
+    let hasPayment=false;
+
+    for(const payment of order.pagos||[]){
+      if(payment.estado!=='aprobado')continue;
+
+      hasPayment=true;
+
+      if(payment.metodo_pago==='efectivo'){
+        efectivo+=Number(payment.monto)||0;
+      }else if(payment.metodo_pago==='transferencia'){
+        transferencias+=Number(payment.monto)||0;
+      }else{
+        otros+=Number(payment.monto)||0;
+      }
+    }
+
+    if(hasPayment)ventas++;
+  }
+
+  let ingresos=0;
+  let retiros=0;
+
+  for(const movement of movementsResult.data||[]){
+    if(movement.tipo==='ingreso'){
+      ingresos+=Number(movement.monto)||0;
+    }else if(movement.tipo==='retiro'){
+      retiros+=Number(movement.monto)||0;
+    }
+  }
+
+  const expected=
+    Number(openJourney.fondo_inicial)+
+    efectivo+ingresos-retiros;
+
+  const figures=[
+    ['Fondo inicial',openJourney.fondo_inicial],
+    ['Ventas en efectivo',efectivo],
+    ['Transferencias',transferencias],
+    ['Otros pagos',otros],
+    ['Ingresos adicionales',ingresos],
+    ['Retiros',retiros],
+    ['Efectivo esperado',expected],
+    ['Ventas registradas',ventas]
+  ];
+
+  for(const [label,value] of figures){
+    const card=el('div','','cash-figure');
+    card.append(
+      el('span',label),
+      el(
+        'strong',
+        label==='Ventas registradas'
+          ?String(value)
+          :money(value)
+      )
+    );
+    box.append(card);
+  }
+
+  message(
+    'cashSummaryStatus',
+    'Resumen actualizado. El efectivo esperado se calcula con los movimientos registrados.'
+  );
+}
+
+async function closeCash(event){
+  event.preventDefault();
+
+  if(role!=='administrador'||cashBusy||!openJourney)return;
+
+  const raw=$('cashCountedAmount').value.trim();
+  const counted=Number(raw);
+
+  if(raw===''||!Number.isFinite(counted)||counted<0){
+    message(
+      'cashControlStatus',
+      'Ingresa el efectivo contado correctamente.',
+      true
+    );
+    return;
+  }
+
+  if(!confirm(
+    `¿Cerrar la caja con ${money(counted)} de efectivo contado?\n`+
+    'Después de cerrar no se podrán registrar nuevas ventas hasta la próxima apertura.'
+  ))return;
+
+  cashBusy=true;
+  renderCashState();
+
+  message('cashControlStatus','Cerrando caja...');
+
+  try{
+    const result=await db.rpc('gb_cerrar_caja',{
+      p_efectivo_contado:counted,
+      p_observaciones:$('cashCloseNotes').value.trim()||null
+    });
+
+    if(result.error)throw Error(result.error.message);
+
+    const resultData=result.data;
+
+    $('cashCloseForm').reset();
+
+    message(
+      'cashControlStatus',
+      '✅ Caja cerrada. Efectivo esperado: '+
+      money(resultData.efectivo_esperado)+
+      ' · Contado: '+
+      money(resultData.efectivo_contado)+
+      ' · Diferencia: '+
+      money(resultData.diferencia)
+    );
+
+    await loadCashState();
+    await loadCashHistory();
+    await loadCashSummary();
+  }catch(error){
+    console.error(error);
+    message(
+      'cashControlStatus',
+      'No se pudo cerrar la caja: '+error.message,
+      true
+    );
+  }finally{
+    cashBusy=false;
+    renderCashState();
+  }
+}
+
+async function loadCashHistory(){
+  const box=$('cashHistoryRows');
+  box.replaceChildren();
+
+  if(role!=='administrador'){
+    message(
+      'cashHistoryStatus',
+      'El historial de cierres está reservado al administrador.'
+    );
+    return;
+  }
+
+  message('cashHistoryStatus','Cargando historial...');
+
+  const result=await db.from('jornadas_caja')
+    .select(
+      'fecha,estado,fondo_inicial,total_efectivo,'+
+      'total_transferencias,efectivo_esperado,'+
+      'efectivo_contado,diferencia,abierta_en'
+    )
+    .order('abierta_en',{ascending:false})
+    .limit(100);
+
+  if(result.error){
+    message(
+      'cashHistoryStatus',
+      'No se pudo cargar el historial: '+result.error.message,
+      true
+    );
+    return;
+  }
+
+  if(!result.data?.length){
+    const row=el('tr');
+    const cell=el('td','Todavía no hay jornadas registradas.');
+    cell.colSpan=8;
+    row.append(cell);
+    box.append(row);
+    return;
+  }
+
+  for(const j of result.data){
+    const row=el('tr');
+
+    row.append(
+      el('td',j.fecha||'—'),
+      el('td',j.estado),
+      el('td',money(j.fondo_inicial)),
+      el('td',j.total_efectivo==null?'—':money(j.total_efectivo)),
+      el('td',j.total_transferencias==null?'—':money(j.total_transferencias)),
+      el('td',j.efectivo_esperado==null?'—':money(j.efectivo_esperado)),
+      el('td',j.efectivo_contado==null?'—':money(j.efectivo_contado)),
+      el(
+        'td',
+        j.diferencia==null?'—':money(j.diferencia),
+        j.diferencia<0?'error':j.diferencia>0?'success':''
+      )
+    );
+
+    box.append(row);
+  }
+
+  message(
+    'cashHistoryStatus',
+    `Mostrando ${result.data.length} jornada(s).`
+  );
+}
+
+/* ---------- VENTAS DE MOSTRADOR ---------- */
+
+function cartTotalCents(){
+  let sum=0;
+
+  for(const [id,qty] of posCart){
+    const p=products.find(
+      x=>String(x.id)===String(id)
+    );
+
+    if(p){
+      sum+=cents(p.precio_venta)*qty;
+    }
+  }
+
+  return sum;
+}
+
+function renderPosProducts(){
+  const box=$('posProducts');
+  box.replaceChildren();
+
+  const q=$('posSearch').value.trim().toLowerCase();
+
+  const matches=products.filter(
+    p=>`${p.nombre} ${p.codigo||''}`
+      .toLowerCase()
+      .includes(q)
+  );
+
+  $('posProductsStatus').textContent=
+    `${matches.length} producto(s) encontrado(s)`;
+
+  if(!matches.length){
+    box.append(
+      el('p','No se encontraron productos.','muted')
+    );
+    return;
+  }
+
+  for(const p of matches){
+    const row=el('div','','pos-product');
+
+    if(
+      p.imagen_url&&
+      /^https:\/\//i.test(p.imagen_url)
+    ){
+      const img=el('img','','thumb');
+      img.src=p.imagen_url;
+      img.alt=p.nombre;
+      row.append(img);
+    }else{
+      row.append(el('div','📦','placeholder'));
+    }
+
+    const info=el('div','','info');
+
+    info.append(
+      el('strong',p.nombre),
+      el(
+        'small',
+        `${p.codigo||'Sin código'} · `+
+        `${money(p.precio_venta)} · Stock: ${p.stock}`
+      )
+    );
+
+    const btn=el(
+      'button',
+      Number(p.stock)>0?'Agregar +':'Agotado',
+      'secondary'
+    );
+
+    btn.disabled=
+      Number(p.stock)<=0||
+      posSaving||
+      !openJourney||
+      cashLoading;
+
+    btn.onclick=()=>addPosProduct(p.id);
+
+    row.append(info,btn);
+    box.append(row);
+  }
+}
+
+function addPosProduct(id){
+  if(!openJourney){
+    message(
+      'posStatus',
+      'La caja está cerrada. Solicita al administrador que la abra.',
+      true
+    );
+    return;
+  }
+
+  const p=products.find(
+    x=>String(x.id)===String(id)
+  );
+
+  if(!p)return;
+
+  const qty=posCart.get(String(id))||0;
+
+  if(qty>=Number(p.stock)){
+    message(
+      'posStatus',
+      'No hay más unidades disponibles de '+p.nombre,
+      true
+    );
+    return;
+  }
+
+  posCart.set(String(id),qty+1);
+
+  $('posReceipt').classList.add('hidden');
+  message('posStatus','');
+  renderPosCart();
+}
+
+function changePosQty(id,delta){
+  const key=String(id);
+
+  const p=products.find(
+    x=>String(x.id)===key
+  );
+
+  if(!p)return;
+
+  const next=(posCart.get(key)||0)+delta;
+
+  if(next>Number(p.stock)){
+    message(
+      'posStatus',
+      'Stock insuficiente para '+p.nombre,
+      true
+    );
+    return;
+  }
+
+  if(next<=0){
+    posCart.delete(key);
+  }else{
+    posCart.set(key,next);
+  }
+
+  $('posReceipt').classList.add('hidden');
+  message('posStatus','');
+  renderPosCart();
+}
+
+function renderPosCart(){
+  const box=$('posCart');
+  box.replaceChildren();
+
+  if(!posCart.size){
+    box.append(
+      el(
+        'p',
+        'Todavía no has agregado productos.',
+        'muted'
+      )
+    );
+  }
+
+  for(const [id,qty] of posCart){
+    const p=products.find(
+      x=>String(x.id)===id
+    );
+
+    if(!p){
+      box.append(
+        el(
+          'p',
+          'Un producto ya no está disponible. Vacía el carrito.',
+          'error'
+        )
+      );
+      continue;
+    }
+
+    const line=el('div','','pos-line');
+    const info=el('div');
+
+    info.append(
+      el('strong',p.nombre),
+      el(
+        'small',
+        `${money(p.precio_venta)} c/u · `+
+        `${money(Number(p.precio_venta)*qty)}`
+      )
+    );
+
+    const controls=el('div','','qty');
+    const minus=el('button','−','secondary');
+    const plus=el('button','+','secondary');
+
+    minus.disabled=posSaving;
+    plus.disabled=
+      posSaving||
+      qty>=Number(p.stock)||
+      !openJourney;
+
+    minus.onclick=()=>changePosQty(id,-1);
+    plus.onclick=()=>changePosQty(id,1);
+
+    controls.append(
+      minus,
+      el('strong',String(qty)),
+      plus
+    );
+
+    line.append(info,controls);
+    box.append(line);
+  }
+
+  $('posTotal').textContent=
+    money(cartTotalCents()/100);
+
+  updatePosPayment();
+}
+
+function updatePosPayment(){
+  const cash=$('posMethod').value==='efectivo';
+
+  $('posCashFields').classList.toggle('hidden',!cash);
+  $('posTransferFields').classList.toggle('hidden',cash);
+
+  const receivedText=$('posReceived').value.trim();
+  const received=Number(receivedText);
+  const total=cartTotalCents();
+
+  const validReceived=
+    receivedText!==''&&
+    Number.isFinite(received)&&
+    received>=0&&
+    cents(received)>=total;
+
+  $('posChange').textContent=money(
+    cash&&validReceived
+      ?(cents(received)-total)/100
+      :0
+  );
+
+  $('posConfirm').disabled=
+    posSaving||
+    cashLoading||
+    !openJourney||
+    !posCart.size||
+    (cash&&!validReceived);
+
+  renderPosProducts();
+}
+
+async function refreshCashProducts(){
+  if(!role)return;
+
+  const ok=await loadData();
+
+  if(!ok){
+    message(
+      'posStatus',
+      'No se pudieron actualizar los productos.',
+      true
+    );
+  }
+}
+
+async function confirmSale(){
+  if(posSaving||!posCart.size||!role)return;
+
+  await loadCashState();
+
+  if(!openJourney){
+    message(
+      'posStatus',
+      'La caja está cerrada. No se puede registrar la venta.',
+      true
+    );
+    return;
+  }
+
+  const method=$('posMethod').value;
+  const receivedText=$('posReceived').value.trim();
+  const received=Number(receivedText);
+  const total=cartTotalCents()/100;
+
+  if(
+    method==='efectivo'&&
+    (
+      receivedText===''||
+      !Number.isFinite(received)||
+      cents(received)<cents(total)
+    )
+  ){
+    message(
+      'posStatus',
+      'El dinero recibido es insuficiente.',
+      true
+    );
+    return;
+  }
+
+  if(
+    method==='transferencia'&&
+    !confirm(
+      `¿Confirmas que recibiste la transferencia de ${money(total)}?`
+    )
+  )return;
+
+  const items=[...posCart].map(
+    ([id,quantity])=>({
+      producto_id:Number(id),
+      cantidad:quantity
+    })
+  );
+
+  if(!confirm(
+    `¿Registrar la venta por ${money(total)}? `+
+    'Esta acción descontará el inventario.'
+  ))return;
+
+  posSaving=true;
+  updatePosPayment();
+
+  $('posClear').disabled=true;
+
+  message('posStatus','Registrando venta...');
+  $('posReceipt').classList.add('hidden');
+
+  let saleRegistered=false;
+
+  try{
+    const result=await db.rpc('registrar_venta_caja',{
+      p_productos:items,
+      p_metodo_pago:method,
+      p_dinero_recibido:
+        method==='efectivo'?received:null
+    });
+
+    if(result.error){
+      throw Error(result.error.message);
+    }
+
+    if(!result.data?.exito){
+      throw Error(
+        'La venta no devolvió una confirmación válida.'
+      );
+    }
+
+    const receipt=result.data;
+
+    saleRegistered=true;
+    posCart.clear();
+    $('posReceived').value='';
+
+    const receiptBox=$('posReceipt');
+    receiptBox.replaceChildren();
+
+    receiptBox.append(
+      el(
+        'strong',
+        `✅ Venta N.º ${receipt.numero_pedido} registrada`
+      ),
+      el('p',`Total: ${money(receipt.total)}`),
+      el('p',`Pago: ${receipt.metodo_pago}`)
+    );
+
+    if(method==='efectivo'){
+      receiptBox.append(
+        el('p',`Cambio: ${money(receipt.cambio)}`)
+      );
+    }
+
+    if(receipt.pedido_id){
+      const btn=el(
+        'button',
+        '🧾 Ver / Imprimir comprobante',
+        'primary'
+      );
+
+      btn.type='button';
+      btn.onclick=()=>openReceipt(receipt.pedido_id);
+      receiptBox.append(btn);
+    }
+
+    receiptBox.classList.remove('hidden');
+
+    message(
+      'posStatus',
+      'Venta guardada correctamente.'
+    );
+
+    await loadData();
+  }catch(error){
+    console.error(error);
+
+    message(
+      'posStatus',
+      saleRegistered
+        ?'La venta se registró, pero hubo un problema al actualizar la pantalla.'
+        :'No se confirmó la venta: '+error.message,
+      true
+    );
+  }finally{
+    posSaving=false;
+    $('posClear').disabled=false;
+
+    renderPosProducts();
+    renderPosCart();
+  }
+}
+
+/* ---------- HISTORIAL DE VENTAS ---------- */
+
+async function loadSales(){
+  if(!role)return;
+
+  message('salesStatus','Cargando ventas...');
+
+  const result=await db.from('pedidos')
+    .select(
+      'id,numero_pedido,creado_en,cliente_nombre,'+
+      'total,metodo_pago,estado,estado_pago'
+    )
+    .order('creado_en',{ascending:false})
+    .limit(100);
+
+  const box=$('salesRows');
+  box.replaceChildren();
+
+  if(result.error){
+    message(
+      'salesStatus',
+      'No se pudo consultar el historial: '+
+      result.error.message,
+      true
+    );
+    return;
+  }
+
+  message(
+    'salesStatus',
+    `Mostrando ${result.data.length} pedido(s) reciente(s).`
+  );
+
+  if(!result.data.length){
+    const row=el('tr');
+    const cell=el(
+      'td',
+      'Todavía no hay ventas registradas.'
+    );
+
+    cell.colSpan=7;
+    row.append(cell);
+    box.append(row);
+    return;
+  }
+
+  for(const sale of result.data){
+    const row=el('tr');
+
+    row.append(
+      el('td',String(sale.numero_pedido)),
+      el('td',dateEC(sale.creado_en)),
+      el('td',sale.cliente_nombre||'—'),
+      el('td',money(sale.total)),
+      el('td',sale.metodo_pago||'—'),
+      el(
+        'td',
+        `${sale.estado||'—'} · ${sale.estado_pago||'—'}`
+      )
+    );
+
+    const action=el('td');
+    const btn=el(
+      'button',
+      '🧾 Ver comprobante',
+      'secondary'
+    );
+
+    btn.type='button';
+    btn.onclick=()=>openReceipt(sale.id);
+
+    action.append(btn);
+    row.append(action);
+    box.append(row);
+  }
+}
+
+/* ---------- COMPROBANTES ---------- */
+
+function ticketLine(parent,label,value){
+  const p=el('p');
+
+  p.append(
+    el('strong',label+': '),
+    document.createTextNode(String(value))
+  );
+
+  parent.append(p);
+}
+
+async function openReceipt(pedidoId){
+  if(!role||!pedidoId)return;
+
+  const dialog=$('receiptDialog');
+  const box=$('receiptContent');
+
+  currentReceipt=null;
+
+  box.replaceChildren(
+    el('p','Cargando comprobante...')
+  );
+
+  message('receiptStatus','');
+
+  $('printReceipt').disabled=true;
+  $('downloadTicketPdf').disabled=true;
+
+  if(!dialog.open){
+    dialog.showModal();
+  }
+
+  try{
+    const [
+      orderResult,
+      itemsResult,
+      paymentsResult
+    ]=await Promise.all([
+      db.from('pedidos')
+        .select(
+          'id,numero_pedido,creado_en,'+
+          'cliente_nombre,total,metodo_pago,estado_pago'
+        )
+        .eq('id',pedidoId)
+        .single(),
+
+      db.from('detalle_pedidos')
+        .select(
+          'nombre_producto,cantidad,precio_unitario,subtotal'
+        )
+        .eq('pedido_id',pedidoId)
+        .order('creado_en',{ascending:true}),
+
+      db.from('pagos')
+        .select(
+          'metodo_pago,estado,dinero_recibido,'+
+          'cambio_entregado,creado_en'
+        )
+        .eq('pedido_id',pedidoId)
+        .order('creado_en',{ascending:false})
+        .limit(1)
+    ]);
+
+    if(orderResult.error){
+      throw Error(orderResult.error.message);
+    }
+
+    if(itemsResult.error){
+      throw Error(itemsResult.error.message);
+    }
+
+    if(paymentsResult.error){
+      throw Error(paymentsResult.error.message);
+    }
+
+    const order=orderResult.data;
+    const items=itemsResult.data||[];
+    const payment=paymentsResult.data?.[0]||null;
+
+    currentReceipt={order,items,payment};
+    box.replaceChildren();
+
+    const head=el('div','','ticket-head');
+
+    head.append(
+      el('h2','🔵 GRAPHIC BLUE'),
+      el('div','Papelería y suministros'),
+      el('strong','COMPROBANTE DE VENTA')
+    );
+
+    box.append(head);
+
+    const meta=el('div','','ticket-meta');
+
+    ticketLine(meta,'Venta N.º',order.numero_pedido);
+
+    ticketLine(
+      meta,
+      'Fecha',
+      order.creado_en
+        ?dateEC(order.creado_en)
+        :'No registrada'
+    );
+
+    ticketLine(
+      meta,
+      'Cliente',
+      order.cliente_nombre||'Cliente de mostrador'
+    );
+
+    box.append(meta);
+
+    const table=el('table','','ticket-table');
+    const thead=el('thead');
+    const header=el('tr');
+
+    for(const h of [
+      'Producto',
+      'Cant.',
+      'P. unit.',
+      'Subtotal'
+    ]){
+      header.append(el('th',h));
+    }
+
+    thead.append(header);
+    table.append(thead);
+
+    const tbody=el('tbody');
+
+    for(const item of items){
+      const row=el('tr');
+
+      row.append(
+        el('td',item.nombre_producto||'Producto'),
+        el('td',String(item.cantidad)),
+        el('td',money(item.precio_unitario)),
+        el('td',money(item.subtotal))
+      );
+
+      tbody.append(row);
+    }
+
+    if(!items.length){
+      const row=el('tr');
+      const cell=el('td','Sin detalle disponible');
+      cell.colSpan=4;
+      row.append(cell);
+      tbody.append(row);
+    }
+
+    table.append(tbody);
+    box.append(table);
+
+    const total=el('div','','ticket-total');
+
+    total.append(
+      el('span','TOTAL'),
+      el('span',money(order.total))
+    );
+
+    box.append(total);
+
+    const details=el('div','','ticket-meta');
+
+    const method=
+      payment?.metodo_pago||
+      order.metodo_pago||
+      'No registrada';
+
+    ticketLine(details,'Forma de pago',method);
+
+    if(method==='efectivo'){
+      ticketLine(
+        details,
+        'Dinero recibido',
+        payment?.dinero_recibido==null
+          ?'No registrado'
+          :money(payment.dinero_recibido)
+      );
+
+      ticketLine(
+        details,
+        'Cambio entregado',
+        payment?.cambio_entregado==null
+          ?'No registrado'
+          :money(payment.cambio_entregado)
+      );
+    }
+
+    ticketLine(
+      details,
+      'Estado del pago',
+      payment?.estado||
+      order.estado_pago||
+      'No registrado'
+    );
+
+    box.append(details);
+
+    const foot=el('div','','ticket-foot');
+
+    foot.append(
+      el('strong','¡Gracias por tu compra! 💙'),
+      el(
+        'p',
+        'Comprobante de venta de mostrador. '+
+        'No constituye una factura electrónica '+
+        'autorizada por el SRI.'
+      )
+    );
+
+    box.append(foot);
+
+    $('printReceipt').disabled=false;
+    $('downloadTicketPdf').disabled=false;
+  }catch(error){
+    console.error(error);
+
+    currentReceipt=null;
+
+    box.replaceChildren(
+      el(
+        'p',
+        'No se pudo cargar el comprobante.',
+        'error'
+      )
+    );
+
+    message(
+      'receiptStatus',
+      error.message,
+      true
+    );
+  }
+}
+
+/* ---------- TICKET PDF DE 80 MM ---------- */
+
 function downloadTicketPDF(){
-if(!currentReceipt)return;
-const JsPDF=window.jspdf?.jsPDF;
-if(!JsPDF){message('receiptStatus','No se pudo cargar el generador PDF. Comprueba tu conexión e inténtalo de nuevo.',true);return}
-try{
-const {order,items,payment}=currentReceipt;
-const measure=new JsPDF({unit:'mm',format:[80,200],orientation:'portrait'});
-const left=5,right=75,usable=70;
-let height=54;
-measure.setFont('helvetica','normal');measure.setFontSize(9);
-const textLines=(s,w=usable)=>measure.splitTextToSize(String(s),w);
-const date=order.creado_en?new Date(order.creado_en).toLocaleString('es-EC'):'No registrada';
-const method=payment?.metodo_pago||order.metodo_pago||'No registrado';
-const details=[`Venta N.: ${order.numero_pedido}`,`Fecha: ${date}`,`Cliente: ${order.cliente_nombre||'Cliente de mostrador'}`];
-const payments=[`Forma de pago: ${method}`];
-if(method==='efectivo'){
-payments.push(`Dinero recibido: ${payment?.dinero_recibido==null?'No registrado':money(payment.dinero_recibido)}`);
-payments.push(`Cambio entregado: ${payment?.cambio_entregado==null?'No registrado':money(payment.cambio_entregado)}`);
+  if(!currentReceipt)return;
+
+  const JsPDF=window.jspdf?.jsPDF;
+
+  if(!JsPDF){
+    message(
+      'receiptStatus',
+      'No se pudo cargar el generador PDF. '+
+      'Comprueba tu conexión e inténtalo de nuevo.',
+      true
+    );
+    return;
+  }
+
+  try{
+    const {order,items,payment}=currentReceipt;
+
+    const measure=new JsPDF({
+      unit:'mm',
+      format:[80,200],
+      orientation:'portrait'
+    });
+
+    const left=5;
+    const right=75;
+    const usable=70;
+
+    let height=54;
+
+    measure.setFont('helvetica','normal');
+    measure.setFontSize(9);
+
+    const textLines=(s,w=usable)=>
+      measure.splitTextToSize(String(s),w);
+
+    const date=order.creado_en
+      ?dateEC(order.creado_en)
+      :'No registrada';
+
+    const method=
+      payment?.metodo_pago||
+      order.metodo_pago||
+      'No registrado';
+
+    const details=[
+      `Venta N.: ${order.numero_pedido}`,
+      `Fecha: ${date}`,
+      `Cliente: ${order.cliente_nombre||'Cliente de mostrador'}`
+    ];
+
+    const payments=[
+      `Forma de pago: ${method}`
+    ];
+
+    if(method==='efectivo'){
+      payments.push(
+        'Dinero recibido: '+
+        (
+          payment?.dinero_recibido==null
+            ?'No registrado'
+            :money(payment.dinero_recibido)
+        )
+      );
+
+      payments.push(
+        'Cambio entregado: '+
+        (
+          payment?.cambio_entregado==null
+            ?'No registrado'
+            :money(payment.cambio_entregado)
+        )
+      );
+    }
+
+    payments.push(
+      'Estado del pago: '+
+      (payment?.estado||order.estado_pago||'No registrado')
+    );
+
+    for(const s of details){
+      height+=textLines(s).length*4.3+1;
+    }
+
+    for(const item of items){
+      height+=textLines(
+        item.nombre_producto||'Producto',
+        usable
+      ).length*4.2+5;
+    }
+
+    if(!items.length){
+      height+=6;
+    }
+
+    for(const s of payments){
+      height+=textLines(s).length*4.3+1;
+    }
+
+    height+=22;
+
+    const doc=new JsPDF({
+      unit:'mm',
+      format:[
+        80,
+        Math.max(100,Math.min(1200,height))
+      ],
+      orientation:'portrait',
+      compress:true
+    });
+
+    let y=8;
+
+    const line=(
+      text,
+      size=9,
+      bold=false,
+      align='left'
+    )=>{
+      doc.setFont(
+        'helvetica',
+        bold?'bold':'normal'
+      );
+
+      doc.setFontSize(size);
+
+      const ls=doc.splitTextToSize(
+        String(text),
+        usable
+      );
+
+      for(const t of ls){
+        doc.text(
+          t,
+          align==='center'?40:left,
+          y,
+          {align}
+        );
+
+        y+=size*0.45+0.7;
+      }
+    };
+
+    const rule=()=>{
+      doc.setDrawColor(130);
+      doc.setLineWidth(.2);
+      doc.line(left,y,right,y);
+      y+=4;
+    };
+
+    line('GRAPHIC BLUE',16,true,'center');
+    line('Papeleria y suministros',9,false,'center');
+
+    y+=1;
+
+    line(
+      'COMPROBANTE DE VENTA',
+      10,
+      true,
+      'center'
+    );
+
+    y+=3;
+    rule();
+
+    for(const s of details){
+      line(s);
+    }
+
+    y+=2;
+    rule();
+
+    for(const item of items){
+      line(
+        item.nombre_producto||'Producto',
+        9,
+        true
+      );
+
+      const desc=
+        `${item.cantidad} x ${money(item.precio_unitario)}`+
+        `     ${money(item.subtotal)}`;
+
+      line(desc,9);
+      y+=1;
+    }
+
+    if(!items.length){
+      line('Sin detalle disponible');
+    }
+
+    rule();
+
+    line(
+      'TOTAL: '+money(order.total),
+      13,
+      true
+    );
+
+    y+=2;
+    rule();
+
+    for(const s of payments){
+      line(s);
+    }
+
+    y+=4;
+    rule();
+
+    line(
+      'Gracias por tu compra!',
+      10,
+      true,
+      'center'
+    );
+
+    y+=2;
+
+    line(
+      'Comprobante de venta de mostrador.',
+      8,
+      false,
+      'center'
+    );
+
+    line(
+      'No constituye una factura electronica',
+      8,
+      false,
+      'center'
+    );
+
+    line(
+      'autorizada por el SRI.',
+      8,
+      false,
+      'center'
+    );
+
+    doc.save(
+      `Graphic-Blue-Ticket-${order.numero_pedido}.pdf`
+    );
+
+    message(
+      'receiptStatus',
+      'PDF de 80 mm generado. '+
+      'En iPhone, revisa Descargas o el menú Compartir.'
+    );
+  }catch(error){
+    console.error(error);
+
+    message(
+      'receiptStatus',
+      'No se pudo generar el PDF: '+error.message,
+      true
+    );
+  }
 }
-payments.push(`Estado del pago: ${payment?.estado||order.estado_pago||'No registrado'}`);
-for(const s of details)height+=textLines(s).length*4.3+1;
-for(const item of items)height+=textLines(item.nombre_producto||'Producto',usable).length*4.2+5;
-if(!items.length)height+=6;
-for(const s of payments)height+=textLines(s).length*4.3+1;
-height+=22;
-const doc=new JsPDF({unit:'mm',format:[80,Math.max(100,Math.min(1200,height))],orientation:'portrait',compress:true});
-let y=8;
-const line=(text,size=9,bold=false,align='left')=>{
-doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);
-const ls=doc.splitTextToSize(String(text),usable);
-for(const t of ls){doc.text(t,align==='center'?40:left,y,{align});y+=size*0.45+0.7}
-};
-const rule=()=>{doc.setDrawColor(130);doc.setLineWidth(.2);doc.line(left,y,right,y);y+=4};
-line('GRAPHIC BLUE',16,true,'center');
-line('Papeleria y suministros',9,false,'center');
-y+=1;line('COMPROBANTE DE VENTA',10,true,'center');y+=3;rule();
-for(const s of details)line(s);
-y+=2;rule();
-for(const item of items){
-line(item.nombre_producto||'Producto',9,true);
-const desc=`${item.cantidad} x ${money(item.precio_unitario)}     ${money(item.subtotal)}`;
-line(desc,9);y+=1;
-}
-if(!items.length)line('Sin detalle disponible');
-rule();line('TOTAL: '+money(order.total),13,true);y+=2;rule();
-for(const s of payments)line(s);
-y+=4;rule();
-line('Gracias por tu compra!',10,true,'center');
-y+=2;line('Comprobante de venta de mostrador.',8,false,'center');
-line('No constituye una factura electronica',8,false,'center');
-line('autorizada por el SRI.',8,false,'center');
-doc.save(`Graphic-Blue-Ticket-${order.numero_pedido}.pdf`);
-message('receiptStatus','PDF de 80 mm generado. En iPhone, revisa Descargas o el menú Compartir.');
-}catch(error){console.error(error);message('receiptStatus','No se pudo generar el PDF: '+error.message,true)}
-}
+
+/* ---------- CONEXIÓN DE BOTONES ---------- */
 
 $('loginForm').onsubmit=async event=>{
-event.preventDefault();$('loginBtn').disabled=true;message('loginStatus','Ingresando...');
-const result=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
-$('loginBtn').disabled=false;
-if(result.error){message('loginStatus','Correo o contraseña incorrectos.',true);return}
-$('password').value='';await checkSession();
+  event.preventDefault();
+
+  $('loginBtn').disabled=true;
+  message('loginStatus','Ingresando...');
+
+  const result=await db.auth.signInWithPassword({
+    email:$('email').value.trim(),
+    password:$('password').value
+  });
+
+  $('loginBtn').disabled=false;
+
+  if(result.error){
+    message(
+      'loginStatus',
+      'Correo o contraseña incorrectos.',
+      true
+    );
+    return;
+  }
+
+  $('password').value='';
+  await checkSession();
 };
-$('logoutBtn').onclick=async()=>{const result=await db.auth.signOut();if(result.error){alert('No se pudo cerrar sesión.');return}showLogin()};
+
+$('logoutBtn').onclick=async()=>{
+  const result=await db.auth.signOut();
+
+  if(result.error){
+    alert('No se pudo cerrar sesión.');
+    return;
+  }
+
+  showLogin();
+};
+
 $('navHome').onclick=()=>showSection('home');
 $('navProducts').onclick=()=>showSection('products');
 $('navInventory').onclick=()=>showSection('inventory');
 $('navCash').onclick=()=>showSection('cash');
+$('navCashControl').onclick=()=>showSection('cashControl');
 $('navSales').onclick=()=>showSection('sales');
+
 $('newBtn').onclick=()=>openForm();
-$('cancelBtn').onclick=()=>{if(saving)return;$('productDialog').close();clearPreview()};
+
+$('cancelBtn').onclick=()=>{
+  if(saving)return;
+  $('productDialog').close();
+  clearPreview();
+};
+
 $('productForm').onsubmit=saveProduct;
 $('search').oninput=renderProducts;
 $('filterCategory').onchange=renderProducts;
 $('pFile').onchange=updatePreview;
-$('pImage').oninput=()=>{if(!$('pFile').files?.length)updatePreview()};
+
+$('pImage').oninput=()=>{
+  if(!$('pFile').files?.length){
+    updatePreview();
+  }
+};
+
 $('posSearch').oninput=renderPosProducts;
 $('posMethod').onchange=updatePosPayment;
 $('posReceived').oninput=updatePosPayment;
 $('posConfirm').onclick=confirmSale;
-$('posClear').onclick=()=>{if(posSaving)return;posCart.clear();$('posReceipt').classList.add('hidden');message('posStatus','');renderPosCart()};
+
+$('posClear').onclick=()=>{
+  if(posSaving)return;
+
+  posCart.clear();
+  $('posReceipt').classList.add('hidden');
+  message('posStatus','');
+  renderPosCart();
+};
+
+$('cashOpenForm').onsubmit=openCash;
+$('cashMovementForm').onsubmit=registerCashMovement;
+$('cashCloseForm').onsubmit=closeCash;
+
+$('refreshCashSummary').onclick=loadCashSummary;
+$('refreshCashHistory').onclick=loadCashHistory;
 $('refreshSales').onclick=loadSales;
-$('closeReceipt').onclick=()=>$('receiptDialog').close();
-$('printReceipt').onclick=()=>window.print();
+
+$('closeReceipt').onclick=()=>{
+  $('receiptDialog').close();
+};
+
+$('printReceipt').onclick=()=>{
+  window.print();
+};
+
 $('downloadTicketPdf').onclick=downloadTicketPDF;
+
+/* ---------- INICIAR SISTEMA ---------- */
+
 await checkSession();
+
 </script>
 </body>
 </html>
