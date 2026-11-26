@@ -1239,6 +1239,18 @@ let categories=[];
 let activeCategory='Todos';
 let cart=new Map();
 let busy=false, widgetId=null, token='', uncertain=false;
+const PENDING_KEY='graphic-blue:pending:v1';
+let pending=null, storageError=false;
+try { pending=JSON.parse(sessionStorage.getItem(PENDING_KEY)||'null'); }
+catch { storageError=true; }
+if(pending) uncertain=true;
+function savePending(value){
+  try {
+    if(value) sessionStorage.setItem(PENDING_KEY,JSON.stringify(value));
+    else sessionStorage.removeItem(PENDING_KEY);
+    pending=value; return true;
+  }catch{storageError=true;return false;}
+}
 const SITE_KEY='0x4AAAAAAGNvz4TuvFEDaAuL';
 function checkoutStatus(message){
   $('checkoutStatus').textContent=message;
@@ -1246,8 +1258,10 @@ function checkoutStatus(message){
 }
 function syncCheckout(){
   $('checkoutForm').classList.toggle('hidden',!cart.size);
-  $('checkoutSubmit').disabled=busy||uncertain||!token||!cart.size;
-  $('checkoutFields').disabled=busy||uncertain;
+  $('checkoutSubmit').disabled=busy||storageError||!token||!cart.size;
+  $('checkoutSubmit').textContent=uncertain?'Reintentar misma solicitud':'Probar verificación';
+  $('checkoutFields').disabled=busy;
+  $('checkoutFields').querySelectorAll('input').forEach(i=>i.readOnly=uncertain);
   $('clearCart').disabled=busy||uncertain;
   $('cartClose').disabled=busy;
   $('cartItems').querySelectorAll('button').forEach(b=>b.disabled=busy||uncertain);
@@ -1266,26 +1280,45 @@ function initVerification(){
 }
 $('checkoutForm').addEventListener('submit',async e=>{
   e.preventDefault();
-  if(busy||uncertain||!token||!cart.size)return;
+  if(busy||storageError||!token||!cart.size)return;
   const f=new FormData(e.currentTarget);
-  const payload={cliente_nombre:String(f.get('nombre')).trim(),cliente_identificacion:String(f.get('identificacion')).trim(),cliente_email:String(f.get('email')).trim(),cliente_telefono:String(f.get('telefono')).trim(),productos:[...cart.values()].map(i=>({producto_id:Number(i.product.id),cantidad:i.qty})),turnstileToken:token};
-  busy=true;syncCheckout();checkoutStatus('Verificando…');
+  const request=pending?.request||{
+    solicitud_id:crypto.randomUUID(),
+    cliente_nombre:String(f.get('nombre')).trim(),
+    cliente_identificacion:String(f.get('identificacion')).trim(),
+    cliente_email:String(f.get('email')).trim().toLowerCase(),
+    cliente_telefono:String(f.get('telefono')).trim(),
+    productos:[...cart.values()].map(i=>({producto_id:Number(i.product.id),cantidad:i.qty}))
+  };
+  const wasUncertain=uncertain;
+  if(!pending&&!savePending({request,items:[...cart.values()]})){
+    checkoutStatus('No se puede guardar la solicitud en esta pestaña. No se envió el pedido.');syncCheckout();return;
+  }
+  busy=true;uncertain=true;syncCheckout();checkoutStatus('Verificando…');
   try{
-    const response=await fetch(SUPABASE_URL+'/functions/v1/crear-pedido-online',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},body:JSON.stringify(payload),signal:AbortSignal.timeout(20000)});
+    const response=await fetch(SUPABASE_URL+'/functions/v1/crear-pedido-online',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},body:JSON.stringify({...request,turnstileToken:token}),signal:AbortSignal.timeout(20000)});
     const data=await response.json();
     if(response.ok&&data.verificado===true&&data.pedidos_habilitados===false){
-      checkoutStatus('Verificación exitosa. Las compras siguen desactivadas. No se creó ningún pedido.');
+      if(!wasUncertain&&savePending(null)) uncertain=false;
+      checkoutStatus(wasUncertain?'Compras desactivadas. La solicitud anterior sigue sin confirmarse; consulta con el local.':'Verificación exitosa. Las compras siguen desactivadas. No se creó ningún pedido.');
     }else if(response.ok&&data.exito===true&&data.numero_pedido!=null){
+      if(savePending(null)) uncertain=false;
       cart.clear();updateCartCount();renderCart();$('checkoutForm').reset();
-      checkoutStatus('Pedido confirmado: #'+data.numero_pedido+' · Total: '+money(data.total)+' · Vence: '+new Date(data.reserva_expira_en).toLocaleString('es-EC',{timeZone:'America/Guayaquil'}));
+      const expired=data.estado_pago==='pendiente'&&Date.parse(data.reserva_expira_en)<=Date.now();
+      const state=data.estado==='cancelado'?'Cancelado':data.estado==='entregado'?'Entregado':data.estado_pago==='aprobado'?'Pagado':expired?'Reserva vencida':data.estado==='listo_para_retirar'?'Listo para retirar':data.estado==='preparando'?'En preparación':'Pendiente';
+      checkoutStatus('Pedido #'+data.numero_pedido+' · '+state+' · Total: '+money(data.total)+(data.estado_pago==='pendiente'&&!expired?' · Vence: '+new Date(data.reserva_expira_en).toLocaleString('es-EC',{timeZone:'America/Guayaquil'}):''));
       await loadCatalog();
-    }else if(response.status>=500||response.ok){
-      uncertain=true;checkoutStatus('No se pudo confirmar el resultado. Consulta con el local antes de repetir el pedido.');
-    }else{
+    }else if(response.status===409&&['STOCK_INSUFICIENTE','LIMITE_RESERVAS'].includes(data.codigo)){
+      if(savePending(null)) uncertain=false;
+      checkoutStatus(data.error);await loadCatalog();
+    }else if(!wasUncertain&&response.status>=400&&response.status<500&&data.codigo!=='SOLICITUD_MODIFICADA'){
+      if(savePending(null)) uncertain=false;
       checkoutStatus(typeof data.error==='string'?data.error:'No se pudo verificar la solicitud.');
+    }else{
+      checkoutStatus('Solicitud sin confirmar. '+(typeof data.error==='string'?data.error+' ':'')+'Reintenta la misma solicitud o consulta con el local.');
     }
-  }catch{uncertain=true;checkoutStatus('No se pudo confirmar el resultado. Consulta con el local antes de repetir el pedido.');}
-  finally{busy=false;token='';if(widgetId!==null)window.turnstile.reset(widgetId);syncCheckout();}
+  }catch{checkoutStatus('No se pudo confirmar el resultado. Reintenta la misma solicitud sin cambiar los datos.');}
+  finally{busy=false;token='';try{if(widgetId!==null)window.turnstile.reset(widgetId);}catch{}syncCheckout();}
 });
 $('cartDialog').addEventListener('cancel',e=>{if(busy)e.preventDefault();});
 
@@ -1552,6 +1585,7 @@ function updateCartCount(){
 }
 
 function changeQuantity(id,amount){
+  if(busy||uncertain)return;
   const item=cart.get(id);
 
   if(!item)return;
@@ -1623,6 +1657,7 @@ function renderCart(){
     remove.type='button';
     remove.setAttribute('aria-label','Quitar producto');
     remove.onclick=()=>{
+      if(busy||uncertain)return;
       cart.delete(id);
       updateCartCount();
       renderCart();
@@ -1663,6 +1698,7 @@ $('cartClose').onclick=()=>{
 };
 
 $('clearCart').onclick=()=>{
+  if(busy||uncertain)return;
   cart.clear();
   updateCartCount();
   renderCart();
@@ -1675,6 +1711,15 @@ $('search').addEventListener(
 
 /* INICIAR TIENDA */
 
+if(pending){
+  for(const item of pending.items)cart.set(item.product.id,item);
+  const fields=$('checkoutForm').elements;
+  for(const [name,key] of Object.entries({nombre:'cliente_nombre',identificacion:'cliente_identificacion',email:'cliente_email',telefono:'cliente_telefono'}))fields[name].value=pending.request[key];
+  updateCartCount();
+  checkoutStatus('Hay una solicitud sin confirmar. Reintenta con los mismos datos o consulta con el local.');
+  openCart();
+}
+if(storageError)checkoutStatus('No se puede acceder al almacenamiento de esta pestaña. No envíes pedidos desde aquí.');
 renderCategories();
 await loadCatalog();
 
