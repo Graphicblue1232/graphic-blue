@@ -1,4 +1,8 @@
 
+
+
+
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -922,6 +926,15 @@ dialog::backdrop{background:#061d3c9c}
   html{scroll-behavior:auto}
   button,.product{transition:none}
 }
+
+.checkout{border-top:1px solid var(--border);margin-top:20px;padding-top:18px}
+.checkout h3{margin:0 0 12px;color:var(--navy)}
+.checkout label{display:block;font-size:13px;font-weight:700;margin:12px 0}
+.checkout input{display:block;width:100%;padding:12px;border:1px solid #dce5f0;border-radius:10px;margin-top:6px;color:var(--navy)}
+.checkout fieldset{border:0;padding:0;margin:0;min-width:0}
+.checkout fieldset:disabled{opacity:.7}
+#checkoutStatus{white-space:pre-line;overflow-wrap:anywhere}
+#turnstileBox{margin:14px 0;min-height:65px}
 </style>
 </head>
 
@@ -1164,10 +1177,20 @@ dialog::backdrop{background:#061d3c9c}
       <span id="cartTotal">$0.00</span>
     </div>
 
-    <p class="cart-note">
-      Este carrito es una demostración.
-      Por ahora no se procesan pedidos ni pagos.
-    </p>
+    <p class="cart-note">Compras online en preparación. La prueba de verificación no crea pedidos ni reserva productos.</p>
+    <form id="checkoutForm" class="checkout hidden">
+      <h3>Finalizar pedido</h3>
+      <fieldset id="checkoutFields">
+        <label>Nombre completo<input name="nombre" autocomplete="name" required minlength="3" maxlength="120"></label>
+        <label>Cédula o RUC<input name="identificacion" inputmode="numeric" pattern="[0-9]{10}([0-9]{3})?" required maxlength="13"></label>
+        <label>Correo electrónico<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+        <label>Teléfono<input name="telefono" type="tel" autocomplete="tel" required minlength="7" maxlength="30"></label>
+        <p class="cart-note"><strong>Entrega:</strong> Retiro en el local.<br><strong>Pago:</strong> En el local.<br>Cuando se habiliten los pedidos, la reserva durará 24 horas.<br>Tarjetas: próximamente.</p>
+        <div id="turnstileBox"></div>
+        <button id="checkoutSubmit" class="add-button" type="submit" disabled>Probar verificación</button>
+      </fieldset>
+    </form>
+    <p id="checkoutStatus" role="status" aria-live="polite" class="cart-note hidden"></p>
 
     <button
       id="clearCart"
@@ -1179,6 +1202,7 @@ dialog::backdrop{background:#061d3c9c}
   </div>
 </dialog>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 <script type="module">
 
 import {createClient} from
@@ -1214,6 +1238,56 @@ let products=[];
 let categories=[];
 let activeCategory='Todos';
 let cart=new Map();
+let busy=false, widgetId=null, token='', uncertain=false;
+const SITE_KEY='0x4AAAAAAGNvz4TuvFEDaAuL';
+function checkoutStatus(message){
+  $('checkoutStatus').textContent=message;
+  $('checkoutStatus').classList.toggle('hidden',!message);
+}
+function syncCheckout(){
+  $('checkoutForm').classList.toggle('hidden',!cart.size);
+  $('checkoutSubmit').disabled=busy||uncertain||!token||!cart.size;
+  $('checkoutFields').disabled=busy||uncertain;
+  $('clearCart').disabled=busy||uncertain;
+  $('cartClose').disabled=busy;
+  $('cartItems').querySelectorAll('button').forEach(b=>b.disabled=busy||uncertain);
+}
+function initVerification(){
+  if(widgetId!==null||!cart.size)return;
+  if(!window.turnstile){checkoutStatus('La verificación aún no está disponible. Cierra y vuelve a abrir el carrito.');return;}
+  try{
+    widgetId=window.turnstile.render('#turnstileBox',{
+      sitekey:SITE_KEY,
+      callback:t=>{token=t;syncCheckout();},
+      'expired-callback':()=>{token='';syncCheckout();},
+      'error-callback':()=>{token='';syncCheckout();checkoutStatus('No se pudo verificar. Intenta nuevamente.');}
+    });
+  }catch{checkoutStatus('No se pudo iniciar la verificación. Actualiza la página.');}
+}
+$('checkoutForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(busy||uncertain||!token||!cart.size)return;
+  const f=new FormData(e.currentTarget);
+  const payload={cliente_nombre:String(f.get('nombre')).trim(),cliente_identificacion:String(f.get('identificacion')).trim(),cliente_email:String(f.get('email')).trim(),cliente_telefono:String(f.get('telefono')).trim(),productos:[...cart.values()].map(i=>({producto_id:Number(i.product.id),cantidad:i.qty})),turnstileToken:token};
+  busy=true;syncCheckout();checkoutStatus('Verificando…');
+  try{
+    const response=await fetch(SUPABASE_URL+'/functions/v1/crear-pedido-online',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},body:JSON.stringify(payload),signal:AbortSignal.timeout(20000)});
+    const data=await response.json();
+    if(response.ok&&data.verificado===true&&data.pedidos_habilitados===false){
+      checkoutStatus('Verificación exitosa. Las compras siguen desactivadas. No se creó ningún pedido.');
+    }else if(response.ok&&data.exito===true&&data.numero_pedido!=null){
+      cart.clear();updateCartCount();renderCart();$('checkoutForm').reset();
+      checkoutStatus('Pedido confirmado: #'+data.numero_pedido+' · Total: '+money(data.total)+' · Vence: '+new Date(data.reserva_expira_en).toLocaleString('es-EC',{timeZone:'America/Guayaquil'}));
+      await loadCatalog();
+    }else if(response.status>=500||response.ok){
+      uncertain=true;checkoutStatus('No se pudo confirmar el resultado. Consulta con el local antes de repetir el pedido.');
+    }else{
+      checkoutStatus(typeof data.error==='string'?data.error:'No se pudo verificar la solicitud.');
+    }
+  }catch{uncertain=true;checkoutStatus('No se pudo confirmar el resultado. Consulta con el local antes de repetir el pedido.');}
+  finally{busy=false;token='';if(widgetId!==null)window.turnstile.reset(widgetId);syncCheckout();}
+});
+$('cartDialog').addEventListener('cancel',e=>{if(busy)e.preventDefault();});
 
 /* CATEGORÍAS */
 
@@ -1457,7 +1531,9 @@ function addToCart(p){
     qty:0
   };
 
-  if(item.qty>=Number(p.stock)){
+  if(busy||uncertain)return;
+  if(!existing&&cart.size>=50){alert('Máximo 50 productos distintos por pedido.');return;}
+  if(item.qty>=Math.min(100,Number(p.stock))){
     alert('No hay más unidades disponibles.');
     return;
   }
@@ -1484,7 +1560,7 @@ function changeQuantity(id,amount){
 
   if(newQty<=0){
     cart.delete(id);
-  }else if(newQty>Number(item.product.stock)){
+  }else if(newQty>Math.min(100,Number(item.product.stock))){
     alert('No hay más unidades disponibles.');
     return;
   }else{
@@ -1562,6 +1638,7 @@ function renderCart(){
   }
 
   $('cartTotal').textContent=money(total);
+  syncCheckout();
 }
 
 function openCart(){
@@ -1570,6 +1647,7 @@ function openCart(){
   if(!$('cartDialog').open){
     $('cartDialog').showModal();
   }
+  initVerification();
 }
 
 /* BOTONES */
@@ -1603,3 +1681,7 @@ await loadCatalog();
 </script>
 </body>
 </html>
+
+
+
+
