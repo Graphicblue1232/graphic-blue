@@ -1,4 +1,8 @@
 
+
+
+
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -618,6 +622,7 @@ dialog::backdrop {background:#001b4388}
       <button id="navInventory">📋 Inventario</button>
       <button id="navCash">💵 Caja</button>
       <button id="navCashControl">💰 Control de caja</button>
+      <button id="navOrders">🛍️ Pedidos online</button>
       <button id="navSales">🧾 Ventas</button>
       <a href="index.html">🛍️ Ver tienda</a>
       <button id="logoutBtn">🚪 Cerrar sesión</button>
@@ -1053,6 +1058,23 @@ dialog::backdrop {background:#001b4388}
 
     </section>
 
+    <section id="ordersSection" class="hidden">
+      <div class="card">
+        <h2>Pedidos online</h2>
+        <p class="muted">Reservas para retiro en local. Actualiza antes de gestionar un pedido.</p>
+        <div class="toolbar">
+          <select id="ordersFilter" aria-label="Estado del pedido">
+            <option value="activos">Pedidos activos</option>
+            <option value="todos">Todos</option>
+            <option value="entregado">Entregados</option>
+            <option value="cancelado">Cancelados</option>
+          </select>
+          <button id="refreshOrders" class="secondary">Actualizar</button>
+        </div>
+        <p id="ordersStatus" role="status"></p>
+        <div id="ordersList"></div>
+      </div>
+    </section>
     <!-- HISTORIAL DE VENTAS -->
 
     <section id="salesSection" class="hidden">
@@ -1311,6 +1333,8 @@ let products = [];
 let categories = [];
 let role = null;
 let editingId = null;
+let editingStock = null;
+let editingVersion = null;
 let previewObjectUrl = null;
 let saving = false;
 
@@ -1334,7 +1358,7 @@ function showSection(name) {
     inventory: "navInventory",
     cash: "navCash",
     cashControl: "navCashControl",
-    sales: "navSales"
+    sales: "navSales", orders: "navOrders"
   };
 
   for (const [section, nav] of Object.entries(sections)) {
@@ -1351,7 +1375,7 @@ function showSection(name) {
     inventory: "Inventario",
     cash: "Caja registradora",
     cashControl: "Control de caja",
-    sales: "Historial de ventas"
+    sales: "Historial de ventas", orders: "Pedidos online"
   };
 
   $("pageTitle").textContent = titles[name] || "Graphic Blue";
@@ -1369,6 +1393,7 @@ function showSection(name) {
     loadCashControl();
   }
 
+  if (name === "orders") loadOrders();
   if (name === "sales") {
     loadSales();
   }
@@ -1377,6 +1402,9 @@ function showSection(name) {
 function showLogin() {
   resetCashHistoryView();
   resetSalesHistoryView();
+  ++ordersRequest;
+  $("ordersList").replaceChildren();
+  $("ordersStatus").textContent = "";
   role = null;
   openJourney = null;
   cashLoaded = false;
@@ -1450,7 +1478,7 @@ async function loadData() {
       .select(
         "id,codigo,nombre,descripcion,categoria," +
         "precio_compra,precio_venta,stock,stock_minimo," +
-        "imagen_url,publicado"
+        "imagen_url,publicado,version_stock"
       )
       .order("nombre"),
 
@@ -1722,7 +1750,10 @@ function updatePreview() {
 function openForm(product = null) {
   if (!role) return;
 
+  if (saving) return;
   editingId = product?.id ?? null;
+  editingStock = product ? Number(product.stock) : null;
+  editingVersion = product?.version_stock ?? null;
 
   $("productForm").reset();
   $("formStatus").textContent = "";
@@ -1863,12 +1894,21 @@ async function saveProduct(event) {
 
     status("formStatus", "Guardando producto...");
 
-    const result = editingId === null
-      ? await db.from("productos").insert(record).select("id")
-      : await db.from("productos")
-          .update(record)
-          .eq("id", editingId)
-          .select("id");
+    let result;
+    if (editingId === null) {
+      result = await db.from("productos").insert(record).select("id");
+    } else {
+      const stockChanged = record.stock !== editingStock;
+      if (!stockChanged) delete record.stock;
+      if (stockChanged && editingVersion === null) throw Error("Actualiza los productos antes de cambiar el stock.");
+      let query = db.from("productos").update(record).eq("id", editingId);
+      if (stockChanged) query = query.eq("version_stock", editingVersion);
+      result = await query.select("id");
+      if (!result.error && !result.data?.length && stockChanged) {
+        await loadData();
+        throw Error("El inventario cambió o el producto ya no está disponible. Cierra el formulario, vuelve a abrirlo y revisa el stock antes de guardar.");
+      }
+    }
 
     if (result.error || !result.data?.length) {
       throw Error(
@@ -2796,6 +2836,86 @@ async function confirmSale() {
    HISTORIAL DE VENTAS
 ===================================== */
 
+let ordersBusy = false;
+let ordersRequest = 0;
+function orderAction(label, handler, danger = false) {
+  const button = node("button", label, danger ? "danger" : "secondary");
+  button.type = "button";
+  button.onclick = handler;
+  return button;
+}
+async function loadOrders() {
+  if (!role || ordersBusy) return;
+  const request = ++ordersRequest;
+  const filter = $("ordersFilter").value;
+  status("ordersStatus", "Cargando pedidos...");
+  $("ordersList").replaceChildren();
+  let query = db.from("pedidos").select("id,numero_pedido,cliente_nombre,cliente_identificacion,cliente_email,cliente_telefono,total,estado,estado_pago,metodo_pago,reserva_expira_en,reserva_liberada,creado_en,detalle_pedidos(nombre_producto,cantidad,precio_unitario,subtotal)").eq("origen_pedido", "online");
+  if (filter === "activos") query = query.in("estado", ["pendiente", "preparando", "listo_para_retirar"]);
+  else if (filter !== "todos") query = query.eq("estado", filter);
+  const result = await query.order("creado_en", {ascending:false}).limit(100);
+  if (!role || request !== ordersRequest) return;
+  if (result.error) { status("ordersStatus", result.error.message, true); return; }
+  for (const order of result.data || []) {
+    const card = node("article", "", "notice");
+    const paid = order.estado_pago === "aprobado";
+    const active = ["pendiente", "preparando", "listo_para_retirar"].includes(order.estado);
+    const expired = !order.reserva_expira_en || Date.parse(order.reserva_expira_en) <= Date.now();
+    card.append(node("h3", `Pedido #${order.numero_pedido} · ${money(order.total)}`),
+      node("p", `${order.estado.replaceAll("_", " ")} · Pago: ${order.estado_pago}`),
+      node("p", `Cliente: ${order.cliente_nombre} · ${order.cliente_identificacion || "—"}`),
+      node("p", `Contacto: ${order.cliente_telefono || "—"} · ${order.cliente_email || "—"}`),
+      node("p", `Creado: ${dateEC(order.creado_en)} · Reserva hasta: ${dateEC(order.reserva_expira_en)}`));
+    const items = node("ul");
+    for (const item of order.detalle_pedidos || []) items.append(node("li", `${item.cantidad} × ${item.nombre_producto} · ${money(item.subtotal)}`));
+    card.append(items);
+    const actions = node("div", "", "actions");
+    const pending = active && !order.reserva_liberada && order.estado_pago === "pendiente" && order.metodo_pago === "pago_local";
+    const change = state => runOrder("gb_estado_pedido_online", {p_pedido_id:order.id,p_nuevo_estado:state});
+    if (pending && !expired) {
+      if (order.estado === "pendiente") actions.append(orderAction("Preparar", () => change("preparando")));
+      if (order.estado === "preparando") actions.append(orderAction("Listo para retirar", () => change("listo_para_retirar")));
+      if (order.estado === "listo_para_retirar") {
+        const method = node("select"); method.setAttribute("aria-label", "Método de pago");
+        for (const m of ["efectivo", "transferencia"]) { const opt = node("option", m); opt.value=m; method.append(opt); }
+        const received = node("input"); received.placeholder="Dinero recibido ($)"; received.inputMode="decimal"; received.setAttribute("aria-label", "Dinero recibido");
+        const changeText = node("p", "Cambio: —");
+        const update = () => { const n=parseMoney(received.value); received.hidden=method.value!=="efectivo"; changeText.textContent=method.value!=="efectivo"?"Verifica la transferencia en tu banco.":Number.isFinite(n)&&cents(n)>=cents(order.total)?"Cambio: "+money((cents(n)-cents(order.total))/100):"Cambio: —"; };
+        method.onchange=update; received.oninput=update;
+        card.append(method,received,changeText);
+        actions.append(orderAction("Registrar cobro", () => {
+          const cash=method.value==="efectivo"; const amount=cash?parseMoney(received.value):null;
+          if(cash && (!Number.isFinite(amount)||cents(amount)<cents(order.total))) { alert("Revisa el dinero recibido."); return; }
+          if(!confirm(cash?"¿Confirmas que recibiste el efectivo?":"¿Confirmas que verificaste la transferencia bancaria?")) return;
+          runOrder("gb_cobrar_pedido_online", {p_pedido_id:order.id,p_metodo_pago:method.value,p_dinero_recibido:amount});
+        }));
+      }
+    }
+    if (pending) actions.append(orderAction("Cancelar pedido", () => { if(confirm("¿Cancelar y devolver los productos al inventario?")) runOrder("gb_cancelar_pedido_online", {p_pedido_id:order.id}); }, true));
+    if (pending && expired) card.append(node("p", "Reserva vencida; pendiente de liberación.", "error"));
+    if (paid && order.estado === "listo_para_retirar" && !order.reserva_liberada) actions.append(orderAction("Confirmar entrega", () => { if(confirm("¿Entregaste los productos al cliente?")) change("entregado"); }));
+    if (paid) actions.append(orderAction("Ver comprobante", () => openReceipt(order.id)));
+    card.append(actions); $("ordersList").append(card);
+  }
+  status("ordersStatus", `Mostrando ${(result.data || []).length} pedido(s), máximo 100.`);
+}
+async function runOrder(fn, args) {
+  if (!role || ordersBusy) return;
+  ordersBusy=true; ++ordersRequest;
+  const controls = $("ordersSection").querySelectorAll("button,input,select");
+  controls.forEach(el => el.disabled=true);
+  let message="", failed=false;
+  try {
+    const result=await db.rpc(fn,args);
+    if(result.error) throw Error(result.error.message);
+    message="Operación registrada correctamente.";
+    if(fn==="gb_cobrar_pedido_online" && args.p_metodo_pago==="efectivo") message += " Cambio: "+money(result.data.cambio);
+    await loadData(); await loadCashState();
+  } catch(error) { failed=true; message=error.message+". Actualiza y verifica el estado antes de reintentar."; }
+  finally { ordersBusy=false; controls.forEach(el=>el.disabled=false); }
+  if(role) { await loadOrders(); status("ordersStatus",message,failed); }
+}
+
 async function loadSales() {
   if (!role) return;
 
@@ -2806,6 +2926,7 @@ async function loadSales() {
       "id,numero_pedido,creado_en,cliente_nombre," +
       "total,metodo_pago,estado,estado_pago"
     )
+    .eq("estado_pago", "aprobado")
     .order("creado_en", { ascending: false })
     .limit(100);
 
@@ -2907,6 +3028,7 @@ async function openReceipt(pedidoId) {
             "cambio_entregado,creado_en"
           )
           .eq("pedido_id", pedidoId)
+          .eq("estado", "aprobado")
           .order("creado_en", { ascending: false })
           .limit(1)
       ]);
@@ -2916,6 +3038,7 @@ async function openReceipt(pedidoId) {
     if (paymentsResult.error) throw Error(paymentsResult.error.message);
 
     const order = orderResult.data;
+    if (order.estado_pago !== "aprobado") throw Error("El pedido no tiene un pago aprobado.");
     const items = itemsResult.data || [];
     const payment = paymentsResult.data?.[0] || null;
 
@@ -3025,7 +3148,7 @@ async function openReceipt(pedidoId) {
       node("strong", "¡Gracias por tu compra! 💙"),
       node(
         "p",
-        "Comprobante de mostrador. No constituye una " +
+        "Comprobante de venta. No constituye una " +
         "factura electrónica autorizada por el SRI."
       )
     );
@@ -3193,7 +3316,7 @@ function downloadTicketPDF() {
     separator();
 
     pdfLine("Gracias por tu compra!", 10, true, true);
-    pdfLine("Comprobante de mostrador.", 8, false, true);
+    pdfLine("Comprobante de venta.", 8, false, true);
     pdfLine("No es factura electronica del SRI.", 8, false, true);
 
     doc.save(`Graphic-Blue-Ticket-${order.numero_pedido}.pdf`);
@@ -3257,6 +3380,10 @@ $("navCashControl").onclick = () => {
   }
 };
 
+$("navOrders").onclick = () => showSection("orders");
+$("refreshOrders").onclick = loadOrders;
+$("ordersFilter").onchange = loadOrders;
+$("productDialog").addEventListener("cancel", event => { if (saving) event.preventDefault(); });
 $("navSales").onclick = () => showSection("sales");
 
 $("newBtn").onclick = () => openForm();
@@ -3343,3 +3470,7 @@ await checkSession();
 </script>
 </body>
 </html>
+
+
+
+
